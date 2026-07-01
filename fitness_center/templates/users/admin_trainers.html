@@ -1,0 +1,214 @@
+{% extends 'users/admin_style_base.html' %}
+{% load static %}
+
+{% block title %}Тренеры | Личный кабинет{% endblock %}
+
+{% block breadcrumb_active %}Тренеры{% endblock %}
+
+{% block page_title %}Наши тренеры{% endblock %}
+
+{% block page_actions %}
+<div class="d-flex">
+    <div class="me-2">
+        <input type="text" class="form-control" id="trainerSearch" placeholder="Поиск по имени...">
+    </div>
+    <div>
+        <select class="form-control" id="specializationFilter">
+            <option value="">Все специализации</option>
+            <option value="йога">Йога</option>
+            <option value="силовые">Силовые тренировки</option>
+            <option value="кардио">Кардио тренировки</option>
+            <option value="пилатес">Пилатес</option>
+            <option value="кроссфит">Кроссфит</option>
+        </select>
+    </div>
+    <div class="ms-2">
+        <button class="btn-dashboard btn-dashboard-primary" id="searchButton">
+            <i class="fas fa-search"></i> Найти
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_content %}
+<div class="row" id="trainersGrid">
+    {% for trainer in trainers %}
+    <div class="col-lg-4 col-md-6 mb-4 trainer-card" 
+         data-name="{{ trainer.name|lower }}" 
+         data-specializations="{{ trainer.specialization|lower }}">
+        <div class="dashboard-card h-100">
+            <div class="dashboard-card-header">
+                <h5 class="dashboard-card-title">{{ trainer.name }}</h5>
+                <span class="badge" style="background-color: #ff3b4e; color: white;">{{ trainer.specialization }}</span>
+            </div>
+            {% if trainer.photo %}
+            <img src="{{ trainer.photo.url }}" class="card-img-top trainer-photo" alt="{{ trainer.name }}" style="height: 250px; object-fit: cover;">
+            {% else %}
+            <div style="background-color: #ff3b4e; color: white;" class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                <i class="fas fa-user-circle fa-5x text-light"></i>
+            </div>
+            {% endif %}
+            <div class="dashboard-card-body">
+                <p class="card-text">
+                    {{ trainer.description|truncatewords:30 }}
+                </p>
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn-dashboard btn-dashboard-secondary" data-bs-toggle="modal" data-bs-target="#trainerModal{{ trainer.id }}">
+                        <i class="fas fa-info-circle"></i> Подробнее
+                    </button>
+                    <a href="{% url 'account_schedule' %}?trainer={{ trainer.id }}" class="btn-dashboard btn-dashboard-primary">
+                        <i class="fas fa-calendar-check"></i> Тренировки
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно с подробной информацией о тренере -->
+    <div class="modal fade" id="trainerModal{{ trainer.id }}" tabindex="-1" aria-labelledby="trainerModalLabel{{ trainer.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #ff3b4e; color: white;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="trainerModalLabel{{ trainer.id }}">{{ trainer.name }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if trainer.photo %}
+                            <img src="{{ trainer.photo.url }}" class="img-fluid rounded" alt="{{ trainer.name }}">
+                            {% else %}
+                            <div style="background-color: #ff3b4e; color: white;" class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                                <i class="fas fa-user-circle fa-5x text-light"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h4>{{ trainer.name }}</h4>
+                            <p><strong>Специализация:</strong> {{ trainer.specialization }}</p>
+                            {% if trainer.experience %}
+                            <p><strong>Опыт работы:</strong> {{ trainer.experience }} лет</p>
+                            {% endif %}
+                            <p>{{ trainer.description }}</p>
+                            <hr>
+                            <h5>Ближайшие тренировки:</h5>
+                            <div class="list-group">
+                                {% for workout in trainer.workouts.all|slice:":3" %}
+                                {% if workout.date >= today %}
+                                <a href="{% url 'account_register_for_workout' workout.id %}" class="list-group-item list-group-item-action" style="background-color: #ff3b4e; color: white; border-color: rgba(255,255,255,0.2);">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ workout.title }}</h6>
+                                        <small>{{ workout.date|date:"d.m.Y" }} в {{ workout.time|time:"H:i" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ workout.description|truncatewords:10 }}</p>
+                                    <small>
+                                        <span class="badge" style="background-color: #ff3b4e; color: white; border: 1px solid white;">{{ workout.registrations.count }}/{{ workout.max_participants }} мест</span>
+                                    </small>
+                                </a>
+                                {% endif %}
+                                {% empty %}
+                                <div class="list-group-item" style="background-color: #ff3b4e; color: white; border-color: rgba(255,255,255,0.2);">
+                                    <p class="mb-0">Нет запланированных тренировок</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-dashboard btn-dashboard-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <a href="{% url 'account_schedule' %}?trainer={{ trainer.id }}" class="btn-dashboard btn-dashboard-primary">
+                        <i class="fas fa-calendar-check"></i> Записаться на тренировку
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-user-times"></i>
+            </div>
+            <h5 class="empty-state-title">Тренеры не найдены</h5>
+            <p class="empty-state-text">В данный момент нет доступных тренеров.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="noResults" class="dashboard-card mt-4" style="display: none;">
+    <div class="dashboard-card-body">
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h5 class="empty-state-title">Тренеры не найдены</h5>
+            <p class="empty-state-text">Тренеры с указанными параметрами не найдены. Попробуйте изменить критерии поиска.</p>
+            <button id="resetFilters" class="btn-dashboard btn-dashboard-primary mt-2">
+                <i class="fas fa-undo"></i> Сбросить фильтры
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block tab_specific_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Функция поиска и фильтрации тренеров
+        function filterTrainers() {
+            const searchQuery = document.getElementById('trainerSearch').value.toLowerCase();
+            const specializationFilter = document.getElementById('specializationFilter').value.toLowerCase();
+            const trainerCards = document.querySelectorAll('.trainer-card');
+            
+            let visibleCount = 0;
+            
+            trainerCards.forEach(card => {
+                const trainerName = card.getAttribute('data-name');
+                const trainerSpecializations = card.getAttribute('data-specializations');
+                
+                // Проверяем соответствие поисковому запросу и фильтру специализации
+                const matchesSearch = !searchQuery || 
+                                     trainerName.includes(searchQuery) || 
+                                     trainerSpecializations.includes(searchQuery);
+                                     
+                const matchesSpecialization = !specializationFilter || 
+                                             trainerSpecializations.includes(specializationFilter);
+                
+                // Показываем или скрываем карточку
+                if (matchesSearch && matchesSpecialization) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Показываем сообщение, если нет результатов
+            const noResultsElement = document.getElementById('noResults');
+            if (visibleCount === 0) {
+                noResultsElement.style.display = 'block';
+            } else {
+                noResultsElement.style.display = 'none';
+            }
+        }
+        
+        // Обработчики событий для поиска и фильтрации
+        document.getElementById('searchButton').addEventListener('click', filterTrainers);
+        document.getElementById('trainerSearch').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                filterTrainers();
+            }
+        });
+        document.getElementById('specializationFilter').addEventListener('change', filterTrainers);
+        
+        // Сброс фильтров
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('trainerSearch').value = '';
+            document.getElementById('specializationFilter').value = '';
+            filterTrainers();
+        });
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,114 @@
+/* Стили для полного удаления скроллбара в боковом меню */
+
+/* Основные элементы */
+.main-sidebar,
+.sidebar,
+.sidebar-dark-primary,
+.elevation-4,
+.sidebar nav,
+.sidebar .mt-2,
+.nav-sidebar,
+.nav,
+.nav-pills,
+.flex-column,
+[data-widget="treeview"] {
+    overflow: hidden !important;
+    -ms-overflow-style: none !important;  /* IE и Edge */
+    scrollbar-width: none !important;  /* Firefox */
+}
+
+/* Скрываем скроллбар для WebKit (Chrome, Safari, Opera) */
+.main-sidebar::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.sidebar-dark-primary::-webkit-scrollbar,
+.elevation-4::-webkit-scrollbar,
+.sidebar nav::-webkit-scrollbar,
+.sidebar .mt-2::-webkit-scrollbar,
+.nav-sidebar::-webkit-scrollbar,
+.nav::-webkit-scrollbar,
+.nav-pills::-webkit-scrollbar,
+.flex-column::-webkit-scrollbar,
+[data-widget="treeview"]::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+    background: transparent !important;
+}
+
+/* Отключаем OverlayScrollbars */
+.os-scrollbar,
+.os-scrollbar-horizontal,
+.os-scrollbar-vertical,
+.os-scrollbar-corner,
+.os-host-overflow,
+.os-host-overflow-x,
+.os-host-overflow-y,
+.os-theme-dark,
+.os-theme-light {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Принудительно скрываем все скроллбары внутри боковой панели */
+.main-sidebar * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.main-sidebar *::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+
+/* Отключаем скролл для всех элементов внутри боковой панели */
+.sidebar .nav-sidebar,
+.sidebar .nav-treeview,
+.sidebar .nav-item,
+.sidebar .nav-link {
+    overflow: visible !important;
+}
+
+/* Исправляем высоту меню */
+.sidebar {
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Отключаем OverlayScrollbars плагин */
+.os-host {
+    overflow: hidden !important;
+}
+
+/* Принудительно скрываем скроллбары в IE */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .main-sidebar {
+        -ms-overflow-style: none;
+    }
+}
+
+/* Принудительно скрываем скроллбары в Firefox */
+@-moz-document url-prefix() {
+    .main-sidebar {
+        scrollbar-width: none;
+    }
+}
+
+/* Стили для логотипа и названия в боковой панели */
+.brand-link {
+    padding: 0.8rem 0.5rem !important;
+    text-align: center !important;
+}
+
+.brand-text {
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+} 

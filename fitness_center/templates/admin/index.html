@@ -1,0 +1,81 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block content %}
+  <!-- Приветственное сообщение -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h2 class="card-title h3 mb-3">Добро пожаловать в панель администратора</h2>
+      <p class="card-text mb-0">Панель управления позволяет управлять всеми данными фитнес-центра. Используйте меню слева для навигации по разделам.</p>
+    </div>
+  </div>
+
+  <!-- Карточки статистики -->
+  <div class="row">
+    <!-- Новые заявки -->
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-danger">
+        <div class="inner">
+          <h3>{{ new_applications_count|default:"0" }}</h3>
+          <p>Новые заявки на абонементы</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-clipboard-list"></i>
+        </div>
+        <a href="{% url 'admin:memberships_membershipapplication_changelist' %}?status=pending" class="small-box-footer">
+          Подробнее <i class="fas fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Количество тренеров -->
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3>{{ trainers_count|default:"0" }}</h3>
+          <p>Тренеры</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <a href="{% url 'admin:trainers_trainer_changelist' %}" class="small-box-footer">
+          Подробнее <i class="fas fa-arrow-circle-right"></i>
+        </a>
+          </div>
+    </div>
+    
+    <!-- Количество занятий -->
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3>{{ workouts_count|default:"0" }}</h3>
+          <p>Занятия</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-dumbbell"></i>
+        </div>
+        <a href="{% url 'admin:workouts_workout_changelist' %}" class="small-box-footer">
+          Подробнее <i class="fas fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Количество пользователей -->
+    <div class="col-lg-2 col-6">
+      <div class="small-box bg-warning">
+        <div class="inner">
+          <h3>{{ users_count|default:"0" }}</h3>
+          <p>Пользователи</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <a href="{% url 'admin:users_customuser_changelist' %}" class="small-box-footer">
+          Подробнее <i class="fas fa-arrow-circle-right"></i>
+        </a>
+      </div>
+    </div>
+</div>
+{% endblock %} 

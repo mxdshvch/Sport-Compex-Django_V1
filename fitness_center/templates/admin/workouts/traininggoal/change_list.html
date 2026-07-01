@@ -1,0 +1,175 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    /* Таблица */
+    .app-table {
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      border-collapse: collapse;
+    }
+    
+    .app-table th {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e9ecef;
+      color: #ff3b4e;
+      font-weight: 500;
+    }
+    
+    .app-table td {
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    /* Карточки целей */
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .goal-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s;
+      padding: 15px;
+    }
+    
+    .goal-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .goal-name {
+      color: #ff3b4e;
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .action-btn {
+      padding: 5px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      text-decoration: none;
+      margin-right: 5px;
+    }
+    
+    .action-edit {
+      background: #28a745;
+      color: white;
+    }
+    
+    .action-delete {
+      background: #dc3545;
+      color: white;
+    }
+    
+    .view-switch {
+      margin-bottom: 20px;
+    }
+    
+    .view-button {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    
+    .view-button.active {
+      background: #ff3b4e;
+      color: white;
+      border-color: #ff3b4e;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div class="module filtered">
+    <h2>Цели тренировок</h2>
+    
+    <div class="view-switch">
+      <button class="view-button active" id="tableViewBtn">Таблица</button>
+      <button class="view-button" id="gridViewBtn">Карточки</button>
+    </div>
+    
+    <!-- Отображение в виде таблицы -->
+    <table class="app-table" id="tableView">
+      <thead>
+        <tr>
+          <th>Название</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for goal in cl.result_list %}
+        <tr>
+          <td>{{ goal.name }}</td>
+          <td>
+            <a href="{{ goal.id }}/change/" class="action-btn action-edit">Изменить</a>
+            <a href="{{ goal.id }}/delete/" class="action-btn action-delete">Удалить</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <!-- Отображение в виде карточек -->
+    <div class="goals-grid" id="gridView" style="display: none;">
+      {% for goal in cl.result_list %}
+      <div class="goal-card">
+        <div class="goal-name">{{ goal.name }}</div>
+        <div>
+          <a href="{{ goal.id }}/change/" class="action-btn action-edit">Изменить</a>
+          <a href="{{ goal.id }}/delete/" class="action-btn action-delete">Удалить</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <p>{{ cl.result_count }} целей тренировок</p>
+    
+    <div>
+      <a href="add/" class="addlink">Добавить цель тренировки</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Переключение между видами (таблица / карточки)
+    const gridViewBtn = document.getElementById('gridViewBtn');
+    const tableViewBtn = document.getElementById('tableViewBtn');
+    const gridView = document.getElementById('gridView');
+    const tableView = document.getElementById('tableView');
+    
+    if (gridViewBtn && tableViewBtn && gridView && tableView) {
+      gridViewBtn.addEventListener('click', function() {
+        gridView.style.display = 'grid';
+        tableView.style.display = 'none';
+        gridViewBtn.classList.add('active');
+        tableViewBtn.classList.remove('active');
+      });
+      
+      tableViewBtn.addEventListener('click', function() {
+        gridView.style.display = 'none';
+        tableView.style.display = 'table';
+        gridViewBtn.classList.remove('active');
+        tableViewBtn.classList.add('active');
+      });
+    }
+  });
+</script>
+{% endblock %} 

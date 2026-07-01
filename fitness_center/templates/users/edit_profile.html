@@ -1,0 +1,79 @@
+{% extends 'users/admin_style_base.html' %}
+{% load static %}
+
+{% block title %}Редактирование профиля | Личный кабинет{% endblock %}
+
+{% block breadcrumb_active %}Редактирование профиля{% endblock %}
+
+{% block page_title %}Редактирование профиля{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'account_profile' %}" class="btn-dashboard btn-dashboard-secondary">
+    <i class="fas fa-arrow-left"></i> Вернуться
+</a>
+{% endblock %}
+
+{% block admin_content %}
+<div class="dashboard-card">
+    <div class="dashboard-card-header">
+        <h5 class="dashboard-card-title">
+            <i class="fas fa-user-edit"></i> Редактирование информации профиля
+        </h5>
+    </div>
+    <div class="dashboard-card-body">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <form method="post" action="{% url 'account_edit_profile' %}">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Имя</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="email" class="form-label">Эл. почта</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn-dashboard btn-dashboard-primary">
+                            <i class="fas fa-save"></i> Сохранить изменения
+                        </button>
+                        <a href="{% url 'account_profile' %}" class="btn-dashboard btn-dashboard-secondary">
+                            Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block tab_specific_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Показ превью загружаемого изображения
+        const profileImageInput = document.getElementById('profile_image');
+        const profileAvatar = document.getElementById('profileAvatar');
+        
+        if (profileImageInput && profileAvatar) {
+            profileImageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-fluid rounded-circle';
+                        img.style = 'width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--primary);';
+                        
+                        // Заменяем аватар на превью
+                        profileAvatar.parentNode.replaceChild(img, profileAvatar);
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %} 

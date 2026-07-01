@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Заявка на абонемент - Фитнес-центр{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title mb-0">Заявка на абонемент</h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.membership.id_for_label }}" class="form-label">Абонемент</label>
+                        {{ form.membership }}
+                        {% if form.membership.errors %}
+                            <div class="text-danger mt-1">
+                                {{ form.membership.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Ваше имя</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-danger mt-1">
+                                {{ form.name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger mt-1">
+                                {{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">Телефон</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="text-danger mt-1">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Отправить заявку</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light">
+                <p class="mb-0">После отправки заявки наш администратор свяжется с вами для подтверждения и оплаты.</p>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <a href="{% url 'memberships_list' %}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i> Назад к списку абонементов
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

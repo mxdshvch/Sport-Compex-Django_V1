@@ -1,0 +1,174 @@
+/* 
+   Файл для переопределения всех синих цветов Bootstrap на черный 
+   Это гарантирует, что синий цвет не будет использоваться нигде на сайте
+*/
+
+:root {
+    --bs-blue: #222222 !important;
+    --bs-primary: #222222 !important;
+    --bs-info: #222222 !important;
+}
+
+/* Текстовые цвета */
+.text-primary {
+    color: #222222 !important;
+}
+
+.text-info {
+    color: #222222 !important;
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    color: #222222 !important;
+}
+
+/* Исключение для белых заголовков */
+h1.text-white, h2.text-white, h3.text-white, h4.text-white, h5.text-white, h6.text-white,
+.text-white {
+    color: #ffffff !important;
+}
+
+/* Фоновые цвета */
+.bg-primary {
+    background-color: #222222 !important;
+}
+
+.bg-info {
+    background-color: #222222 !important;
+}
+
+/* Кнопки */
+.btn-primary, .btn-info {
+    background-color: #222222 !important;
+    border-color: #222222 !important;
+}
+
+.btn-outline-primary, .btn-outline-info {
+    color: #222222 !important;
+    border-color: #222222 !important;
+}
+
+.btn-outline-primary:hover, .btn-outline-info:hover {
+    background-color: #222222 !important;
+    color: #ffffff !important;
+}
+
+/* Ссылки */
+a {
+    color: #222222 !important;
+}
+
+a:hover {
+    color: #ff3b4e !important;
+}
+
+/* Исключение для ссылок в навигации */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #ff3b4e !important;
+}
+
+/* Формы */
+.form-control:focus {
+    border-color: #222222 !important;
+    box-shadow: 0 0 0 0.25rem rgba(34, 34, 34, 0.25) !important;
+}
+
+.form-check-input:checked {
+    background-color: #222222 !important;
+    border-color: #222222 !important;
+}
+
+/* Пагинация */
+.page-link {
+    color: #222222 !important;
+}
+
+.page-item.active .page-link {
+    background-color: #222222 !important;
+    border-color: #222222 !important;
+}
+
+/* Бейджи */
+.badge-primary, .bg-primary {
+    background-color: #222222 !important;
+}
+
+.badge-info, .bg-info {
+    background-color: #222222 !important;
+}
+
+/* Предупреждения */
+.alert-info {
+    color: #222222 !important;
+    background-color: #f0f0f0 !important;
+    border-color: #222222 !important;
+}
+
+/* Навигационные элементы */
+.nav-tabs .nav-link.active {
+    color: #222222 !important;
+    border-color: #222222 !important;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #222222 !important;
+}
+
+/* Списки */
+.list-group-item.active {
+    background-color: #222222 !important;
+    border-color: #222222 !important;
+}
+
+/* Аккордеоны */
+.accordion-button:not(.collapsed) {
+    color: #222222 !important;
+    background-color: rgba(34, 34, 34, 0.1) !important;
+}
+
+.accordion-button:focus {
+    border-color: #222222 !important;
+    box-shadow: 0 0 0 0.25rem rgba(34, 34, 34, 0.25) !important;
+}
+
+/* Прогресс-бары */
+.progress-bar {
+    background-color: #222222 !important;
+}
+
+/* Заголовки секций */
+.section-title, 
+.section-title h2 {
+    color: #222222 !important;
+}
+
+.section-title::after,
+.section-title h2::after {
+    background-color: #ff3b4e !important;
+}
+
+/* Dropdowns */
+.dropdown-item.active, 
+.dropdown-item:active {
+    background-color: #222222 !important;
+}
+
+/* Таблицы */
+.table-primary {
+    --bs-table-bg: rgba(34, 34, 34, 0.1) !important;
+    --bs-table-striped-bg: rgba(34, 34, 34, 0.15) !important;
+    --bs-table-active-bg: rgba(34, 34, 34, 0.2) !important;
+    --bs-table-hover-bg: rgba(34, 34, 34, 0.15) !important;
+    color: #222222 !important;
+}
+
+/* Карусели */
+.carousel-indicators [data-bs-target] {
+    background-color: #222222 !important;
+} 

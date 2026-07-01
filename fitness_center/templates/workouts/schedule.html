@@ -1,0 +1,593 @@
+{% extends 'base.html' %}
+
+{% block title %}Расписание тренировок - Фитнес-центр{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    :root {
+        --primary: #ff3b4e;
+        --primary-dark: #e02e40;
+        --primary-rgb: 255, 59, 78;
+        --dark: #212529;
+        --gray-light: #f8f9fa;
+        --gray: #6c757d;
+    }
+    
+    /* Базовые стили */
+    .container-fluid, 
+    .row, 
+    .col, 
+    .card, 
+    .card-header, 
+    .card-body {
+        background-color: transparent !important;
+    }
+    
+    /* Компактная таблица расписания */
+    .schedule-grid {
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 1px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow-x: auto;
+        font-size: 0.85rem;
+        table-layout: fixed;
+        border-radius: 10px;
+        background-color: var(--gray-light);
+    }
+    
+    .schedule-grid th {
+        position: sticky;
+        top: 0;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        font-weight: 600;
+        text-align: center;
+        padding: 10px 5px;
+        min-width: 110px;
+        border-radius: 6px 6px 0 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .schedule-grid th:first-child {
+        width: 60px;
+        min-width: 60px;
+        background: linear-gradient(135deg, var(--dark), #000000);
+        border-top-left-radius: 10px;
+    }
+    
+    .schedule-grid td {
+        border: none;
+        background-color: #ffffff;
+        border-radius: 6px;
+        padding: 2px;
+        height: auto;
+        min-height: 80px;
+        vertical-align: top;
+        position: relative;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        transition: background-color 0.2s;
+    }
+    
+    .schedule-grid td:first-child {
+        background: linear-gradient(to right, #e9ecef, #f1f3f5);
+        text-align: center;
+        font-weight: 600;
+        padding: 8px 5px;
+        width: 60px;
+        min-width: 60px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dark);
+    }
+    
+    .schedule-grid tr:nth-child(odd) td:first-child {
+        background: linear-gradient(to right, #dee2e6, #e9ecef);
+    }
+    
+    /* Компактные карточки тренировок */
+    .workout-card {
+        background-color: white;
+        margin: 2px;
+        padding: 6px 8px;
+        border-radius: 8px;
+        border-left: 3px solid var(--primary);
+        height: auto;
+        min-height: 65px;
+        font-size: 0.8rem;
+        position: relative;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    
+    .workout-card:hover {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 10;
+    }
+    
+    .workout-card.strength {
+        border-left-color: var(--primary);
+        background-color: rgba(224, 46, 64, 0.15);
+    }
+    
+    .workout-card.cardio {
+        border-left-color: var(--primary-dark);
+        background-color: rgba(224, 46, 64, 0.15);
+    }
+    
+    .workout-card.flexibility {
+        border-left-color: var(--primary);
+        background-color: rgba(224, 46, 64, 0.15);
+    }
+    
+    .workout-card.recovery {
+        border-left-color: var(--primary-dark);
+        background-color: rgba(224, 46, 64, 0.15);
+    }
+    
+    .workout-card.functional {
+        border-left-color: var(--primary);
+        background-color: rgba(224, 46, 64, 0.15);
+    }
+    
+    .workout-name {
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--dark);
+        font-size: 0.85rem;
+    }
+    
+    .workout-trainer {
+        font-size: 0.75rem;
+        margin-bottom: 4px;
+        color: #495057;
+        display: flex;
+        align-items: center;
+    }
+    
+    .workout-trainer:before {
+        content: "👤";
+        margin-right: 4px;
+        font-size: 0.7rem;
+    }
+    
+    .workout-time {
+        font-size: 0.75rem;
+        color: var(--gray);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .workout-time:before {
+        content: "🕒";
+        margin-right: 4px;
+        font-size: 0.7rem;
+    }
+    
+    .workout-places {
+        font-size: 0.75rem;
+        color: var(--gray);
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        background-color: rgba(0,0,0,0.03);
+        padding: 3px 5px;
+        border-radius: 3px;
+    }
+    
+    .workout-places:before {
+        content: "👥";
+        margin-right: 4px;
+        font-size: 0.7rem;
+    }
+    
+    .workout-card .btn {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+        margin-top: 6px;
+        border-radius: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+    
+    /* Выделение дней и текущего дня */
+    .day-highlight {
+        background-color: rgba(255, 59, 78, 0.05) !important;
+    }
+    
+    .day-today {
+        font-weight: bold;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        box-shadow: 0 3px 8px rgba(var(--primary-rgb), 0.3);
+    }
+    
+    .day-today .day-date {
+        color: rgba(255, 255, 255, 0.85);
+    }
+    
+    .day-date {
+        display: block;
+        font-size: 0.8rem;
+        opacity: 0.9;
+        font-weight: normal;
+        margin-top: 4px;
+    }
+    
+    /* Контейнер для скролла */
+    .schedule-container {
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        padding: 4px;
+        border-radius: 10px;
+    }
+    
+    .schedule-container::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .schedule-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    
+    .schedule-container::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 3px;
+    }
+    
+    .schedule-container::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-dark);
+    }
+    
+    /* Модальные окна */
+    .workout-modal .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .workout-modal .modal-body {
+        padding: 20px;
+    }
+    
+    .workout-modal .modal-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        padding: 12px 15px;
+    }
+    
+    .workout-modal .modal-footer {
+        border-top: none;
+        padding: 12px 15px 15px;
+    }
+    
+    .workout-modal .btn {
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    
+    .workout-modal .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .sticky-days {
+        position: sticky;
+        top: 60px;
+        z-index: 100;
+    }
+    
+    /* Индикаторы цвета направлений */
+    .direction-color-indicator {
+        width: 20px; 
+        height: 20px; 
+        border-radius: 4px; 
+        margin-right: 8px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Компактные фильтры */
+    .filters-row .form-label {
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .filters-row .form-control,
+    .filters-row .form-select {
+        font-size: 0.85rem;
+        padding: 0.375rem 0.5rem;
+    }
+    
+    .filters-row .btn {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.85rem;
+    }
+    
+    /* Компактные направления */
+    .direction-legends .col-md-4 {
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .direction-legends .direction-color-indicator {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .direction-legends span {
+        font-size: 0.85rem;
+    }
+    
+    /* Кнопки */
+    .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+    }
+    
+    .btn-outline-primary {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    
+    /* Карточки */
+    .card-header.bg-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .workout-card {font-size: 0.75rem; padding: 6px;}
+        .workout-name {font-size: 0.8rem;}
+        .schedule-grid th, .schedule-grid td:first-child {min-width: 60px; font-size: 0.8rem; padding: 6px 3px;}
+        .workout-trainer:before, .workout-time:before, .workout-places:before {display: none;}
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title h4 mb-0">Расписание тренировок</h2>
+        <div>
+            <a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-home me-1"></i> На главную
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}" class="btn btn-sm btn-outline-primary ms-2">
+                <i class="fas fa-user me-1"></i> Мои тренировки
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-sm btn-outline-primary ms-2">
+                <i class="fas fa-sign-in-alt me-1"></i> Войти
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="card shadow-sm border-0 rounded-lg mb-4">
+        <div class="card-header bg-primary text-white rounded-top">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 d-flex align-items-center">
+                    <i class="fas fa-filter me-2"></i>
+                    Фильтры
+                </h5>
+                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+        <div class="collapse show" id="filterCollapse">
+            <div class="card-body py-3">
+                <form method="get" action="{% url 'schedule' %}" class="row g-2 filters-row">
+                    <div class="col-md-4">
+                        <label for="direction" class="form-label">Направление</label>
+                        <select name="direction" id="direction" class="form-select">
+                            <option value="">Все направления</option>
+                            {% for direction in directions %}
+                                <option value="{{ direction.id }}" {% if current_direction == direction.id|stringformat:"i" %}selected{% endif %}>{{ direction.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="trainer" class="form-label">Тренер</label>
+                        <select name="trainer" id="trainer" class="form-select">
+                            <option value="">Все тренеры</option>
+                            {% for trainer in trainers %}
+                                <option value="{{ trainer.id }}" {% if current_trainer == trainer.id|stringformat:"i" %}selected{% endif %}>{{ trainer.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="date" class="form-label">Дата</label>
+                        <input type="text" name="date" id="date" class="form-control datepicker" value="{{ current_date|default:'' }}" placeholder="Дата">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <div class="d-flex gap-2 w-100">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <a href="{% url 'schedule' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Расписание в виде сетки -->
+    <div class="card shadow-sm border-0 rounded-lg mb-3">
+        <div class="card-header bg-primary text-white rounded-top py-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 d-flex align-items-center">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Расписание тренировок
+                </h5>
+            </div>
+        </div>
+        <div class="card-body p-0 p-md-2">
+            {% if workouts %}
+                <div class="table-responsive schedule-container">
+                    <table class="schedule-grid">
+                        <thead class="sticky-days">
+                            <tr>
+                                <th>Время</th>
+                                {% for day_info in week_dates %}
+                                    <th class="{% if day_info.is_today %}day-today{% endif %}">
+                                        {{ day_info.name }}
+                                        <span class="day-date">{{ day_info.formatted }}</span>
+                                    </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Часы с 7:00 до 22:00 -->
+                            {% for h in hours %}
+                            <tr>
+                                <td>{{ h|stringformat:"02d" }}:00</td>
+                                {% for day_info in week_dates %}
+                                    <td class="{% if day_info.is_today %}day-highlight{% endif %}">
+                                        {% for workout in workouts %}
+                                            {% if workout.start_time.hour == h and workout.date|date:"Y-m-d" == day_info.date_str %}
+                                                <div class="workout-card {% if workout.direction.id == 1 %}functional{% elif workout.direction.id == 2 %}strength{% elif workout.direction.id == 3 %}recovery{% elif workout.direction.id == 4 %}flexibility{% elif workout.direction.id == 5 %}cardio{% endif %}" 
+                                                     data-bs-toggle="modal" 
+                                                     data-bs-target="#workoutModal{{ workout.id }}">
+                                                    <div class="workout-name">{{ workout.direction.name }}</div>
+                                                    <div class="workout-trainer">{{ workout.trainer.name }}</div>
+                                                    <div class="workout-time">{{ workout.start_time|time:"H:i" }} - {{ workout.end_time|time:"H:i" }}</div>
+                                                    <div class="workout-places">{{ workout.max_participants|add:"-"|add:workout.participants.count }}/{{ workout.max_participants }}</div>
+                                                </div>
+                                                
+                                                <!-- Модальное окно для тренировки -->
+                                                <div class="modal fade workout-modal" id="workoutModal{{ workout.id }}" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">{{ workout.direction.name }}</h5>
+                                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p><strong>Дата и время:</strong> {{ workout.date|date:"d.m.Y" }} {{ workout.start_time|time:"H:i" }} - {{ workout.end_time|time:"H:i" }}</p>
+                                                                <p><strong>Тренер:</strong> {{ workout.trainer.name }}</p>
+                                                                <p><strong>Свободных мест:</strong> {{ workout.max_participants|add:"-"|add:workout.participants.count }} из {{ workout.max_participants }}</p>
+                                                                
+                                                                {% if user.is_authenticated %}
+                                                                    {% if user in workout.participants.all %}
+                                                                        <div class="alert alert-success">
+                                                                            <i class="fas fa-check-circle me-2"></i> Вы записаны на эту тренировку
+                                                                        </div>
+                                                                        <form method="post" action="{% url 'cancel_booking' workout.id %}">
+                                                                            {% csrf_token %}
+                                                                            <button type="submit" class="btn btn-outline-danger">
+                                                                                <i class="fas fa-times me-2"></i> Отменить запись
+                                                                            </button>
+                                                                        </form>
+                                                                    {% else %}
+                                                                        {% if not workout.is_full %}
+                                                                            <form method="post" action="{% url 'book_workout' workout.id %}">
+                                                                                {% csrf_token %}
+                                                                                <button type="submit" class="btn btn-primary">
+                                                                                    <i class="fas fa-check me-2"></i> Записаться
+                                                                                </button>
+                                                                            </form>
+                                                                        {% else %}
+                                                                            <div class="alert alert-warning">
+                                                                                <i class="fas fa-exclamation-circle me-2"></i> Все места заняты
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <div class="alert alert-info">
+                                                                        <i class="fas fa-info-circle me-2"></i> Для записи необходимо <a href="{% url 'login' %}">войти</a> в систему
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info m-3">
+                    <i class="fas fa-info-circle me-2"></i> Нет тренировок по выбранным критериям.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Легенда для цветов направлений -->
+    <div class="card shadow-sm mt-2 border-0 rounded-lg">
+        <div class="card-header bg-primary text-white rounded-top py-2">
+            <h5 class="card-title mb-0 d-flex align-items-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Направления
+            </h5>
+        </div>
+        <div class="card-body py-2">
+            <div class="row g-2 direction-legends">
+                {% for direction in directions %}
+                    <div class="col-md-3 col-sm-6">
+                        <div class="d-flex align-items-center">
+                            <div class="direction-color-indicator" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));"></div>
+                            <span class="font-weight-medium">{{ direction.name }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr(".datepicker", {
+            locale: "ru",
+            dateFormat: "Y-m-d",
+            minDate: "today"
+        });
+        
+        // Определяем текущий день недели для подсветки колонки
+        const today = new Date().getDay();
+        const currentWeekday = today === 0 ? '7' : today.toString();
+        
+        // Подсвечиваем текущий день недели
+        document.querySelectorAll('.schedule-grid td:nth-child(' + (parseInt(currentWeekday) + 1) + ')').forEach(cell => {
+            cell.classList.add('day-highlight');
+        });
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,841 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+<style>
+    /* Скрываем лишние элементы */
+    #header {
+        height: 40px;
+        line-height: 40px;
+    }
+    
+    #header .usertools {
+        padding: 5px;
+    }
+    
+    .breadcrumbs {
+        padding: 5px 10px;
+        font-size: 12px;
+        line-height: 1;
+    }
+    
+    /* Удаляем отступы внизу страницы */
+    #container {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    #content {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    /* Основные стили контейнера */
+    #content-main {
+        padding: 0;
+        height: calc(100vh - 190px); 
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    #content-main h1 {
+        margin-top: 0;
+        margin-bottom: 5px;
+        font-size: 18px;
+        padding: 0 10px;
+    }
+    
+    .chat-container {
+        width: 100%;
+        max-width: 100%;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        margin-bottom: 0 !important;
+    }
+    
+    /* Кнопка создания заявки */
+    .new-request-btn {
+        width: 100%;
+        background-color: #ff4444;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .new-request-btn:hover {
+        background-color: #e53935;
+    }
+    
+    .new-request-btn i {
+        margin-right: 8px;
+    }
+    
+    /* Чат-интерфейс в стиле мессенджера */
+    .chat-interface {
+        display: flex;
+        flex: 1;
+        background: white;
+        border-radius: 10px 10px 0 0;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        height: auto !important;
+        margin-bottom: 0 !important;
+        border-bottom: none;
+    }
+    
+    /* Левая панель с заявками */
+    .requests-sidebar {
+        width: 300px;
+        border-right: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        background: #f5f5f5;
+        height: 100%;
+        flex-shrink: 0;
+    }
+    
+    .requests-tabs {
+        display: flex;
+        border-bottom: 1px solid #e0e0e0;
+        background: white;
+        height: 40px;
+        min-height: 40px;
+        flex-shrink: 0;
+    }
+    
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        color: #333;
+        cursor: pointer;
+        font-weight: 500;
+        position: relative;
+        transition: color 0.2s;
+    }
+    
+    .tab.active {
+        color: #ff4444;
+    }
+    
+    .tab.active:after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #ff4444;
+    }
+    
+    .tab-content {
+        display: none;
+        overflow-y: auto;
+        height: calc(100% - 50px);
+        flex-grow: 1;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .request-item {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        color: #333;
+        transition: all 0.2s;
+        position: relative;
+        background: white;
+    }
+    
+    .request-item:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .request-item.active {
+        background-color: #e3f2fd;
+        border-left: 3px solid #ff4444;
+    }
+    
+    .request-title {
+        font-weight: 500;
+        margin-bottom: 5px;
+        padding-right: 90px;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .request-preview {
+        color: #777;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 5px;
+    }
+    
+    .request-date {
+        color: #999;
+        font-size: 12px;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+    
+    .request-badge {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: #ff4444;
+        color: white;
+        border-radius: 10px;
+        padding: 1px 8px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    /* Правая панель с чатом */
+    .chat-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .chat-header {
+        padding: 15px;
+        border-bottom: 1px solid #e0e0e0;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+        min-height: 60px;
+        flex-shrink: 0;
+    }
+    
+    .chat-header-info {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .chat-header-title {
+        font-weight: 500;
+        font-size: 16px;
+        color: #333;
+    }
+    
+    .chat-header-subtitle {
+        color: #777;
+        font-size: 13px;
+    }
+    
+    .chat-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .chat-action-btn {
+        padding: 5px 10px;
+        border-radius: 4px;
+        background: #f1f1f1;
+        color: #333;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 13px;
+    }
+    
+    .chat-action-btn:hover {
+        background: #e0e0e0;
+    }
+    
+    .chat-action-btn.primary {
+        background: #ff4444;
+        color: white;
+    }
+    
+    .chat-action-btn.primary:hover {
+        background: #e53935;
+    }
+    
+    /* Блок для сообщений */
+    .chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f5f5f5;
+    }
+    
+    .message {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        max-width: 80%;
+    }
+    
+    .message.from-user {
+        align-self: flex-start;
+    }
+    
+    .message.from-admin {
+        align-self: flex-end;
+        align-items: flex-end;
+    }
+    
+    .message-bubble {
+        padding: 10px 15px;
+        border-radius: 18px;
+        position: relative;
+        word-wrap: break-word;
+    }
+    
+    .from-user .message-bubble {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-bottom-left-radius: 3px;
+    }
+    
+    .from-admin .message-bubble {
+        background: #e3f2fd;
+        color: #0d47a1;
+        border-bottom-right-radius: 3px;
+    }
+    
+    .message-info {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+    }
+    
+    /* Форма отправки сообщения */
+    .chat-input-container {
+        padding: 15px;
+        border-top: 1px solid #e0e0e0;
+        background: white;
+        display: flex;
+        align-items: center;
+    }
+    
+    .chat-input {
+        flex: 1;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+        outline: none;
+        resize: none;
+        max-height: 100px;
+        overflow-y: auto;
+    }
+    
+    .chat-input:focus {
+        border-color: #b0b0b0;
+    }
+    
+    .send-btn {
+        background: #ff4444;
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-left: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .send-btn:hover {
+        background: #e53935;
+    }
+    
+    /* Статусы заявок */
+    .status-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        color: white;
+    }
+    
+    .status-new {
+        background: #2196F3;
+    }
+    
+    .status-in_progress {
+        background: #FF9800;
+    }
+    
+    .status-completed {
+        background: #4CAF50;
+    }
+    
+    .status-rejected {
+        background: #F44336;
+    }
+    
+    /* Плейсхолдер для пустого чата */
+    .empty-chat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #999;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .empty-chat i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        color: #ddd;
+    }
+    
+    .empty-chat-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #666;
+    }
+    
+    .empty-chat-text {
+        max-width: 300px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .chat-interface {
+            flex-direction: column;
+        }
+        
+        .requests-sidebar {
+            width: 100%;
+            height: 40%;
+            overflow-y: auto;
+        }
+        
+        .chat-area {
+            height: 60%;
+        }
+    }
+
+    /* Индикатор загрузки */
+    .loading-indicator {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    .loading-indicator i {
+        color: #ff4444;
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <div class="chat-container">
+        <div class="chat-interface">
+            <!-- Левая панель со списком заявок -->
+            <div class="requests-sidebar">
+                <div class="requests-tabs">
+                    <div class="tab active" id="active-tab">
+                        Активные ({{ active_requests_count }})
+                    </div>
+                    <div class="tab" id="completed-tab">
+                        Завершенные ({{ completed_requests_count }})
+                    </div>
+                </div>
+                
+                <!-- Активные заявки -->
+                <div class="tab-content active" id="active-requests">
+                    {% for request in active_requests %}
+                    <div class="request-item" data-request-id="{{ request.id }}">
+                        <div class="request-title">{{ request.title }}</div>
+                        <div class="request-preview">{{ request.description|truncatechars:50 }}</div>
+                        <div class="request-date">{{ request.created_at|date:"d.m.Y" }}</div>
+                        {% if request.unread_messages > 0 %}
+                        <div class="request-badge">{{ request.unread_messages }}</div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <div class="empty-list">
+                        <p>Нет активных заявок</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Завершенные заявки -->
+                <div class="tab-content" id="completed-requests">
+                    {% for request in completed_requests %}
+                    <div class="request-item" data-request-id="{{ request.id }}">
+                        <div class="request-title">{{ request.title }}</div>
+                        <div class="request-preview">{{ request.description|truncatechars:50 }}</div>
+                        <div class="request-date">{{ request.updated_at|date:"d.m.Y" }}</div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-list">
+                        <p>Нет завершенных заявок</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Правая панель с чатом -->
+            <div class="chat-area">
+                <div id="empty-chat" class="empty-chat">
+                    <i class="far fa-comments"></i>
+                    <div class="empty-chat-title">Выберите заявку для просмотра</div>
+                    <p class="empty-chat-text">Нажмите на заявку слева, чтобы просмотреть подробную информацию и историю сообщений.</p>
+                </div>
+                
+                <div id="chat-content" style="display: none; height: 100%; display: flex; flex-direction: column;">
+                    <!-- Заголовок чата -->
+                    <div class="chat-header">
+                        <div class="chat-header-info">
+                            <div class="chat-header-title" id="chat-title"></div>
+                            <div class="chat-header-subtitle">
+                                <span id="chat-user"></span> • 
+                                <span class="status-badge" id="chat-status"></span>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="chat-action-btn" id="btn-in-progress">Взять в работу</button>
+                            <button class="chat-action-btn primary" id="btn-complete">Завершить</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Сообщения чата -->
+                    <div class="chat-messages" id="chat-messages"></div>
+                    
+                    <!-- Форма отправки сообщения -->
+                    <div class="chat-input-container">
+                        <textarea class="chat-input" id="message-input" placeholder="Введите сообщение..."></textarea>
+                        <button class="send-btn" id="send-message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Индикатор загрузки -->
+                <div class="loading-indicator" id="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div>Загрузка...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Подключаем библиотеки только один раз и в нужном порядке -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ожидаем загрузку jQuery
+    function checkJQuery() {
+        if (window.jQuery) {
+            initializeApp();
+        } else {
+            setTimeout(checkJQuery, 50);
+        }
+    }
+    
+    checkJQuery();
+    
+    function initializeApp() {
+        const $ = window.jQuery;
+        
+        // Переключение между вкладками
+        $('.tab').click(function() {
+            $('.tab').removeClass('active');
+            $(this).addClass('active');
+            
+            $('.tab-content').removeClass('active');
+            var contentId = $(this).attr('id').replace('-tab', '-requests');
+            $('#' + contentId).addClass('active');
+        });
+        
+        // Загрузка данных заявки при клике
+        $(document).on('click', '.request-item', function() {
+            var requestId = $(this).data('request-id');
+            
+            // Показываем индикатор загрузки
+            $('#loading-indicator').show();
+            
+            // Выделяем активную заявку
+            $('.request-item').removeClass('active');
+            $(this).addClass('active');
+            
+            // Удаляем бейдж с непрочитанными сообщениями
+            $(this).find('.request-badge').remove();
+            
+            loadRequestData(requestId);
+        });
+        
+        // Функция для загрузки данных заявки
+        function loadRequestData(requestId) {
+            $.ajax({
+                url: `/admin/user_requests/${requestId}/data/`,
+                type: 'GET',
+                cache: true, // Включаем кэширование на стороне браузера
+                success: function(data) {
+                    displayRequestData(data);
+                    $('#loading-indicator').hide();
+                },
+                error: function(error) {
+                    console.error('Ошибка загрузки заявки:', error);
+                    $('#loading-indicator').hide();
+                    alert('Произошла ошибка при загрузке заявки');
+                }
+            });
+        }
+        
+        // Отображение данных заявки в чате
+        function displayRequestData(data) {
+            // Скрываем заглушку и показываем содержимое чата
+            $('#empty-chat').hide();
+            $('#chat-content').show();
+            
+            // Заполняем информацию в заголовке
+            $('#chat-title').text(data.title);
+            $('#chat-user').text(data.user.name + ' (' + data.user.email + ')');
+            
+            var statusElement = $('#chat-status');
+            statusElement.text(data.status_display);
+            statusElement.removeClass().addClass('status-badge status-' + data.status);
+            
+            // Обновляем кнопки в зависимости от статуса заявки
+            updateActionButtons(data.status);
+            
+            // Отображаем сообщения
+            displayMessages(data.messages);
+            
+            // Сохраняем ID текущей заявки для отправки сообщений
+            $('#send-message').data('request-id', data.id);
+            
+            // Обновляем обработчики для кнопок действий
+            setupActionButtons(data.id);
+        }
+        
+        // Обновление состояния кнопок в зависимости от статуса заявки
+        function updateActionButtons(status) {
+            var btnInProgress = $('#btn-in-progress');
+            var btnComplete = $('#btn-complete');
+            
+            if (status === 'new') {
+                btnInProgress.show();
+                btnComplete.hide();
+            } else if (status === 'in_progress') {
+                btnInProgress.hide();
+                btnComplete.show();
+            } else {
+                btnInProgress.hide();
+                btnComplete.hide();
+            }
+        }
+        
+        // Настройка обработчиков для кнопок действий
+        function setupActionButtons(requestId) {
+            // Кнопка "Взять в работу"
+            $('#btn-in-progress').off('click').click(function() {
+                updateRequestStatus(requestId, 'in_progress');
+            });
+            
+            // Кнопка "Завершить"
+            $('#btn-complete').off('click').click(function() {
+                updateRequestStatus(requestId, 'completed');
+            });
+        }
+        
+        // Обновление статуса заявки
+        function updateRequestStatus(requestId, status) {
+            $('#loading-indicator').show();
+            
+            $.ajax({
+                url: `/admin/user_requests/${requestId}/status/`,
+                type: 'POST',
+                data: {
+                    'status': status,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    $('#loading-indicator').hide();
+                    
+                    // Обновляем UI
+                    if (status === 'completed') {
+                        // Перемещаем заявку из активных в завершенные
+                        var requestItem = $(`.request-item[data-request-id="${requestId}"]`);
+                        requestItem.remove();
+                        
+                        // Обновляем счетчики
+                        var activeCount = parseInt($('#active-tab').text().match(/\d+/)[0]) - 1;
+                        var completedCount = parseInt($('#completed-tab').text().match(/\d+/)[0]) + 1;
+                        
+                        $('#active-tab').text(`Активные (${activeCount})`);
+                        $('#completed-tab').text(`Завершенные (${completedCount})`);
+                        
+                        // Показываем сообщение об успешном завершении
+                        alert('Заявка успешно завершена');
+                        
+                        // Скрываем содержимое чата и показываем заглушку
+                        $('#chat-content').hide();
+                        $('#empty-chat').show();
+                    } else {
+                        // Просто обновляем статус в интерфейсе
+                        $('#chat-status').removeClass().addClass('status-badge status-' + status);
+                        $('#chat-status').text(response.status_display);
+                        
+                        // Обновляем кнопки
+                        updateActionButtons(status);
+                    }
+                },
+                error: function(error) {
+                    $('#loading-indicator').hide();
+                    console.error('Ошибка обновления статуса:', error);
+                    alert('Ошибка при обновлении статуса заявки');
+                }
+            });
+        }
+        
+        // Отображение сообщений в чате
+        function displayMessages(messages) {
+            var messagesContainer = $('#chat-messages');
+            messagesContainer.empty();
+            
+            if (!messages || messages.length === 0) {
+                messagesContainer.html('<div class="no-messages">Нет сообщений</div>');
+                return;
+            }
+            
+            // Используем documentFragment для улучшения производительности
+            var fragment = document.createDocumentFragment();
+            
+            messages.forEach(function(message) {
+                var messageClass = message.is_from_admin ? 'from-admin' : 'from-user';
+                var messageDiv = document.createElement('div');
+                messageDiv.className = 'message ' + messageClass;
+                
+                var bubbleDiv = document.createElement('div');
+                bubbleDiv.className = 'message-bubble';
+                bubbleDiv.textContent = message.text;
+                
+                var infoDiv = document.createElement('div');
+                infoDiv.className = 'message-info';
+                infoDiv.textContent = message.created_at;
+                
+                messageDiv.appendChild(bubbleDiv);
+                messageDiv.appendChild(infoDiv);
+                fragment.appendChild(messageDiv);
+            });
+            
+            messagesContainer[0].appendChild(fragment);
+            
+            // Прокручиваем к последнему сообщению
+            messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+        }
+        
+        // Отправка нового сообщения
+        $('#send-message').click(function() {
+            sendMessage();
+        });
+        
+        // Отправка сообщения при нажатии Enter (но не Shift+Enter)
+        $('#message-input').keydown(function(e) {
+            if (e.keyCode === 13 && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        function sendMessage() {
+            var messageText = $('#message-input').val().trim();
+            var requestId = $('#send-message').data('request-id');
+            
+            if (!messageText || !requestId) return;
+            
+            $('#loading-indicator').show();
+            
+            $.ajax({
+                url: `/admin/user_requests/${requestId}/message/`,
+                type: 'POST',
+                data: {
+                    'message': messageText,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    $('#loading-indicator').hide();
+                    
+                    // Добавляем новое сообщение в чат
+                    var messageDiv = document.createElement('div');
+                    messageDiv.className = 'message from-admin';
+                    
+                    var bubbleDiv = document.createElement('div');
+                    bubbleDiv.className = 'message-bubble';
+                    bubbleDiv.textContent = messageText;
+                    
+                    var infoDiv = document.createElement('div');
+                    infoDiv.className = 'message-info';
+                    infoDiv.textContent = response.message.created_at;
+                    
+                    messageDiv.appendChild(bubbleDiv);
+                    messageDiv.appendChild(infoDiv);
+                    
+                    $('#chat-messages').append(messageDiv);
+                    
+                    // Очищаем поле ввода
+                    $('#message-input').val('');
+                    
+                    // Прокручиваем к новому сообщению
+                    var messagesContainer = $('#chat-messages');
+                    messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+                },
+                error: function(error) {
+                    $('#loading-indicator').hide();
+                    console.error('Ошибка отправки сообщения:', error);
+                    alert('Ошибка при отправке сообщения');
+                }
+            });
+        }
+    }
+});
+</script>
+{% csrf_token %}
+{% endblock %}

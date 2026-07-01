@@ -1,0 +1,174 @@
+{% extends "admin/base.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block extrahead %}
+  {{ block.super }}
+  {{ media.js }}
+  <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+  <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+  <script src="{% static 'admin/js/actions.js' %}"></script>
+  <script src="{% static 'admin/js/urlify.js' %}"></script>
+  <script src="{% static 'admin/js/prepopulate.js' %}"></script>
+  <script src="{% static 'admin/js/vendor/xregexp/xregexp.min.js' %}"></script>
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static "admin/css/changelists.css" %}">
+  <style>
+    #changelist {
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    #changelist-filter {
+      background-color: #f8f9fa;
+      border-left: 1px solid #dee2e6;
+    }
+    
+    #changelist-filter h2 {
+      background-color: #000;
+      color: white;
+      padding: 10px 15px;
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    .paginator {
+      background-color: #f8f9fa;
+      padding: 10px 15px;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    .object-tools {
+      text-align: right;
+      margin-bottom: 15px;
+    }
+    
+    .object-tools a {
+      background-color: var(--primary);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 4px;
+      display: inline-block;
+      text-decoration: none;
+    }
+    
+    #changelist table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    #changelist table thead th {
+      background-color: #f8f9fa;
+      padding: 10px 15px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    #changelist table tbody td {
+      padding: 10px 15px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    #changelist table tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .actions {
+      padding: 10px 15px;
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .actions label {
+      margin-right: 10px;
+    }
+    
+    .actions button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+{% endblock %}
+
+{% block content_title %}
+  <h1>{{ cl.opts.verbose_name_plural|capfirst }}</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-6">
+          <h3 class="card-title">{{ cl.opts.verbose_name_plural|capfirst }}</h3>
+        </div>
+        <div class="col-md-6 text-right">
+          {% block object-tools %}
+            {% if has_add_permission %}
+              <div class="object-tools">
+                {% block object-tools-items %}
+                  {% url cl.opts|admin_urlname:'add' as add_url %}
+                  <a href="{% add_preserved_filters add_url is_popup to_field %}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> {% blocktranslate with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktranslate %}
+                  </a>
+                {% endblock %}
+              </div>
+            {% endif %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      {% if cl.formset and cl.formset.errors %}
+        <div class="alert alert-danger">
+          {{ cl.formset.non_form_errors }}
+        </div>
+      {% endif %}
+      
+      <div id="changelist">
+        {% block search %}{% search_form cl %}{% endblock %}
+        
+        {% block date_hierarchy %}{% if cl.date_hierarchy %}{% date_hierarchy cl %}{% endif %}{% endblock %}
+        
+        <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>{% csrf_token %}
+          {% if cl.formset %}
+            <div>{{ cl.formset.management_form }}</div>
+          {% endif %}
+          
+          {% block result_list %}
+            {% if action_form and actions_on_top and cl.show_admin_actions %}{% admin_actions %}{% endif %}
+            {% result_list cl %}
+            {% if action_form and actions_on_bottom and cl.show_admin_actions %}{% admin_actions %}{% endif %}
+          {% endblock %}
+          
+          {% block pagination %}{% pagination cl %}{% endblock %}
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  {% block filters %}
+    {% if cl.has_filters %}
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Фильтры</h3>
+        </div>
+        <div class="card-body">
+          {% for spec in cl.filter_specs %}
+            <div class="form-group">
+              <label>{{ spec.title }}</label>
+              {{ spec.choices }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endblock %}
+{% endblock %} 

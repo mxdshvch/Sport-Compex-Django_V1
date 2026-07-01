@@ -1,0 +1,564 @@
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"ru" }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}</title>
+
+  <!-- Google Font: Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- AdminLTE CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  
+  <!-- Custom Admin CSS -->
+  <link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/no-scrollbar.css' %}">
+
+  <style>
+    :root {
+      --primary: #ff3b4e;
+      --dark: #000000;
+      --light: #ffffff;
+    }
+    
+    /* Общие стили для шрифтов */
+    body, h1, h2, h3, h4, h5, h6, p, a, span, div, button, input, textarea, select, label {
+      font-family: 'Roboto', sans-serif !important;
+      letter-spacing: -0.01em;
+    }
+    
+    /* Переопределение стилей заголовков */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+      font-family: 'Roboto', sans-serif !important;
+    }
+    
+    .content-header h1 {
+      font-size: 28px;
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif !important;
+    }
+    
+    .card-title {
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif !important;
+    }
+    
+    /* Переопределение цветов AdminLTE */
+    .navbar-primary {
+      background-color: var(--primary) !important;
+    }
+    
+    .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+      background-color: var(--primary);
+    }
+    
+    [class*="sidebar-dark-"] {
+      background-color: var(--dark);
+    }
+    
+    .card-primary:not(.card-outline) > .card-header {
+      background-color: var(--primary);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .btn-primary:hover {
+      background-color: #e0303e;
+      border-color: #e0303e;
+    }
+    
+    .page-item.active .page-link {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+    
+    .page-link {
+      color: var(--primary);
+    }
+    
+    a {
+      color: var(--primary);
+    }
+    
+    .bg-primary {
+      background-color: var(--primary) !important;
+    }
+    
+    .text-primary {
+      color: var(--primary) !important;
+    }
+    
+    /* Стили для карточек статистики */
+    .small-box {
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    
+    .small-box > .inner {
+      padding: 20px;
+    }
+    
+    .small-box h3 {
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .small-box p {
+      font-size: 16px;
+    }
+    
+    .small-box .icon {
+      color: rgba(0, 0, 0, 0.15);
+      z-index: 0;
+    }
+    
+    /* Стили для модулей */
+    .module h2 {
+      padding: 15px 20px;
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      background-color: var(--dark);
+      color: var(--light);
+    }
+    
+    .module table {
+      width: 100%;
+    }
+    
+    /* Кастомные стили для Django Admin */
+    .submit-row {
+      padding: 15px 20px;
+      text-align: right;
+      background-color: #f8f9fa;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    .object-tools {
+      margin-bottom: 15px;
+      text-align: right;
+    }
+    
+    .object-tools a {
+      display: inline-block;
+      padding: 5px 12px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+    
+    /* Фиксированное боковое меню и шапка */
+    .main-header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1030;
+      left: 0;
+    }
+    
+    /* Радикально убираем скролл из бокового меню */
+    .main-sidebar {
+      position: fixed;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      overflow: hidden !important;
+      z-index: 1020;
+      -ms-overflow-style: none !important; /* IE и Edge */
+      scrollbar-width: none !important; /* Firefox */
+    }
+    
+    /* Стили для содержимого бокового меню */
+    .sidebar {
+      height: auto !important;
+      overflow: hidden !important;
+      -ms-overflow-style: none !important;
+      scrollbar-width: none !important;
+    }
+    
+    /* Стили для навигационного меню */
+    .sidebar nav,
+    .sidebar .nav,
+    .sidebar .nav-sidebar,
+    .sidebar .mt-2,
+    .nav-sidebar {
+      height: auto !important;
+      overflow: hidden !important;
+      -ms-overflow-style: none !important;
+      scrollbar-width: none !important;
+    }
+    
+    /* Убираем белый прямоугольник в углу */
+    .brand-link {
+      position: relative;
+      z-index: 1030;
+      background-color: var(--dark);
+      padding: 0.8rem 0.5rem;
+      text-align: center;
+    }
+    
+    /* Стили для текста логотипа */
+    .brand-text {
+      font-size: 1rem;
+      font-weight: 500;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      letter-spacing: -0.5px;
+    }
+    
+    /* Исправляем отступы для контента */
+    .content-wrapper {
+      margin-top: 57px; /* Высота шапки */
+      min-height: calc(100vh - 57px) !important;
+      margin-left: 250px;
+    }
+    
+    /* Исправляем отображение футера */
+    .main-footer {
+      margin-left: 250px;
+    }
+    
+    /* Исправляем отображение при свернутом меню */
+    .sidebar-mini.sidebar-collapse .main-footer,
+    .sidebar-mini.sidebar-collapse .content-wrapper {
+      margin-left: 4.6rem;
+    }
+    
+    /* Полностью скрываем полосу прокрутки для всех элементов бокового меню */
+    .main-sidebar::-webkit-scrollbar,
+    .sidebar::-webkit-scrollbar,
+    .sidebar nav::-webkit-scrollbar,
+    .nav-sidebar::-webkit-scrollbar,
+    .sidebar .mt-2::-webkit-scrollbar,
+    .os-viewport::-webkit-scrollbar,
+    .os-content::-webkit-scrollbar,
+    [data-widget="treeview"]::-webkit-scrollbar {
+      width: 0 !important;
+      height: 0 !important;
+      display: none !important;
+      background: transparent !important;
+    }
+    
+    /* Принудительно скрываем скроллбар для всех браузеров */
+    * {
+      scrollbar-width: none !important;
+    }
+    
+    /* Отключаем OverlayScrollbars */
+    .os-theme-light .os-scrollbar,
+    .os-scrollbar,
+    .os-scrollbar-horizontal,
+    .os-scrollbar-vertical,
+    .os-scrollbar-corner {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+    
+    /* Адаптивная шапка */
+    .main-header .navbar-nav .nav-link {
+      padding: 0.5rem 0.8rem;
+      white-space: nowrap;
+      font-size: 14px; /* Размер шрифта как в боковом меню */
+    }
+    
+    /* Уменьшаем отступы и размер шрифта в шапке */
+    .main-header {
+      padding: 0;
+    }
+    
+    /* Кнопка меню всегда видна */
+    .main-header .navbar-nav .nav-item:first-child .nav-link {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      font-size: 1.2rem;
+    }
+    
+    .navbar-expand .navbar-nav {
+      flex-wrap: wrap;
+    }
+    
+    /* Исправление для свернутого бокового меню при наведении */
+    .sidebar-mini.sidebar-collapse .main-sidebar:hover {
+      width: 250px !important;
+      z-index: 1031;
+    }
+    
+    .sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link p {
+      width: auto;
+      opacity: 1;
+      margin-left: 0;
+    }
+    
+    .sidebar-mini.sidebar-collapse .main-sidebar:hover .brand-text {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .sidebar-mini.sidebar-collapse .main-sidebar:hover .user-panel .image {
+      float: left;
+    }
+    
+    .sidebar-mini.sidebar-collapse .main-sidebar:hover .user-panel .info {
+      display: block;
+    }
+    
+    .sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar > .nav-item > .nav-treeview {
+      position: relative;
+      width: auto;
+      box-shadow: none;
+      background-color: transparent;
+    }
+    
+    @media (max-width: 991.98px) {
+      .main-header .navbar-nav .nav-link {
+        padding: 0.5rem 0.5rem;
+        font-size: 0.9rem;
+      }
+      
+      .main-header .navbar-nav .nav-item span.nav-link {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 767.98px) {
+      .main-header .navbar-nav .nav-link i {
+        margin-right: 0;
+      }
+      
+      .main-header .navbar-nav .nav-link span {
+        display: none;
+      }
+      
+      .main-header .navbar-nav .nav-item:not(:last-child) {
+        margin-right: 0;
+      }
+      
+      .navbar-expand .navbar-nav {
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+  </style>
+
+  {% block extrastyle %}{% endblock %}
+  {% block extrahead %}{% endblock %}
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-primary navbar-dark">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-md-inline-block">
+        <a href="{% url 'admin:index' %}" class="nav-link"><i class="fas fa-home"></i> <span>Главная</span></a>
+      </li>
+      <li class="nav-item d-none d-lg-inline-block">
+        <a href="/" target="_blank" class="nav-link"><i class="fas fa-external-link-alt"></i> <span>Открыть сайт</span></a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      {% if user.is_authenticated %}
+      <li class="nav-item">
+        <span class="nav-link"><i class="fas fa-user"></i> <span>{{ user.email|upper }}</span></span>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{% url 'admin:index' %}" class="brand-link">
+      <i class="fas fa-dumbbell mr-2"></i>
+      <span class="brand-text font-weight-light">Админ-панель</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-header">ОСНОВНОЕ</li>
+          <li class="nav-item">
+            <a href="{% url 'admin:index' %}" class="nav-link {% if request.path == '/admin/' %}active{% endif %}">
+              <i class="nav-icon fas fa-home"></i>
+              <p>Главная</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admin:memberships_membership_changelist' %}" class="nav-link {% if '/admin/memberships/membership/' in request.path %}active{% endif %}">
+              <i class="nav-icon fas fa-id-card"></i>
+              <p>Абонементы</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admin:memberships_membershipapplication_changelist' %}" class="nav-link {% if '/admin/memberships/membershipapplication/' in request.path %}active{% endif %}">
+              <i class="nav-icon fas fa-clipboard-list"></i>
+              <p>Заявки на абонементы</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admin:trainers_trainer_changelist' %}" class="nav-link {% if '/admin/trainers/trainer/' in request.path %}active{% endif %}">
+              <i class="nav-icon fas fa-user-tie"></i>
+              <p>Тренеры</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admin:users_customuser_changelist' %}" class="nav-link {% if '/admin/users/customuser/' in request.path %}active{% endif %}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Пользователи</p>
+            </a>
+          </li>
+          
+          <li class="nav-header">ТРЕНИРОВКИ</li>
+          <li class="nav-item">
+            <a href="{% url 'admin:workouts_workoutdirection_changelist' %}" class="nav-link {% if '/admin/workouts/workoutdirection/' in request.path %}active{% endif %}">
+              <i class="nav-icon fas fa-compass"></i>
+              <p>Направления тренировок</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admin:workouts_workout_changelist' %}" class="nav-link {% if '/admin/workouts/workout/' in request.path %}active{% endif %}">
+              <i class="nav-icon fas fa-dumbbell"></i>
+              <p>Тренировки</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admin:workouts_traininggoal_changelist' %}" class="nav-link {% if '/admin/workouts/traininggoal/' in request.path %}active{% endif %}">
+              <i class="nav-icon fas fa-bullseye"></i>
+              <p>Цели тренировок</p>
+            </a>
+          </li>
+          
+          <li class="nav-header">АККАУНТ</li>
+          <li class="nav-item">
+            <a href="{% url 'admin:logout' %}" class="nav-link">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>Выйти</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">{% block content_title %}{{ title }}{% endblock %}</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">Главная</a></li>
+              {% if title %}<li class="breadcrumb-item active">{{ title }}</li>{% endif %}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        
+        {% block content %}
+          {{ content }}
+        {% endblock %}
+      </div>
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <strong>Фитнес-центр &copy; {% now "Y" %}</strong>
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Версия</b> 1.0.0
+    </div>
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+<!-- Скрипт для отключения скроллбара в боковом меню -->
+<script>
+  $(document).ready(function() {
+    // Отключаем скроллбар в боковом меню
+    $('.main-sidebar, .sidebar, .sidebar nav, .nav-sidebar').css({
+      'overflow': 'hidden',
+      'overflow-y': 'hidden',
+      'overflow-x': 'hidden',
+      '-ms-overflow-style': 'none',
+      'scrollbar-width': 'none'
+    });
+    
+    // Отключаем OverlayScrollbars плагин
+    if ($.fn.overlayScrollbars) {
+      $('.main-sidebar').overlayScrollbars('destroy');
+    }
+    
+    // Принудительно скрываем скроллбар
+    document.querySelectorAll('.main-sidebar, .sidebar, .sidebar nav, .nav-sidebar').forEach(function(el) {
+      el.style.overflow = 'hidden';
+      el.style.overflowY = 'hidden';
+      el.style.overflowX = 'hidden';
+      el.style.msOverflowStyle = 'none';
+      el.style.scrollbarWidth = 'none';
+    });
+    
+    // Отключаем все возможные события прокрутки
+    $('.main-sidebar, .sidebar, .sidebar nav, .nav-sidebar').on('scroll touchmove mousewheel', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    });
+  });
+</script>
+
+{% block extrajs %}{% endblock %}
+</body>
+</html> 

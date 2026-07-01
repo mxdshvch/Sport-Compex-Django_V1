@@ -1,0 +1,98 @@
+{% extends 'users/profile_base.html' %}
+{% load static %}
+
+{% block title %}Профиль - Личный кабинет{% endblock %}
+
+{% block section_title %}Личный профиль{% endblock %}
+
+{% block profile_content %}
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="fas fa-user-circle me-2"></i>Ваш профиль</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" alt="{{ user.name }}">
+                    {% else %}
+                        <img src="{% static 'img/default-avatar.png' %}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" alt="{{ user.name }}">
+                    {% endif %}
+                </div>
+                <h5 class="mb-1">{{ user.name }}</h5>
+                <p class="text-muted">{{ user.email }}</p>
+                <p class="mb-0">
+                    <span class="badge bg-primary">Клиент</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="fas fa-edit me-2"></i>Редактировать профиль</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Имя</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Эл. почта</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="profile_image" class="form-label">Фото профиля</label>
+                        <input type="file" class="form-control" id="profile_image" name="profile_image">
+                        <small class="form-text text-muted">Рекомендуемый размер: 300x300 пикселей. Поддерживаемые форматы: JPG, PNG.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="fas fa-lock me-2"></i>Изменить пароль</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'change_password' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="old_password" class="form-label">Текущий пароль</label>
+                        <input type="password" class="form-control" id="old_password" name="old_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password1" class="form-label">Новый пароль</label>
+                        <input type="password" class="form-control" id="new_password1" name="new_password1" required>
+                        <small class="form-text text-muted">
+                            Пароль должен содержать не менее 8 символов, включать буквы и цифры.
+                        </small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password2" class="form-label">Подтверждение нового пароля</label>
+                        <input type="password" class="form-control" id="new_password2" name="new_password2" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-key me-2"></i>Сменить пароль</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block tab_specific_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Установим активную вкладку
+        const activeTab = document.querySelector('.list-group-item[href="{% url "profile" %}"]');
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+    });
+</script>
+{% endblock %} 

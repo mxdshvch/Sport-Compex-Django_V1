@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Тренеры - Фитнес-центр{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light" id="trainers">
+    <div class="container">
+        <h1 class="text-center mb-4">Наши тренеры</h1>
+        <p class="text-center mb-4">Познакомьтесь с нашей командой профессионалов</p>
+        
+        <div class="row">
+            {% for trainer in trainers|slice:":3" %}
+            <div class="col-md-4 mb-4">
+                <div class="trainer-card">
+                    <div class="trainer-image">
+                        {% if trainer.photo %}
+                            <img src="{{ trainer.photo.url }}" alt="{{ trainer.name }}">
+                        {% else %}
+                            <div class="no-image">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body bg-white text-dark">
+                        <h5 class="card-title">{{ trainer.name }}</h5>
+                        <p class="card-text small text-danger">{{ trainer.specialization }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> В данный момент нет тренеров в системе.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    #trainers {
+        background-color: #f8f9fa;
+        padding: 60px 0;
+    }
+    
+    #trainers h1 {
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 700;
+    }
+    
+    #trainers p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: #666;
+    }
+    
+    /* Карточки тренеров */
+    .trainer-card {
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+        border-radius: 0;
+        overflow: hidden;
+        background: #fff;
+    }
+    
+    .trainer-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    
+    .trainer-image {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .trainer-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+    }
+    
+    .trainer-image .no-image {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0f0f0;
+        color: #888;
+        font-size: 3rem;
+    }
+    
+    .card-body {
+        padding: 1.25rem;
+    }
+    
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #222;
+    }
+    
+    .card-text {
+        margin-bottom: 0;
+        color: #9b0000;
+        font-weight: 500;
+    }
+    
+    /* Респонсивность */
+    @media (max-width: 992px) {
+        .trainer-image {
+            height: 220px;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        #trainers h1 {
+            font-size: 1.8rem;
+        }
+        
+        .trainer-card {
+            max-width: 320px;
+            margin: 0 auto;
+        }
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,226 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/admin-roboto.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/fonts-force.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin/icons.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin/notifications.css' %}">
+    <style>
+        /* Скрыть системные сообщения Django */
+        .messagelist {
+            display: none !important;
+        }
+        
+        /* Общие стили для админки */
+        :root {
+            --primary: #e74c3c;
+            --secondary: #444;
+            --accent: #ffc107;
+            --primary-fg: #fff;
+            
+            --body-fg: #333;
+            --body-bg: #f8f9fa;
+            --body-quiet-color: #666;
+            --body-loud-color: #000;
+            
+            --header-color: #fff;
+            --header-branding-color: var(--accent);
+            --header-bg: var(--secondary);
+            --header-link-color: #eee;
+            
+            --breadcrumbs-fg: #555;
+            --breadcrumbs-link-fg: var(--primary);
+            --breadcrumbs-bg: #fff;
+            
+            --link-fg: var(--primary);
+            --link-hover-color: #c0392b;
+            --link-selected-fg: #5b80b2;
+            
+            --hairline-color: #e1e1e1;
+            --border-color: #ddd;
+            
+            --error-fg: #ba2121;
+            
+            --message-success-bg: #dfd;
+            --message-warning-bg: #ffc;
+            --message-error-bg: #ffefef;
+            
+            --darkened-bg: #f8f8f8;
+            --selected-bg: #e4e4e4;
+            --selected-row: #ffc;
+            
+            --button-fg: #fff;
+            --button-bg: var(--primary);
+            --button-hover-bg: #c0392b;
+            --default-button-bg: #f8f8f8;
+            --default-button-hover-bg: #e1e1e1;
+            --close-button-bg: #888;
+            --close-button-hover-bg: #747474;
+            --delete-button-bg: #ba2121;
+            --delete-button-hover-bg: #a41515;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        /* Кастомизация шапки админки */
+        #header {
+            background: var(--header-bg);
+            color: var(--header-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        #branding h1 {
+            font-weight: 400;
+        }
+        
+        .module h2, .module caption, .inline-group h2 {
+            background: var(--secondary);
+        }
+        
+        .button, input[type=submit], input[type=button], .submit-row input, a.button {
+            background: var(--button-bg);
+            color: var(--button-fg);
+        }
+        
+        .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover {
+            background: var(--button-hover-bg);
+        }
+        
+        div.breadcrumbs {
+            background: var(--breadcrumbs-bg);
+            color: var(--breadcrumbs-fg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        div.breadcrumbs a {
+            color: var(--breadcrumbs-link-fg);
+        }
+        
+        div.breadcrumbs a:hover {
+            color: var(--link-hover-color);
+        }
+        
+        /* Другие кастомные стили */
+        .dashboard .module table th {
+            width: 100%;
+        }
+        
+        .dashboard .module table td {
+            white-space: nowrap;
+        }
+        
+        .dashboard .module table td a {
+            display: block;
+            padding: 8px;
+        }
+        
+        /* Стиль для отзывчивого дизайна */
+        @media (max-width: 767px) {
+            #header #user-tools {
+                font-size: 12px;
+            }
+        }
+        
+        /* Критичные инлайн-стили для переопределения шрифтов */
+        html, body, button, input, select, textarea, .form-control, 
+        table, th, td, div, p, span, a, h1, h2, h3, h4, h5, h6, 
+        .btn, .nav, .navbar, .dropdown-menu,
+        .form-row label, .aligned label,
+        .paginator, .paginator a,
+        #content h1, .content h1,
+        #content-main .module th,
+        .app-list li a, .app-list label,
+        .object-tools a, .viewlink {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", 
+                        Helvetica, Arial, sans-serif !important;
+            font-size: 16px !important;
+        }
+        
+        /* Навигация и меню */
+        .breadcrumbs a, .breadcrumbs,
+        .sidebar-menu a, .sidebar-menu span,
+        .nav-sidebar .nav-label, .nav-sidebar a,
+        #sidebar a, #sidebar span {
+            font-size: 18px !important;
+        }
+        
+        /* Заголовки */
+        h1, #header #branding h1, #header h1,
+        .dashboard .module caption, 
+        .app-dashboard .module caption,
+        #content h1, #container > h1 {
+            font-size: 28px !important;
+            font-weight: 500 !important;
+        }
+        
+        /* Подзаголовки */
+        h2, .module h2, .module caption {
+            font-size: 20px !important;
+            font-weight: 500 !important;
+        }
+        
+        /* Мелкий текст */
+        .help, p.help, small, .small {
+            font-size: 14px !important;
+        }
+        
+        /* Статистические числа на главной */
+        .stat-value, .card-title {
+            font-size: 36px !important;
+            font-weight: 500 !important;
+        }
+        
+        /* Changelist и таблицы */
+        #changelist *, table.app-table * {
+            font-size: 16px !important;
+        }
+        
+        /* Критическое переопределение специфичных элементов */
+        .main > * {
+            font-size: 16px !important;
+        }
+        
+        /* Текст в карточках */
+        .card *, .card-text, .card-body * {
+            font-size: 18px !important;
+        }
+        
+        /* Критическое переопределение для шрифта */
+        @media (max-width: 9999px) {
+            * {
+                font-family: 'Roboto', sans-serif !important;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block branding %}
+    <img src="{% static 'img/logo.png' %}" alt="Фитнес-центр">
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            Фитнес-центр - Администрирование
+        </a>
+    </h1>
+{% endblock %}
+
+{% block nav-global %}
+<div class="admin-nav">
+</div>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'admin/js/admin-fonts.js' %}"></script>
+{% endblock %}

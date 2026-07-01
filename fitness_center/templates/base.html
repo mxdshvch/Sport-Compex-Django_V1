@@ -1,0 +1,1170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Фитнес-центр{% endblock %}</title>
+    <!-- Google Fonts - Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/no-blue.css' %}">
+    <style>
+        /* Удаляем все возможные отступы */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        main {
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
+        
+        main > section:first-child {
+            margin-top: -60px;
+        }
+        
+        /* Класс для страниц, где нужен отступ от шапки */
+        .needs-navbar-spacing {
+            padding-top: 60px;
+        }
+        
+        /* Скрываем стандартную стрелку в выпадающем меню */
+        .dropdown-toggle.no-caret::after {
+            display: none !important;
+        }
+        
+        /* Уменьшенная шапка */
+        .navbar {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            min-height: 50px;
+            background-color: #222222 !important;
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        .navbar.scrolled {
+            background-color: #222222 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .navbar.hidden {
+            transform: translateY(-100%);
+            box-shadow: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar.transparent {
+            background-color: #222222 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .navbar.solid {
+            background-color: #222222 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Центрирование элементов в навигационной панели */
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .navbar-collapse {
+            justify-content: center;
+        }
+        
+        .navbar-nav {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (min-width: 992px) {
+            .navbar-nav {
+                display: flex;
+                gap: 10px;
+            }
+        }
+        
+        .navbar-brand {
+            font-size: 1.25rem;
+            padding: 0;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Центрирование всех контейнеров */
+        .container {
+            max-width: 1200px;
+            padding-left: 30px;
+            padding-right: 30px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Центрирование основных секций */
+        section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        /* Центрирование заголовков */
+        h1, h2, h3, h4, h5, h6 {
+            text-align: center;
+        }
+        
+        /* Центрирование карточек */
+        .row {
+            justify-content: center;
+        }
+        
+        /* Центрирование текста в карточках */
+        .card {
+            text-align: center;
+        }
+        
+        /* Центрирование кнопок */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        /* Центрирование футера */
+        footer .row {
+            text-align: center;
+        }
+        
+        /* Адаптация для мобильных устройств */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+        
+        .nav-link {
+            padding: 0.25rem 0.75rem !important;
+        }
+        
+        .navbar .btn {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Фиксированная шапка с отступом для контента */
+        body {
+            padding-top: 0; /* Убираем padding-top */
+            background-color: #f8f9fa;
+            margin: 0; /* Убираем отступы body по умолчанию */
+        }
+        
+        /* Для мобильных устройств */
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                max-height: calc(100vh - 50px);
+                overflow-y: auto;
+            }
+        }
+
+        /* Применяем красный цвет вместо primary */
+        .container-fluid.py-3 {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+            background-color: #ff3b4e !important;
+        }
+
+        /* Обновляем фоновый цвет карточек */
+        .card-header.bg-primary {
+            background: #ff3b4e !important;
+        }
+        
+        /* Кнопка danger теперь в нашем красном цвете */
+        .btn-danger {
+            background-color: #ff3b4e !important;
+            border-color: #ff3b4e !important;
+        }
+        
+        .btn-danger:hover, .btn-danger:focus {
+            background-color: #e0323f !important;
+            border-color: #e0323f !important;
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            background-color: #ff3b4e !important;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            line-height: 45px;
+            bottom: 30px;
+            right: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-top:hover {
+            background-color: #e0323f !important;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Обновляем стиль модальных окон */
+        .modal-header {
+            background-color: #222222;
+            color: white;
+        }
+        
+        /* Обновляем стиль форм */
+        .form-control:focus {
+            border-color: #ff3b4e;
+            box-shadow: 0 0 0 0.25rem rgba(255, 59, 78, 0.25);
+        }
+
+        /* Дополнительные стили для красно-черно-белой темы */
+        .bg-dark-theme {
+            background-color: #222222 !important;
+            color: #ffffff !important;
+        }
+        
+        .bg-primary-theme {
+            background-color: #ff3b4e !important;
+            color: #ffffff !important;
+        }
+        
+        .text-primary-theme {
+            color: #ff3b4e !important;
+        }
+        
+        .border-primary-theme {
+            border-color: #ff3b4e !important;
+        }
+        
+        .btn-primary {
+            background-color: #ff3b4e !important;
+            border-color: #ff3b4e !important;
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #e0323f !important;
+            border-color: #e0323f !important;
+        }
+        
+        /* Стили для карточек */
+        .card {
+            border: none !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Стили для тренеров */
+        .trainer-card {
+            background-color: #ffffff !important;
+        }
+        
+        .trainer-specialization {
+            color: #ff3b4e !important;
+        }
+        
+        /* Стили для футера */
+        .footer {
+            background-color: #222222 !important;
+            padding: 50px 0 30px;
+            position: relative;
+        }
+        
+        .footer h5 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer h5:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -8px;
+            height: 2px;
+            width: 40px;
+            margin: 0 auto;
+            background-color: #ff3b4e;
+        }
+        
+        .footer .text-lg-start h5:after {
+            margin: 0;
+        }
+        
+        .footer .text-md-end h5:after {
+            margin-left: auto;
+            margin-right: 0;
+        }
+        
+        .footer ul li {
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .footer .text-light {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        
+        .footer a:hover {
+            color: #ff3b4e !important;
+        }
+        
+        .social-links a {
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        
+        .social-links a:hover {
+            color: #ffffff;
+            background-color: #ff3b4e;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(255, 59, 78, 0.3);
+        }
+        
+        .text-danger {
+            color: #ff3b4e !important;
+        }
+        
+        /* Улучшения для секций */
+        section {
+            position: relative;
+            padding: 60px 0;
+        }
+        
+        section.bg-light {
+            background-color: #f8f9fa !important;
+        }
+        
+        section.bg-dark {
+            background-color: #222222 !important;
+            color: #ffffff;
+        }
+        
+        section.bg-dark .section-title h2 {
+            color: #ffffff !important;
+        }
+        
+        section.bg-primary {
+            background-color: #ff3b4e !important;
+            color: #ffffff;
+        }
+        
+        section.bg-primary .section-title h2 {
+            color: #ffffff !important;
+        }
+        
+        /* Улучшения для dropdown */
+        .dropdown-menu {
+            background-color: #222222;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dropdown-item {
+            color: white !important;
+        }
+        
+        .dropdown-item:hover, .dropdown-item:focus {
+            background-color: rgba(255, 59, 78, 0.1);
+            color: #ffffff !important;
+        }
+        
+        .dropdown-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Замена синего текста на черный */
+        .text-primary {
+            color: #222222 !important;
+        }
+        
+        .text-info {
+            color: #222222 !important;
+        }
+        
+        /* Замена синего цвета ссылок */
+        a {
+            color: #222222;
+        }
+        
+        a:hover {
+            color: #ff3b4e;
+        }
+        
+        /* Замена синего цвета в элементах bootstrap */
+        .btn-info {
+            background-color: #222222 !important;
+            border-color: #222222 !important;
+        }
+        
+        .btn-outline-info {
+            color: #222222 !important;
+            border-color: #222222 !important;
+        }
+        
+        .btn-outline-info:hover {
+            background-color: #222222 !important;
+            color: #ffffff !important;
+        }
+        
+        .bg-info {
+            background-color: #222222 !important;
+        }
+        
+        /* Замена цвета активной ссылки пагинации */
+        .page-item.active .page-link {
+            background-color: #222222 !important;
+            border-color: #222222 !important;
+        }
+        
+        .page-link {
+            color: #222222 !important;
+        }
+        
+        .page-link:hover {
+            color: #ff3b4e !important;
+        }
+        
+        /* Замена фокуса на input */
+        .form-control:focus {
+            border-color: #222222 !important;
+            box-shadow: 0 0 0 0.25rem rgba(34, 34, 34, 0.25) !important;
+        }
+        
+        /* Дополнительные стили для замены синего цвета на черный */
+        .list-group-item.active {
+            background-color: #222222 !important;
+            border-color: #222222 !important;
+        }
+        
+        .dropdown-item.active, 
+        .dropdown-item:active {
+            background-color: #222222 !important;
+        }
+        
+        .form-check-input:checked {
+            background-color: #222222 !important;
+            border-color: #222222 !important;
+        }
+        
+        .form-select:focus {
+            border-color: #222222 !important;
+            box-shadow: 0 0 0 0.25rem rgba(34, 34, 34, 0.25) !important;
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: #222222 !important;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #222222 !important;
+        }
+        
+        .progress-bar {
+            background-color: #222222 !important;
+        }
+        
+        .link-primary {
+            color: #222222 !important;
+        }
+        
+        .link-primary:hover {
+            color: #ff3b4e !important;
+        }
+        
+        /* Стили для заголовков секций */
+        h2.section-title, 
+        .section-title h2,
+        h2.text-primary,
+        h2.text-info {
+            color: #222222 !important;
+        }
+        
+        .section-title {
+            color: #222222 !important;
+        }
+        
+        /* Стили для всех заголовков с синим цветом */
+        h1, h2, h3, h4, h5, h6 {
+            color: #222222 !important;
+        }
+        
+        /* Стили для линий под заголовками */
+        .section-title::after,
+        .section-title h2::after {
+            background-color: #ff3b4e !important;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover,
+        .navbar-dark .navbar-nav .nav-link.active {
+            color: #ff3b4e !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Стили для анимации появления элементов */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, transform;
+        }
+        
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Разные задержки для анимации дочерних элементов */
+        .fade-in-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            will-change: opacity, transform;
+        }
+        
+        .fade-in-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Задержки для элементов внутри секций */
+        .fade-delay-1 {
+            transition-delay: 0.1s;
+        }
+        
+        .fade-delay-2 {
+            transition-delay: 0.2s;
+        }
+        
+        .fade-delay-3 {
+            transition-delay: 0.3s;
+        }
+        
+        .fade-delay-4 {
+            transition-delay: 0.4s;
+        }
+        
+        .fade-delay-5 {
+            transition-delay: 0.5s;
+        }
+        
+        /* Анимация появления слева */
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, transform;
+        }
+        
+        .fade-in-left.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Анимация появления справа */
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, transform;
+        }
+        
+        .fade-in-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Анимация увеличения */
+        .fade-in-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, transform;
+        }
+        
+        .fade-in-scale.is-visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @media (max-width: 991px) {
+            .footer .text-md-end h5:after {
+                margin: 0 auto;
+            }
+            
+            .footer .text-md-end {
+                text-align: center !important;
+            }
+            
+            .footer .social-links {
+                justify-content: center !important;
+            }
+        }
+        
+        /* Стили для push-уведомлений */
+        .notifications-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 300px;
+        }
+        
+        .notification-toast {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.5s ease;
+        }
+        
+        .notification-toast.fade-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .notification-toast.fade-out {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        
+        .alert-success {
+            background-color: #4caf50;
+        }
+        
+        .alert-info {
+            background-color: #29b6f6;
+        }
+        
+        .alert-warning {
+            background-color: #ff9800;
+        }
+        
+        .alert-error, .alert-danger {
+            background-color: #f44336;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Навигационная панель (фиксированная) -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <span class="brand-text">POWER GYM</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#home">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#features">О нас</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#directions">Направления</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}#memberships">Абонементы</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle no-caret" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center; gap: 5px;">
+                            <i class="fas fa-user-circle"></i> <span style="color: white; font-weight: 500;">{{ user.email }}</span>
+                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #ff3b4e; margin-left: 3px;"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'account_home' %}">Личный кабинет</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-danger" href="{% url 'login' %}">ВХОД</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Сообщения -->
+    {% block show_messages %}
+    {% if messages %}
+        <div class="notifications-container">
+            {% for message in messages %}
+                <div class="notification-toast alert-{{ message.tags }} fade-in">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endblock %}
+
+    <!-- Основное содержимое -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Подвал -->
+    <footer class="footer py-5" style="background-color: #222222;">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-lg-3 col-md-12 mb-5 mb-lg-0 text-center text-lg-start">
+                    <h5 class="text-white mb-4 fw-bold">POWER GYM</h5>
+                    <div class="social-links d-flex justify-content-center justify-content-lg-start mb-3">
+                        <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-vk"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-5 mb-lg-0 text-center">
+                    <h5 class="text-white mb-4 fw-bold">Контакты</h5>
+                    <ul class="list-unstyled text-light">
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                                <span>г. Москва, ул. Фитнеса, 10</span>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-phone me-2 text-danger"></i>
+                                <span>+7 (999) 123-45-67</span>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <i class="fas fa-envelope me-2 text-danger"></i>
+                                <span>info@powergym.ru</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-5 mb-lg-0 text-center text-md-end">
+                    <h5 class="text-white mb-4 fw-bold">Режим работы</h5>
+                    <ul class="list-unstyled text-light">
+                        <li class="mb-3"><span class="fw-bold">Пн-Пт:</span> 6:00 - 23:00</li>
+                        <li class="mb-3"><span class="fw-bold">Сб-Вс:</span> 8:00 - 22:00</li>
+                        <li class="mb-3"><span class="fw-bold">Праздники:</span> 8:00 - 20:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="row mt-4 pt-3" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                <div class="col-12 text-center">
+                    <p class="text-light opacity-50 mb-0 small">© {% now "Y" %} POWER GYM. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Кнопка прокрутки вверх -->
+    <a id="back-to-top" class="btn btn-danger btn-lg back-to-top" role="button">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+    
+    <!-- Модальное окно для отправки заявки -->
+    <div class="modal fade application-modal" id="applicationModal" tabindex="-1" aria-labelledby="applicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="applicationModalLabel">Оформить абонемент</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="applicationForm">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3" id="trainerNameField" style="display: none;">
+                            <label for="trainerName" class="form-label">Выбранный тренер</label>
+                            <input type="text" class="form-control" id="trainerName" name="trainer_name" readonly>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Ваше имя *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                            <div class="error-feedback" id="name-error"></div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="phone" class="form-label">Телефон *</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+7 (___) ___-__-__" required>
+                            <div class="error-feedback" id="phone-error"></div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                            <div class="error-feedback" id="email-error"></div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                                <label class="form-check-label" for="consent">
+                                    Я согласен на обработку персональных данных *
+                                </label>
+                                <div class="error-feedback" id="consent-error"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger">Оформить</button>
+                        </div>
+                    </form>
+                    
+                    <div class="success-message" id="successMessage">
+                        <div class="icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h4>Заявка успешно отправлена!</h4>
+                        <p>Наш менеджер свяжется с вами в ближайшее время для подтверждения.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Скрипт для плавной прокрутки и анимации элементов -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Плавная прокрутка при клике на навигационные ссылки
+            const scrollLinks = document.querySelectorAll('.scroll-link');
+            
+            scrollLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if(targetId.startsWith('#')) {
+                        const targetElement = document.querySelector(targetId);
+                        if(targetElement) {
+                            const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                            
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'smooth'
+                            });
+                            
+                            // Закрыть навигационное меню в мобильном режиме
+                            const navbarToggler = document.querySelector('.navbar-toggler');
+                            const navbarCollapse = document.querySelector('.navbar-collapse');
+                            if (navbarCollapse.classList.contains('show')) {
+                                navbarToggler.click();
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Анимация элементов при прокрутке
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            function checkFade() {
+                fadeElements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (elementTop < windowHeight - 100) {
+                        element.classList.add('visible');
+                    }
+                });
+            }
+            
+            // Первоначальная проверка при загрузке страницы
+            checkFade();
+            
+            // Проверка при прокрутке
+            window.addEventListener('scroll', checkFade);
+            
+            // Кнопка возврата наверх
+            const backToTopBtn = document.getElementById('back-to-top');
+            
+            function toggleBackToTop() {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.style.display = 'block';
+                } else {
+                    backToTopBtn.style.display = 'none';
+                }
+            }
+            
+            // Первоначальная проверка кнопки "наверх"
+            toggleBackToTop();
+            
+            // Проверка при прокрутке
+            window.addEventListener('scroll', toggleBackToTop);
+            
+            // Обработчик клика по кнопке "наверх"
+            backToTopBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Подсветка активного пункта меню при прокрутке
+            function highlightActiveSection() {
+                const scrollPosition = window.pageYOffset + window.innerHeight / 3;
+                
+                document.querySelectorAll('section[id]').forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === '#' + sectionId) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', highlightActiveSection);
+        });
+    </script>
+    
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/application-form.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Управление шапкой при прокрутке
+            const navbar = document.querySelector('.navbar');
+            
+            // Находим секцию "Наши преимущества" разными способами
+            let advantagesSection = document.getElementById('features');
+            
+            // Если секция не найдена по ID, ищем по заголовку
+            if (!advantagesSection) {
+                const headings = document.querySelectorAll('h2');
+                for (let i = 0; i < headings.length; i++) {
+                    if (headings[i].textContent.includes('Наши преимущества')) {
+                        // Нашли заголовок, ищем ближайшую секцию-родителя
+                        let parent = headings[i].parentElement;
+                        while (parent && parent.tagName !== 'SECTION') {
+                            parent = parent.parentElement;
+                        }
+                        advantagesSection = parent;
+                        break;
+                    }
+                }
+            }
+            
+            // Если всё еще не нашли, ищем по оранжевой линии
+            if (!advantagesSection) {
+                const orangeLine = document.querySelector('.orange-line');
+                if (orangeLine) {
+                    advantagesSection = orangeLine.parentElement;
+                }
+            }
+            
+            function updateNavbarStyle() {
+                // Всегда делаем шапку видимой с черным фоном
+                navbar.classList.remove('hidden');
+                navbar.classList.add('solid');
+            }
+            
+            // Проверяем при загрузке страницы
+            if (navbar) {
+                updateNavbarStyle();
+                
+                // Проверяем при прокрутке
+                window.addEventListener('scroll', updateNavbarStyle);
+            }
+            
+            // Автоматическое скрытие уведомлений через 3 секунды
+            const notifications = document.querySelectorAll('.notification-toast');
+            
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.classList.add('fade-out');
+                    
+                    // Удаляем элемент после завершения анимации
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                }, 3000);
+            });
+            
+            // Функция для анимации элементов при скролле
+            function checkFadeElements() {
+                const sections = document.querySelectorAll('.fade-in-section');
+                const items = document.querySelectorAll('.fade-in-item, .fade-in-left, .fade-in-right, .fade-in-scale');
+                
+                const triggerBottom = window.innerHeight * 0.85; // 85% высоты окна
+                
+                // Проверяем секции
+                sections.forEach(section => {
+                    const sectionTop = section.getBoundingClientRect().top;
+                    
+                    if (sectionTop < triggerBottom) {
+                        section.classList.add('is-visible');
+                    }
+                });
+                
+                // Проверяем отдельные элементы
+                items.forEach(item => {
+                    const itemTop = item.getBoundingClientRect().top;
+                    
+                    if (itemTop < triggerBottom) {
+                        item.classList.add('is-visible');
+                    }
+                });
+            }
+            
+            // Запускаем функцию проверки при загрузке страницы
+            window.addEventListener('load', function() {
+                // Добавляем классы анимации к элементам
+                addAnimationClasses();
+                // Проверяем видимые элементы
+                checkFadeElements();
+            });
+            
+            // Проверяем при скролле
+            window.addEventListener('scroll', checkFadeElements);
+            
+            // Функция для добавления классов анимации к элементам
+            function addAnimationClasses() {
+                // Добавляем классы к секциям
+                document.querySelectorAll('section').forEach(section => {
+                    if (!section.classList.contains('fade-in-section')) {
+                        section.classList.add('fade-in-section');
+                    }
+                });
+                
+                // Добавляем классы к заголовкам в секциях
+                document.querySelectorAll('section h2, section .section-title').forEach(heading => {
+                    if (!heading.classList.contains('fade-in-item')) {
+                        heading.classList.add('fade-in-item', 'fade-delay-1');
+                    }
+                });
+                
+                // Добавляем классы к описаниям в секциях
+                document.querySelectorAll('section p:first-of-type').forEach(paragraph => {
+                    if (!paragraph.classList.contains('fade-in-item')) {
+                        paragraph.classList.add('fade-in-item', 'fade-delay-2');
+                    }
+                });
+                
+                // Добавляем классы к карточкам
+                document.querySelectorAll('.card').forEach((card, index) => {
+                    if (!card.classList.contains('fade-in-item')) {
+                        card.classList.add('fade-in-item');
+                        // Добавляем разные задержки в зависимости от позиции карточки
+                        card.classList.add(`fade-delay-${(index % 5) + 1}`);
+                    }
+                });
+                
+                // Добавляем классы к изображениям
+                document.querySelectorAll('img').forEach(img => {
+                    if (!img.closest('.navbar') && !img.classList.contains('fade-in-scale')) {
+                        img.classList.add('fade-in-scale');
+                    }
+                });
+                
+                // Добавляем классы к кнопкам
+                document.querySelectorAll('.btn:not(.navbar .btn)').forEach(btn => {
+                    if (!btn.classList.contains('fade-in-item')) {
+                        btn.classList.add('fade-in-item', 'fade-delay-3');
+                    }
+                });
+            }
+            
+            // Get current path
+            const path = window.location.pathname;
+            
+            // Get all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Loop through nav links
+            navLinks.forEach(link => {
+                // Get href without domain
+                const href = link.getAttribute('href');
+                
+                // Check if href matches current path
+                if (href === path) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

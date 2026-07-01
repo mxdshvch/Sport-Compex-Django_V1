@@ -1,0 +1,852 @@
+/* 
+ * POWER GYM - Red-Black-White Theme
+ * Primary: #ff3b4e
+ * Secondary: #222222
+ * Light: #ffffff
+ */
+
+:root {
+    --primary: #ff3b4e;
+    --primary-hover: #e0323f;
+    --secondary: #222222;
+    --light: #ffffff;
+    --gray: #f8f9fa;
+    --text-dark: #333333;
+    --link-color: #222222;
+}
+
+/* Body styles */
+body {
+    background-color: #f8f9fa;
+    color: var(--text-dark);
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Link styles */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+/* Navigation enhancements */
+.navbar {
+    background-color: var(--secondary) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+    color: var(--light) !important;
+    font-weight: 700;
+}
+
+.brand-text {
+    color: var(--light);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--primary) !important;
+}
+
+/* Buttons */
+.btn-danger, .btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: var(--light) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-danger:hover, 
+.btn-danger:focus,
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-outline-danger, .btn-outline-primary {
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    background-color: transparent !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:focus,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--primary) !important;
+    color: var(--light) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Section titles */
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title h2 {
+    color: var(--secondary);
+    font-weight: 700;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 15px;
+}
+
+.section-title h2:after {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 3px;
+    background-color: var(--primary) !important;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background-color: var(--primary) !important;
+    color: var(--light) !important;
+    font-weight: 600;
+    padding: 1rem;
+}
+
+/* Feature cards */
+.feature-card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    background: #ffffff;
+    padding: 2rem;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--light);
+    margin: 0 auto 1.5rem;
+    font-size: 1.8rem;
+}
+
+/* Direction cards */
+.direction-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.direction-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.direction-card:hover .direction-image {
+    transform: scale(1.05);
+}
+
+.direction-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: var(--light);
+    transition: background 0.3s ease;
+}
+
+.direction-overlay h3 {
+    color: var(--light);
+    margin-bottom: 0.5rem;
+}
+
+.direction-overlay .btn {
+    margin-top: 1rem;
+}
+
+/* Trainer cards */
+.trainer-card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    background-color: var(--light);
+}
+
+.trainer-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.trainer-image-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.trainer-image {
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s ease;
+}
+
+.trainer-card:hover .trainer-image {
+    transform: scale(1.05);
+}
+
+.trainer-info {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.trainer-info h3 {
+    color: var(--secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.trainer-specialization {
+    color: var(--primary) !important;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+/* Call to action sections */
+.cta-section {
+    background-color: var(--secondary);
+    color: var(--light);
+    padding: 4rem 0;
+    position: relative;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--primary);
+}
+
+.cta-content h2 {
+    color: var(--light);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.cta-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+/* Forms */
+.form-control {
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-300);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(255, 59, 78, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.error-feedback {
+    color: var(--primary);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Back to top button */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: var(--light);
+    text-align: center;
+    line-height: 40px;
+    z-index: 99;
+    transition: all 0.3s ease;
+    padding: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.back-to-top:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.back-to-top i {
+    line-height: inherit;
+}
+
+.back-to-top.show {
+    display: block;
+}
+
+/* Slider navigation */
+.slider-button {
+    background-color: var(--secondary);
+    color: var(--light);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.slider-button:hover {
+    background-color: var(--primary);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.slider-button.prev {
+    left: -20px;
+}
+
+.slider-button.next {
+    right: -20px;
+}
+
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.slider-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: transparent;
+    border: 2px solid var(--primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.slider-dot.active {
+    background-color: var(--primary);
+}
+
+/* Modal customization */
+.modal-header {
+    background-color: var(--secondary);
+    color: var(--light);
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: none;
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+.btn-close-white {
+    filter: brightness(0) invert(1);
+}
+
+.success-message {
+    text-align: center;
+    padding: 2rem;
+    display: none;
+}
+
+.success-message .icon {
+    background-color: var(--primary);
+    color: var(--light);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem;
+}
+
+.success-message h4 {
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.success-message p {
+    color: var(--gray-600);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--secondary);
+    color: var(--light);
+    padding: 3rem 0;
+}
+
+.footer a {
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+/* Membership cards */
+.membership-card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    background-color: var(--light);
+    position: relative;
+}
+
+.membership-card.featured {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+.membership-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.membership-header {
+    background-color: var(--primary);
+    color: var(--light);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.membership-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: var(--light);
+}
+
+.membership-duration {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+}
+
+/* Современные карточки тренеров */
+.trainer-card-modern {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    margin-bottom: 30px;
+}
+
+.trainer-card-modern:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.trainer-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 280px;
+}
+
+.trainer-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.trainer-card-modern:hover .trainer-image-wrapper img {
+    transform: scale(1.05);
+}
+
+.trainer-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(34, 34, 34, 0.9), transparent);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.trainer-card-modern:hover .trainer-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.trainer-specialization-badge {
+    display: inline-block;
+    background-color: #ff3b4e;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    box-shadow: 0 2px 10px rgba(255, 59, 78, 0.3);
+    transition: transform 0.3s ease;
+    z-index: 2;
+}
+
+.trainer-card-modern:hover .trainer-specialization-badge {
+    transform: translateY(-3px);
+}
+
+.trainer-details {
+    padding: 20px;
+    text-align: center;
+}
+
+.trainer-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #222222;
+    transition: color 0.3s ease;
+}
+
+.trainer-specialization {
+    display: block;
+    color: #ff3b4e;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.trainer-bio {
+    color: #666666;
+    font-size: 0.875rem;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.trainer-card-modern .btn {
+    border-radius: 50px;
+    padding: 0.4rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: #ff3b4e;
+    border-color: #ff3b4e;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.trainer-card-modern .btn:hover {
+    background-color: #e0323f;
+    border-color: #e0323f;
+    transform: translateY(-2px);
+}
+
+.trainer-social-links {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.trainer-card-modern:hover .trainer-social-links {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.trainer-social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #ffffff;
+    margin: 0 5px;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.trainer-social-links a:hover {
+    background-color: #ff3b4e;
+    transform: translateY(-3px);
+}
+
+/* Стили для таблицы расписания */
+.schedule-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-table th {
+    background-color: #222222;
+    color: #ffffff;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    border: none;
+}
+
+.schedule-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.schedule-table tr:hover td {
+    background-color: rgba(255, 59, 78, 0.05);
+}
+
+.schedule-class {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    border-left: 3px solid #ff3b4e;
+}
+
+.schedule-class:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-class-time {
+    font-weight: 700;
+    color: #222222;
+    font-size: 0.875rem;
+    margin-bottom: 5px;
+}
+
+.schedule-class-name {
+    font-weight: 600;
+    color: #ff3b4e;
+    margin-bottom: 5px;
+}
+
+.schedule-class-trainer {
+    font-size: 0.75rem;
+    color: #666666;
+}
+
+/* Анимированные элементы */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-fade-up {
+    animation: fadeUp 0.8s ease forwards;
+}
+
+.animate-fade-down {
+    animation: fadeDown 0.8s ease forwards;
+}
+
+.animate-fade-left {
+    animation: fadeLeft 0.8s ease forwards;
+}
+
+.animate-fade-right {
+    animation: fadeRight 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeLeft {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeRight {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Глобальные стили для заголовков, чтобы избежать синего цвета */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--secondary) !important;
+}
+
+h1.text-white, h2.text-white, h3.text-white, h4.text-white, h5.text-white, h6.text-white {
+    color: var(--light) !important;
+}
+
+.section-title, 
+.section-title h2 {
+    color: var(--secondary) !important;
+}
+
+.section-subtitle {
+    color: var(--text-dark) !important;
+}
+
+/* Переопределение стилей bootstrap для цветового текста */
+.text-primary {
+    color: var(--secondary) !important;
+}
+
+.text-info {
+    color: var(--secondary) !important;
+} 

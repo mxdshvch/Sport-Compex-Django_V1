@@ -1,0 +1,234 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    body {
+      background-color: #f4f6f9;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+    
+    .login-box {
+      width: 360px;
+      margin: 0 auto;
+    }
+    
+    .login-logo {
+      font-size: 2.1rem;
+      font-weight: 300;
+      margin-bottom: 0.9rem;
+      text-align: center;
+    }
+    
+    .login-logo a {
+      color: #495057;
+      text-decoration: none;
+    }
+    
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      word-wrap: break-word;
+      background-color: #fff;
+      background-clip: border-box;
+      border: 0 solid rgba(0,0,0,.125);
+      border-radius: 0.25rem;
+      box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+      margin-bottom: 1rem;
+    }
+    
+    .card-body {
+      flex: 1 1 auto;
+      min-height: 1px;
+      padding: 1.25rem;
+    }
+    
+    .login-card-body {
+      background-color: #fff;
+      border-top: 0;
+      color: #666;
+      padding: 20px;
+    }
+    
+    .login-box-msg {
+      margin: 0;
+      padding: 0 20px 20px;
+      text-align: center;
+    }
+    
+    .input-group {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    .input-group-append {
+      margin-left: -1px;
+      display: flex;
+    }
+    
+    .input-group-text {
+      display: flex;
+      align-items: center;
+      padding: .375rem .75rem;
+      margin-bottom: 0;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #495057;
+      text-align: center;
+      white-space: nowrap;
+      background-color: #e9ecef;
+      border: 1px solid #ced4da;
+      border-radius: 0 .25rem .25rem 0;
+    }
+    
+    .form-control {
+      display: block;
+      width: 100%;
+      height: calc(2.25rem + 2px);
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #495057;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      border-radius: .25rem;
+      box-shadow: inset 0 0 0 transparent;
+      transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    
+    .btn {
+      display: inline-block;
+      font-weight: 400;
+      color: #212529;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+      user-select: none;
+      background-color: transparent;
+      border: 1px solid transparent;
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border-radius: .25rem;
+      transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    
+    .btn-block {
+      display: block;
+      width: 100%;
+    }
+    
+    .btn-primary {
+      color: #fff;
+      background-color: #ff3b4e;
+      border-color: #ff3b4e;
+    }
+    
+    .btn-primary:hover {
+      color: #fff;
+      background-color: #e0303e;
+      border-color: #e0303e;
+    }
+    
+    .errornote {
+      color: #dc3545;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      background-color: #f8d7da;
+    }
+  </style>
+{% endblock %}
+
+{% block bodyclass %}hold-transition login-page{% endblock %}
+
+{% block body %}
+<div class="login-box">
+  <div class="login-logo">
+    <a href="{% url 'admin:index' %}"><b>Фитнес</b>Центр</a>
+  </div>
+  
+  <div class="card">
+    <div class="login-card-body">
+      <p class="login-box-msg">Войдите, чтобы начать сеанс</p>
+      
+      {% if form.errors and not form.non_field_errors %}
+        <p class="errornote">
+          {% if form.errors.items|length == 1 %}
+            {% translate "Please correct the error below." %}
+          {% else %}
+            {% translate "Please correct the errors below." %}
+          {% endif %}
+        </p>
+      {% endif %}
+      
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+          <p class="errornote">{{ error }}</p>
+        {% endfor %}
+      {% endif %}
+      
+      <form action="{{ app_path }}" method="post" id="login-form">
+        {% csrf_token %}
+        
+        <div class="input-group">
+          {{ form.username.errors }}
+          {{ form.username }}
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <i class="fas fa-envelope"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          {{ form.password.errors }}
+          {{ form.password }}
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <i class="fas fa-lock"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">Войти</button>
+          </div>
+        </div>
+        
+        <input type="hidden" name="next" value="{{ next }}">
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('id_username').classList.add('form-control');
+    document.getElementById('id_username').placeholder = 'Email';
+    document.getElementById('id_password').classList.add('form-control');
+    document.getElementById('id_password').placeholder = 'Пароль';
+  });
+</script>
+{% endblock %} 

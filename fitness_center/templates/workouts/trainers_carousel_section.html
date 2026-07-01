@@ -1,0 +1,46 @@
+{% load static %}
+
+<!-- Trainers Carousel Section -->
+<section class="py-5 bg-dark" id="trainers">
+    <div class="container">
+        <div class="row mb-4 text-center">
+            <div class="col-12">
+                <h2 class="section-title">Наши тренеры</h2>
+            </div>
+        </div>
+        
+        <div class="trainer-carousel">
+            <div class="trainer-carousel-container">
+                {% for trainer in trainers %}
+                <div class="trainer-carousel-slide">
+                    {% if trainer.photo %}
+                    <img src="{{ trainer.photo.url }}" alt="{{ trainer.first_name }} {{ trainer.last_name }}" class="trainer-carousel-image">
+                    {% else %}
+                    <img src="{% static 'img/trainer-placeholder.jpg' %}" alt="{{ trainer.first_name }} {{ trainer.last_name }}" class="trainer-carousel-image">
+                    {% endif %}
+                    <div class="trainer-carousel-content">
+                        <h3 class="trainer-carousel-name">{{ trainer.first_name }} {{ trainer.last_name }}</h3>
+                        <p class="trainer-carousel-specialization">{{ trainer.specialization }}</p>
+                        <button class="trainer-carousel-button" data-trainer-name="{{ trainer.first_name }} {{ trainer.last_name }}" data-bs-toggle="modal" data-bs-target="#applicationModal">Записаться</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Navigation buttons -->
+            <button class="trainer-carousel-nav trainer-carousel-prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="trainer-carousel-nav trainer-carousel-next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <!-- Dots indicator -->
+            <div class="trainer-carousel-dots"></div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'trainers' %}" class="btn btn-primary">Все тренеры</a>
+        </div>
+    </div>
+</section> 

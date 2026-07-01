@@ -1,0 +1,25 @@
+.simple-editor-toolbar {
+    margin-bottom: 10px;
+    padding: 5px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.simple-editor-button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.simple-editor-button:hover {
+    background: #e9ecef;
+}
+
+.simple-editor-button:active {
+    background: #dee2e6;
+} 

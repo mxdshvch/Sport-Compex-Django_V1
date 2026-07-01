@@ -1,0 +1,28 @@
+{% load static %}
+
+<section class="trainers-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Наши тренеры</h2>
+        
+        <div class="row">
+            {% for trainer in trainers %}
+            <div class="col-md-4 mb-4">
+                <div class="trainer-box">
+                    {% if trainer.photo %}
+                    <img src="{{ trainer.photo.url }}" alt="{{ trainer.name }}" class="img-fluid">
+                    {% else %}
+                    <img src="{% static 'img/trainer-placeholder.jpg' %}" alt="{{ trainer.name }}" class="img-fluid">
+                    {% endif %}
+                    <h4 class="trainer-name">{{ trainer.name }}</h4>
+                    <p class="trainer-spec">{{ trainer.specialization }}</p>
+                    <a href="#" class="btn btn-sm" data-trainer-name="{{ trainer.name }}" data-bs-toggle="modal" data-bs-target="#applicationModal">Записаться</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'trainers' %}" class="btn btn-outline-primary">Все тренеры</a>
+        </div>
+    </div>
+</section> 

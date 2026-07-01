@@ -1,0 +1,705 @@
+{% extends 'users/admin_style_base.html' %}
+{% load static %}
+{% load schedule_filters %}
+
+{% block title %}Расписание | Личный кабинет{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/schedule.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    /* Стили для переключателя залов */
+    .hall-toggle {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hall-toggle .btn-group {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .btn-small-hall, .btn-large-hall {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border: none;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-small-hall {
+        background-color: #f8f9fa;
+        color: #4caf50;
+    }
+    
+    .btn-small-hall.active {
+        background-color: #4caf50;
+        color: white;
+    }
+    
+    .btn-large-hall {
+        background-color: #f8f9fa;
+        color: #1e88e5;
+    }
+    
+    .btn-large-hall.active {
+        background-color: #1e88e5;
+        color: white;
+    }
+    
+    /* Стили для карточек тренировок */
+    .workout-card {
+        border-radius: 6px;
+        padding: 0.6rem;
+        margin: 0.2rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: box-shadow 0.2s ease;
+        color: white !important;
+        font-size: 0.85rem;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .workout-card:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .workout-time {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+        color: white !important;
+    }
+    
+    .workout-title {
+        font-weight: 500;
+        margin-bottom: 0.2rem;
+        color: white !important;
+        font-size: 0.85rem;
+    }
+    
+    .workout-trainer {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+        color: white !important;
+    }
+    
+    /* Принудительное применение белого цвета текста для всех элементов внутри карточек */
+    .workout-card *:not(.badge) {
+        color: white !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+    }
+    
+    /* Дополнительные стили для улучшения видимости текста */
+    .workout-title {
+        color: white !important;
+        font-weight: 600 !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.7) !important;
+    }
+    
+    .workout-trainer {
+        color: white !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.6) !important;
+    }
+    
+    /* Улучшенные стили для кнопок */
+    .workout-card .btn-dashboard {
+        color: white !important;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.4) !important;
+        border: 1px solid white !important;
+        font-weight: bold !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    /* Улучшенные стили для бейджей */
+    .workout-card .badge {
+        color: white !important;
+        border: 1px solid white !important;
+        font-weight: bold !important;
+        font-size: 0.75rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+    
+    /* Цветовая кодировка тренировок с белым текстом */
+    .yoga {
+        background-color: #0d47a1 !important; /* Еще более темный синий */
+        border-left: 4px solid #002171 !important;
+        color: white !important;
+    }
+    
+    .cardio {
+        background-color: #b71c1c !important; /* Еще более темный красный */
+        border-left: 4px solid #7f0000 !important;
+        color: white !important;
+    }
+    
+    .strength {
+        background-color: #1b5e20 !important; /* Еще более темный зеленый */
+        border-left: 4px solid #003300 !important;
+        color: white !important;
+    }
+    
+    .functional {
+        background-color: #e65100 !important; /* Более темный оранжевый */
+        border-left: 4px solid #ac1900 !important;
+        color: white !important;
+    }
+    
+    .interval {
+        background-color: #4527a0 !important; /* Более темный фиолетовый */
+        border-left: 4px solid #000070 !important;
+        color: white !important;
+    }
+    
+    .abs {
+        background-color: #006064 !important; /* Более темный голубой */
+        border-left: 4px solid #00363a !important;
+        color: white !important;
+    }
+    
+    .body-revolution {
+        background-color: #880e4f !important; /* Более темный розовый */
+        border-left: 4px solid #560027 !important;
+        color: white !important;
+    }
+    
+    .tabata {
+        background-color: #33691e !important; /* Более темный светло-зеленый */
+        border-left: 4px solid #003d00 !important;
+        color: white !important;
+    }
+    
+    .other {
+        background-color: #263238 !important; /* Более темный серо-синий */
+        border-left: 4px solid #000a12 !important;
+        color: white !important;
+    }
+    
+    /* Стиль для прошедших тренировок */
+    .past-workout {
+        background-color: #424242 !important; /* Более темный серый */
+        border-left: 4px solid #212121 !important;
+        opacity: 0.8;
+        color: white !important;
+    }
+    
+    /* Стили для таблицы расписания */
+    .schedule-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        table-layout: fixed;
+    }
+    
+    .schedule-table th {
+        padding: 0.75rem 0.5rem;
+        text-align: center;
+        background-color: #f2f2f2;
+        border-bottom: 1px solid #e0e0e0;
+        font-weight: 500;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        font-size: 0.9rem;
+    }
+    
+    .schedule-table td {
+        padding: 0.4rem;
+        vertical-align: top;
+        border-bottom: 1px solid #f0f0f0;
+        min-height: 80px;
+    }
+    
+    .time-cell {
+        font-weight: 500;
+        text-align: center;
+        width: 60px;
+        background-color: #f8f9fa;
+        border-right: 1px solid #e0e0e0;
+    }
+    
+    .schedule-day-column {
+        width: calc((100% - 60px) / 5);
+    }
+    
+    /* Стиль для выделения сегодняшнего дня */
+    .today-column {
+        background-color: rgba(255, 235, 59, 0.1);
+    }
+    
+    .today-header {
+        background-color: #ff9800 !important;
+        color: white !important;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+    }
+    
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 992px) {
+        .schedule-table {
+            min-width: 800px;
+        }
+    }
+    
+    /* Стили для модальных окон */
+    .modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .modal-header {
+        border-bottom: none;
+        padding: 15px 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .workout-info .row {
+        margin-bottom: 15px;
+    }
+    
+    .workout-info i {
+        width: 20px;
+        text-align: center;
+        margin-right: 10px;
+    }
+    
+    .workout-action .alert {
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+    
+    .workout-action .btn {
+        padding: 10px 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: box-shadow 0.2s ease;
+    }
+    
+    .workout-action .btn:hover {
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    
+    .btn-close-white {
+        filter: brightness(0) invert(1);
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb_active %}Расписание{% endblock %}
+
+{% block page_title %}Расписание тренировок{% endblock %}
+
+{% block admin_content %}
+<!-- Ваши записи на тренировки -->
+<div class="dashboard-card">
+    <div class="dashboard-card-header">
+        <h5 class="dashboard-card-title">
+            <i class="fas fa-bookmark"></i>Ваши записи на тренировки
+        </h5>
+        <span class="badge badge-primary">{{ user_registrations.count }} записей</span>
+    </div>
+    <div class="dashboard-card-body">
+        {% if user_registrations %}
+            <div class="table-responsive">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Время</th>
+                            <th>Тренировка</th>
+                            <th>Тренер</th>
+                            <th>Зал</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registration in user_registrations %}
+                        <tr>
+                            <td>
+                                <strong>{{ registration.workout.date|date:"d.m.Y" }}</strong>
+                                {% if registration.workout.date == today %}
+                                    <span class="badge badge-warning">Сегодня</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ registration.workout.time|time:"H:i" }}</td>
+                            <td>{{ registration.workout.title }}</td>
+                            <td>{{ registration.workout.trainer.name }}</td>
+                            <td>
+                                {% if registration.workout.hall == 'small' %}
+                                    <span class="badge badge-success">Малый зал</span>
+                                {% else %}
+                                    <span class="badge badge-primary">Большой зал</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'account_cancel_workout_registration' registration.id %}" class="btn-dashboard btn-dashboard-danger btn-dashboard-sm" onclick="return confirm('Вы уверены, что хотите отменить запись?')">
+                                    <i class="fas fa-times"></i> Отменить
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h5 class="empty-state-title">У вас пока нет записей на тренировки</h5>
+                <p class="empty-state-text">Выберите интересующую тренировку из расписания ниже и запишитесь.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Переключатель залов -->
+<div class="hall-toggle">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-small-hall active" id="smallHallBtn">Малый зал</button>
+        <button type="button" class="btn btn-large-hall" id="largeHallBtn">Большой зал</button>
+    </div>
+</div>
+
+<!-- Расписание малого зала -->
+<div id="smallHallSchedule" class="schedule-container">
+    <div class="dashboard-card mb-4">
+        <div class="dashboard-card-header" style="background-color: rgba(76, 175, 80, 0.1);">
+            <h5 class="dashboard-card-title">
+                <i class="fas fa-calendar-alt" style="color: #4caf50;"></i>Расписание малого зала
+            </h5>
+        </div>
+        <div class="dashboard-card-body p-0">
+            <div class="table-responsive">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for header in day_headers %}
+                            <th {% if header.is_today %}class="today-header"{% endif %}>{{ header.text }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hour in hours %}
+                        <tr>
+                            <td class="time-cell">{{ hour }}:00</td>
+                            {% for day in days %}
+                            <td class="schedule-day-column {% if forloop.first %}today-column{% endif %}">
+                                {% for workout in small_hall_workouts %}
+                                    {% if workout.date == day and workout.time.hour == hour %}
+                                    <div class="workout-card {% if workout.is_past or workout.is_registration_closed %}past-workout{% elif 'йога' in workout.title|lower %}yoga{% elif 'кардио' in workout.title|lower %}cardio{% elif 'силов' in workout.title|lower %}strength{% elif 'функционал' in workout.title|lower %}functional{% elif 'интервал' in workout.title|lower %}interval{% elif 'пресс' in workout.title|lower %}abs{% elif 'революция' in workout.title|lower %}body-revolution{% elif 'табата' in workout.title|lower %}tabata{% else %}other{% endif %}" style="color: white !important;" data-bs-toggle="modal" data-bs-target="#workoutModal{{ workout.id }}">
+                                        <div class="workout-title" style="color: white !important; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">{{ workout.title }}</div>
+                                        <div class="workout-trainer" style="color: white !important; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">{{ workout.trainer.name }}</div>
+                                        {% if workout in registered_workouts %}
+                                            <span class="badge badge-success mt-1" style="color: white !important;">Вы записаны</span>
+                                        {% elif workout.is_past %}
+                                            <span class="badge badge-secondary mt-1" style="color: white !important;">Тренировка прошла</span>
+                                        {% elif workout.is_registration_closed %}
+                                            <span class="badge badge-secondary mt-1" style="color: white !important;">Запись закрыта</span>
+                                        {% elif workout.is_full %}
+                                            <span class="badge badge-secondary mt-1" style="color: white !important;">Нет мест</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Модальное окно для тренировки -->
+                                    <div class="modal fade" id="workoutModal{{ workout.id }}" tabindex="-1" aria-labelledby="workoutModalLabel{{ workout.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="background-color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %}; color: white;">
+                                                    <h5 class="modal-title" id="workoutModalLabel{{ workout.id }}">{{ workout.title }}</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="workout-info mb-4">
+                                                        <div class="row mb-3">
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-calendar-day me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Дата:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{{ workout.date|date:"d.m.Y" }}</div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-clock me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Время:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{{ workout.time|time:"H:i" }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-user-tie me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Тренер:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{{ workout.trainer.name }}</div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-map-marker-alt me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Зал:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{% if workout.hall == 'small' %}Малый зал{% else %}Большой зал{% endif %}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="workout-action mt-4">
+                                                        {% if workout in registered_workouts %}
+                                                            <div class="alert alert-success d-flex align-items-center">
+                                                                <i class="fas fa-check-circle me-2"></i>
+                                                                <div>Вы уже записаны на эту тренировку</div>
+                                                            </div>
+                                                            {% with registration=user_registrations_dict|get_item:workout.id %}
+                                                            <a href="{% url 'account_cancel_workout_registration' registration.id %}" class="btn btn-danger w-100 d-flex align-items-center justify-content-center" onclick="return confirm('Вы уверены, что хотите отменить запись?')">
+                                                                <i class="fas fa-times me-2"></i> Отменить запись
+                                                            </a>
+                                                            {% endwith %}
+                                                        {% elif workout.is_past %}
+                                                            <div class="alert alert-secondary d-flex align-items-center">
+                                                                <i class="fas fa-clock me-2"></i>
+                                                                <div>Тренировка уже прошла</div>
+                                                            </div>
+                                                        {% elif workout.is_registration_closed %}
+                                                            <div class="alert alert-secondary d-flex align-items-center">
+                                                                <i class="fas fa-lock me-2"></i>
+                                                                <div>Запись на тренировку закрыта</div>
+                                                            </div>
+                                                        {% elif workout.is_full %}
+                                                            <div class="alert alert-warning d-flex align-items-center">
+                                                                <i class="fas fa-exclamation-circle me-2"></i>
+                                                                <div>Все места заняты</div>
+                                                            </div>
+                                                        {% else %}
+                                                            <a href="{% url 'account_register_for_workout' workout.id %}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                                <i class="fas fa-check me-2"></i> Записаться на тренировку
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Расписание большого зала -->
+<div id="largeHallSchedule" class="schedule-container" style="display: none;">
+    <div class="dashboard-card mb-4">
+        <div class="dashboard-card-header" style="background-color: rgba(30, 136, 229, 0.1);">
+            <h5 class="dashboard-card-title">
+                <i class="fas fa-calendar-alt" style="color: #1e88e5;"></i>Расписание большого зала
+            </h5>
+        </div>
+        <div class="dashboard-card-body p-0">
+            <div class="table-responsive">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for header in day_headers %}
+                            <th {% if header.is_today %}class="today-header"{% endif %}>{{ header.text }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hour in hours %}
+                        <tr>
+                            <td class="time-cell">{{ hour }}:00</td>
+                            {% for day in days %}
+                            <td class="schedule-day-column {% if forloop.first %}today-column{% endif %}">
+                                {% for workout in large_hall_workouts %}
+                                    {% if workout.date == day and workout.time.hour == hour %}
+                                    <div class="workout-card {% if workout.is_past or workout.is_registration_closed %}past-workout{% elif 'йога' in workout.title|lower %}yoga{% elif 'кардио' in workout.title|lower %}cardio{% elif 'силов' in workout.title|lower %}strength{% elif 'функционал' in workout.title|lower %}functional{% elif 'интервал' in workout.title|lower %}interval{% elif 'пресс' in workout.title|lower %}abs{% elif 'революция' in workout.title|lower %}body-revolution{% elif 'табата' in workout.title|lower %}tabata{% else %}other{% endif %}" style="color: white !important;" data-bs-toggle="modal" data-bs-target="#workoutModal{{ workout.id }}">
+                                        <div class="workout-title" style="color: white !important; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">{{ workout.title }}</div>
+                                        <div class="workout-trainer" style="color: white !important; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">{{ workout.trainer.name }}</div>
+                                        {% if workout in registered_workouts %}
+                                            <span class="badge badge-success mt-1" style="color: white !important;">Вы записаны</span>
+                                        {% elif workout.is_past %}
+                                            <span class="badge badge-secondary mt-1" style="color: white !important;">Тренировка прошла</span>
+                                        {% elif workout.is_registration_closed %}
+                                            <span class="badge badge-secondary mt-1" style="color: white !important;">Запись закрыта</span>
+                                        {% elif workout.is_full %}
+                                            <span class="badge badge-secondary mt-1" style="color: white !important;">Нет мест</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Модальное окно для тренировки -->
+                                    <div class="modal fade" id="workoutModal{{ workout.id }}" tabindex="-1" aria-labelledby="workoutModalLabel{{ workout.id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="background-color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %}; color: white;">
+                                                    <h5 class="modal-title" id="workoutModalLabel{{ workout.id }}">{{ workout.title }}</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="workout-info mb-4">
+                                                        <div class="row mb-3">
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-calendar-day me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Дата:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{{ workout.date|date:"d.m.Y" }}</div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-clock me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Время:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{{ workout.time|time:"H:i" }}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-user-tie me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Тренер:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{{ workout.trainer.name }}</div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="d-flex align-items-center mb-2">
+                                                                    <i class="fas fa-map-marker-alt me-2" style="color: {% if 'йога' in workout.title|lower %}#0d47a1{% elif 'кардио' in workout.title|lower %}#b71c1c{% elif 'силов' in workout.title|lower %}#1b5e20{% elif 'функционал' in workout.title|lower %}#e65100{% elif 'интервал' in workout.title|lower %}#4527a0{% elif 'пресс' in workout.title|lower %}#006064{% elif 'революция' in workout.title|lower %}#880e4f{% elif 'табата' in workout.title|lower %}#33691e{% else %}#263238{% endif %};"></i>
+                                                                    <strong>Зал:</strong>
+                                                                </div>
+                                                                <div class="ms-4">{% if workout.hall == 'small' %}Малый зал{% else %}Большой зал{% endif %}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="workout-action mt-4">
+                                                        {% if workout in registered_workouts %}
+                                                            <div class="alert alert-success d-flex align-items-center">
+                                                                <i class="fas fa-check-circle me-2"></i>
+                                                                <div>Вы уже записаны на эту тренировку</div>
+                                                            </div>
+                                                            {% with registration=user_registrations_dict|get_item:workout.id %}
+                                                            <a href="{% url 'account_cancel_workout_registration' registration.id %}" class="btn btn-danger w-100 d-flex align-items-center justify-content-center" onclick="return confirm('Вы уверены, что хотите отменить запись?')">
+                                                                <i class="fas fa-times me-2"></i> Отменить запись
+                                                            </a>
+                                                            {% endwith %}
+                                                        {% elif workout.is_past %}
+                                                            <div class="alert alert-secondary d-flex align-items-center">
+                                                                <i class="fas fa-clock me-2"></i>
+                                                                <div>Тренировка уже прошла</div>
+                                                            </div>
+                                                        {% elif workout.is_registration_closed %}
+                                                            <div class="alert alert-secondary d-flex align-items-center">
+                                                                <i class="fas fa-lock me-2"></i>
+                                                                <div>Запись на тренировку закрыта</div>
+                                                            </div>
+                                                        {% elif workout.is_full %}
+                                                            <div class="alert alert-warning d-flex align-items-center">
+                                                                <i class="fas fa-exclamation-circle me-2"></i>
+                                                                <div>Все места заняты</div>
+                                                            </div>
+                                                        {% else %}
+                                                            <a href="{% url 'account_register_for_workout' workout.id %}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                                <i class="fas fa-check me-2"></i> Записаться на тренировку
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block tab_specific_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Переключение между залами
+        const smallHallBtn = document.getElementById('smallHallBtn');
+        const largeHallBtn = document.getElementById('largeHallBtn');
+        const smallHallSchedule = document.getElementById('smallHallSchedule');
+        const largeHallSchedule = document.getElementById('largeHallSchedule');
+        
+        smallHallBtn.addEventListener('click', function() {
+            smallHallSchedule.style.display = 'block';
+            largeHallSchedule.style.display = 'none';
+            smallHallBtn.classList.add('active');
+            largeHallBtn.classList.remove('active');
+        });
+        
+        largeHallBtn.addEventListener('click', function() {
+            smallHallSchedule.style.display = 'none';
+            largeHallSchedule.style.display = 'block';
+            largeHallBtn.classList.add('active');
+            smallHallBtn.classList.remove('active');
+        });
+        
+        // Инициализация модальных окон Bootstrap
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(function(modal) {
+            new bootstrap.Modal(modal);
+        });
+        
+        // Делаем карточки тренировок кликабельными
+        const workoutCards = document.querySelectorAll('.workout-card');
+        workoutCards.forEach(function(card) {
+            // Обработчик клика по карточке без всплытия
+            card.addEventListener('click', function(e) {
+                // Создаем модальное окно только если клик был непосредственно по карточке
+                if (e.currentTarget === e.target || e.target.closest('.workout-card') === card) {
+                    const targetModalId = card.getAttribute('data-bs-target');
+                    const targetModal = document.querySelector(targetModalId);
+                    const modalInstance = bootstrap.Modal.getInstance(targetModal) || new bootstrap.Modal(targetModal);
+                    modalInstance.show();
+                }
+            });
+            
+            // Отключаем анимацию трансформации - только тень
+            card.style.transition = 'box-shadow 0.2s ease';
+            
+            card.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 8px 20px rgba(0,0,0,0.2)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            });
+        });
+        
+        // Обработчики для кнопок в модальном окне
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.modal-body .btn') || e.target.closest('.modal-body .btn')) {
+                // Предотвращаем всплытие события для кнопок внутри модального окна
+                e.stopPropagation();
+            }
+        }, true);
+    });
+</script>
+{% endblock %} 

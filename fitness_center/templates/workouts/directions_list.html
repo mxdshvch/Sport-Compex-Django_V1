@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Направления тренировок - POWER GYM{% endblock %}
+
+{% block content %}
+<!-- Hero секция -->
+<section class="hero-section" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/static/img/directions-bg.jpg') no-repeat center center; background-size: cover; min-height: 40vh; display: flex; align-items: center; justify-content: center; padding: 60px 0;">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 text-white mb-2">Направления тренировок</h1>
+            <p class="lead text-white">Выберите подходящий для вас формат тренировок</p>
+        </div>
+    </div>
+</section>
+
+<!-- Фильтр по целям тренировок -->
+<section class="py-3 bg-light">
+    <div class="container">
+        <div class="filter-container p-2 bg-white rounded shadow-sm mb-3">
+            <div class="filter-buttons d-flex flex-wrap justify-content-center gap-1">
+                <a href="{% url 'directions_list' %}" class="btn {% if not selected_goals %}btn-danger{% else %}btn-outline-dark{% endif %} filter-btn">
+                    ВСЕ НАПРАВЛЕНИЯ
+                </a>
+                {% for goal in goals %}
+                    <a href="{% url 'directions_list' %}?goals={{ goal.id }}" 
+                       class="btn {% if goal.id|stringformat:'s' in selected_goals %}btn-danger{% else %}btn-outline-dark{% endif %} filter-btn">
+                        {{ goal.name|upper }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Список направлений -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            {% for direction in directions %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="direction-card h-100">
+                        {% if direction.image %}
+                            <img src="{{ direction.image.url }}" alt="{{ direction.name }}" class="card-img-top" style="height: 240px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'img/direction-placeholder.jpg' %}" alt="{{ direction.name }}" class="card-img-top" style="height: 240px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h3 class="card-title">{{ direction.name }}</h3>
+                            <div class="card-text-container">
+                                <p class="card-text">{{ direction.description|safe|truncatewords:30 }}</p>
+                            </div>
+                            <div class="card-button-wrapper mt-auto text-center">
+                                <a href="{% url 'direction_detail' direction.id %}" class="btn btn-danger direction-button">ПОДРОБНЕЕ</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-info-circle me-2"></i> Направлений с выбранной целью не найдено.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA секция -->
+<section class="cta-section py-5" style="background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/static/img/cta-bg.jpg') no-repeat center center; background-size: cover; color: white;">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="mb-3">Готовы начать?</h2>
+            <p class="lead mb-4">Присоединяйтесь к нашему фитнес-сообществу уже сегодня!</p>
+            <a href="#" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#applicationModal">ОФОРМИТЬ АБОНЕМЕНТ</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Стили для фильтра */
+    .filter-btn {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        margin: 3px;
+        white-space: nowrap;
+    }
+    
+    .filter-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-danger {
+        background-color: #ff3b4e;
+        border-color: #ff3b4e;
+    }
+    
+    .btn-danger:hover {
+        background-color: #e0323f;
+        border-color: #e0323f;
+    }
+    
+    /* Стили для карточек направлений */
+    .direction-card {
+        transition: all 0.3s ease;
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0 auto;
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        position: relative;
+    }
+    
+    .direction-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .direction-card .card-img-top {
+        transition: all 0.5s ease;
+    }
+    
+    .direction-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    
+    .direction-card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 25px;
+        position: relative;
+        text-align: center;
+    }
+    
+    .direction-card .card-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #222;
+    }
+    
+    .card-text-container {
+        flex: 1;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    
+    .direction-card .card-text {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    .direction-button {
+        display: inline-block;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        background-color: #ff3b4e !important;
+        border-color: #ff3b4e !important;
+        color: white !important;
+        box-shadow: 0 4px 10px rgba(255, 59, 78, 0.3);
+        transition: all 0.3s ease;
+        margin: 0 auto;
+        width: auto;
+    }
+    
+    .direction-button:hover {
+        transform: translateY(-3px);
+        background-color: #e0323f !important;
+        border-color: #e0323f !important;
+        box-shadow: 0 6px 15px rgba(255, 59, 78, 0.4);
+    }
+    
+    /* Стили для CTA-секции */
+    .cta-section {
+        position: relative;
+    }
+    
+    .cta-section h2 {
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    
+    .cta-section .lead {
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .cta-section .btn-lg {
+        padding: 12px 30px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .direction-card {
+            margin-bottom: 20px;
+        }
+        
+        .hero-section {
+            min-height: 30vh;
+            padding: 40px 0;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+        }
+        
+        .cta-section h2 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %} 

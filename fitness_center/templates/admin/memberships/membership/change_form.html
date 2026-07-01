@@ -1,0 +1,321 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+  <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+  {{ media }}
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/forms.css' %}">
+  <style>
+    /* Основные стили формы */
+    .membership-form-container {
+      max-width: 100%;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    
+    .membership-form-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .membership-form-title {
+      color: #ff3b4e;
+      margin-bottom: 25px;
+      font-size: 24px;
+      font-weight: 500;
+    }
+    
+    /* Стили полей формы */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: #ff3b4e;
+      box-shadow: 0 0 0 0.2rem rgba(255, 59, 78, 0.25);
+      outline: none;
+    }
+    
+    /* Стили для текстового редактора */
+    .form-group textarea {
+      min-height: 150px;
+    }
+    
+    /* Стили для загрузки изображения */
+    .image-upload-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .image-preview {
+      max-width: 300px;
+      max-height: 200px;
+      margin-top: 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      display: none;
+    }
+    
+    /* Кнопки */
+    .submit-row {
+      padding: 15px 0;
+      text-align: right;
+      margin-top: 20px;
+    }
+    
+    .submit-row input[type="submit"] {
+      padding: 12px 20px;
+      background-color: #ff3b4e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 10px;
+      font-size: 15px;
+      transition: background-color 0.3s;
+    }
+    
+    .submit-row input[type="submit"]:hover {
+      background-color: #e6303f;
+    }
+    
+    .submit-row a.deletelink {
+      padding: 12px 20px;
+      background-color: #dc3545;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      float: left;
+      transition: background-color 0.3s;
+    }
+    
+    .submit-row a.deletelink:hover {
+      background-color: #c82333;
+    }
+    
+    /* Сообщения об ошибках */
+    .errorlist {
+      color: #dc3545;
+      padding-left: 20px;
+      margin-top: 5px;
+      list-style-type: circle;
+    }
+    
+    /* Адаптивный дизайн */
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-right: -15px;
+      margin-left: -15px;
+    }
+    
+    .form-row > .form-group {
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+    
+    @media (min-width: 768px) {
+      .form-row > .form-group {
+        flex: 0 0 50%;
+        max-width: 50%;
+      }
+    }
+    
+    /* Скрыть хлебные крошки */
+    .breadcrumbs {
+      display: none !important;
+    }
+    
+    /* Стили для подсказок */
+    .help {
+      color: #6c757d;
+      font-size: 0.875rem;
+      margin-top: 5px;
+      font-style: italic;
+    }
+    
+    /* Скрыть стандартный заголовок */
+    #content h1:first-child {
+      display: none !important;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="membership-form-container">
+  <div class="membership-form-card">
+    <h1 class="membership-form-title">
+      {% if add %}
+        Добавление нового абонемента
+      {% else %}
+        Редактирование абонемента
+      {% endif %}
+    </h1>
+    
+    {% if errors %}
+      <div class="alert alert-danger">
+        {% if errors|length == 1 %}
+          {% translate "Пожалуйста, исправьте ошибку ниже." %}
+        {% else %}
+          {% translate "Пожалуйста, исправьте ошибки ниже." %}
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>
+      {% csrf_token %}
+      {% block form_top %}{% endblock %}
+      
+      {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
+      {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
+      
+      {% if save_on_top %}{% block submit_buttons_top %}{% submit_row %}{% endblock %}{% endif %}
+      
+      {% if errors %}
+        <div class="alert alert-danger">
+          {% for field in adminform.form.fields.values %}
+            {% if field.errors %}
+              <p>{{ field.label }}: {{ field.errors|striptags }}</p>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      {% block field_sets %}
+        {% for fieldset in adminform %}
+          <div class="form-section">
+            {% if fieldset.name %}
+              <h3 class="form-section-title">{{ fieldset.name }}</h3>
+            {% endif %}
+            
+            {% for line in fieldset %}
+              <div class="form-row">
+                {% for field in line %}
+                  <div class="form-group{% if field.field.name %} field-{{ field.field.name }}{% endif %}">
+                    {% if field.is_checkbox %}
+                      <div class="checkbox">
+                        {{ field.field }}
+                        <label for="{{ field.field.id_for_label }}">{{ field.field.label }}</label>
+                      </div>
+                    {% else %}
+                      <label for="{{ field.field.id_for_label }}">{{ field.field.label }}</label>
+                      
+                      {% if field.field.name == 'image' %}
+                        <div class="image-upload-container">
+                          {{ field.field }}
+                          <img id="image-preview" class="image-preview" src="#" alt="Предпросмотр изображения">
+                        </div>
+                      {% else %}
+                        {{ field.field }}
+                      {% endif %}
+                    {% endif %}
+                    
+                    {% if field.field.help_text and field.field.name != 'description' %}
+                      <div class="help">{{ field.field.help_text|safe }}</div>
+                    {% endif %}
+                    
+                    {% if field.field.errors %}
+                      <ul class="errorlist">
+                        {% for error in field.field.errors %}
+                          <li>{{ error }}</li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      {% endblock %}
+      
+      {% block after_field_sets %}{% endblock %}
+      
+      {% block inline_field_sets %}
+        {% for inline_admin_formset in inline_admin_formsets %}
+          {% include inline_admin_formset.opts.template %}
+        {% endfor %}
+      {% endblock %}
+      
+      {% block after_related_objects %}{% endblock %}
+      
+      {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+      
+      {% block admin_change_form_document_ready %}
+        <script>
+          (function($) {
+            $(document).ready(function() {
+              // Обработка кнопок добавления связанных объектов
+              $('.add-another').click(function(e) {
+                e.preventDefault();
+                showAddAnotherPopup(this);
+              });
+              
+              $('.related-lookup').click(function(e) {
+                e.preventDefault();
+                showRelatedObjectLookupPopup(this);
+              });
+              
+              // Предпросмотр загруженного изображения
+              function readURL(input) {
+                if (input.files && input.files[0]) {
+                  var reader = new FileReader();
+                  
+                  reader.onload = function(e) {
+                    $('#image-preview').attr('src', e.target.result);
+                    $('#image-preview').css('display', 'block');
+                  };
+                  
+                  reader.readAsDataURL(input.files[0]);
+                }
+              }
+              
+              // Обработчик изменения поля загрузки изображения
+              $('input[type="file"]').change(function() {
+                readURL(this);
+              });
+              
+              // Показать предпросмотр, если изображение уже загружено
+              {% if not add and original.image %}
+                $('#image-preview').attr('src', '{{ original.image.url }}');
+                $('#image-preview').css('display', 'block');
+              {% endif %}
+            });
+          })(django.jQuery);
+        </script>
+      {% endblock %}
+      
+      {% prepopulated_fields_js %}
+    </form>
+  </div>
+</div>
+{% endblock %} 

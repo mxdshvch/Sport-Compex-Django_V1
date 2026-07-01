@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #ff4444;
+        --dark-color: #000000;
+        --light-color: #f5f5f5;
+        --gray-color: #757575;
+    }
+    
+    body {
+        background-color: #f8f9fa;
+    }
+    
+    /* Стиль для бокового меню */
+    .profile-sidebar {
+        background-color: var(--dark-color);
+        color: var(--light-color);
+        min-height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 285px;
+        overflow-y: auto;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
+    
+    /* Мобильное меню */
+    .mobile-menu-toggle {
+        display: none;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1010;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .mobile-menu-toggle:hover {
+        background-color: #e53935;
+    }
+    
+    /* Стиль для аватара пользователя */
+    .user-profile {
+        padding: 30px 0;
+        text-align: center;
+        background-color: var(--dark-color);
+    }
+    
+    .user-avatar {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        background-color: #ff8c00;
+        color: white;
+        font-size: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+    }
+    
+    .user-info {
+        color: white;
+        text-align: center;
+    }
+    
+    .user-info h3 {
+        margin: 10px 0 5px;
+        font-size: 24px;
+    }
+    
+    .user-info p {
+        margin: 0;
+        color: #aaa;
+        font-size: 14px;
+    }
+    
+    .user-status {
+        display: inline-block;
+        background-color: var(--primary-color);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    
+    /* Стиль для меню навигации */
+    .nav-menu {
+        padding: 0;
+        list-style: none;
+        margin-top: 20px;
+    }
+    
+    .nav-menu li {
+        margin-bottom: 0;
+    }
+    
+    .nav-menu a {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    
+    .nav-menu a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-menu a.active {
+        background-color: var(--primary-color);
+    }
+    
+    .nav-menu i {
+        margin-right: 15px;
+        width: 20px;
+        text-align: center;
+        font-size: 18px;
+    }
+    
+    .nav-divider {
+        height: 20px;
+    }
+    
+    .logout-btn {
+        color: white !important;
+    }
+    
+    /* Стиль для основного контента */
+    .main-content {
+        margin-left: 285px;
+        padding: 20px;
+    }
+    
+    .breadcrumb {
+        background: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    
+    .breadcrumb-item a {
+        color: #666;
+    }
+    
+    .breadcrumb-item.active {
+        color: #333;
+    }
+    
+    .breadcrumb-item+.breadcrumb-item::before {
+        content: ">";
+    }
+    
+    .profile-content {
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    }
+    
+    .profile-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .profile-header h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 500;
+    }
+    
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 991px) {
+        .profile-sidebar {
+            width: 70px;
+            transform: translateX(-100%);
+        }
+        
+        .mobile-menu-toggle {
+            display: block;
+        }
+        
+        .sidebar-visible .profile-sidebar {
+            transform: translateX(0);
+            width: 250px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+        }
+        
+        .user-info h3, .user-info p, .user-status {
+            display: none;
+        }
+        
+        .sidebar-visible .user-info h3, 
+        .sidebar-visible .user-info p, 
+        .sidebar-visible .user-status {
+            display: block;
+        }
+        
+        .nav-menu i {
+            margin-right: 0;
+        }
+        
+        .nav-menu span {
+            display: none;
+        }
+        
+        .sidebar-visible .nav-menu i {
+            margin-right: 15px;
+        }
+        
+        .sidebar-visible .nav-menu span {
+            display: inline;
+        }
+        
+        .main-content {
+            margin-left: 0;
+            padding-top: 60px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Кнопка мобильного меню -->
+<button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- Боковое меню -->
+<div class="profile-sidebar">
+    <div class="user-profile">
+        <div class="user-avatar">
+            <span>1</span>
+        </div>
+        <div class="user-info">
+            <h3>123@mail.ru</h3>
+            <p>456@mail.ru</p>
+            <div class="user-status">Клиент</div>
+        </div>
+    </div>
+    
+    <ul class="nav-menu">
+        <li>
+            <a href="{% url 'profile' %}" class="{% if active_tab == 'profile' %}active{% endif %}">
+                <i class="fas fa-user"></i>
+                <span>Профиль</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'schedule' %}" class="{% if active_tab == 'schedule' %}active{% endif %}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Расписание</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'trainers' %}" class="{% if active_tab == 'trainers' %}active{% endif %}">
+                <i class="fas fa-dumbbell"></i>
+                <span>Тренеры</span>
+            </a>
+        </li>
+        
+        <div class="nav-divider"></div>
+        
+        <li>
+            <a href="{% url 'home' %}">
+                <i class="fas fa-home"></i>
+                <span>На главную</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Выход</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- Основной контент -->
+<div class="main-content">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'profile' %}">Личный кабинет</a></li>
+            <li class="breadcrumb-item active">{% block breadcrumb_title %}{% endblock %}</li>
+        </ol>
+    </nav>
+    
+    <h2>{% block section_title %}{% endblock %}</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% block profile_content %}{% endblock %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function() {
+                document.body.classList.toggle('sidebar-visible');
+            });
+        }
+        
+        // Закрывать меню при клике на ссылку в мобильной версии
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 991) {
+                    document.body.classList.remove('sidebar-visible');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+{% block tab_specific_js %}{% endblock %}
+{% endblock %} 

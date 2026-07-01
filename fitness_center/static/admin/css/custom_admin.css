@@ -1,0 +1,236 @@
+/* Custom Admin Styles */
+
+/* Import Google Fonts - Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+/* Import Roboto font overrides */
+@import url('admin-roboto.css');
+
+/* Custom variables */
+:root {
+    --primary-color: #ff3b4e;
+    --secondary-color: #e0323f;
+    --dark-color: #222222;
+    --light-color: #ffffff;
+    --grey-color: #f8f9fa;
+    --border-color: #e9ecef;
+    --primary-font-size: 14px;
+    --heading-font-size: 24px;
+    --small-font-size: 12px;
+}
+
+/* Custom branding styles */
+#header {
+    background: var(--dark-color);
+    color: var(--light-color);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+    color: var(--light-color);
+    font-size: var(--heading-font-size) !important;
+    font-weight: 500 !important;
+}
+
+#branding img {
+    height: 30px;
+    margin-right: 10px;
+}
+
+div.breadcrumbs {
+    background: var(--primary-color);
+    color: var(--light-color);
+    padding: 12px 20px;
+    font-size: var(--primary-font-size) !important;
+}
+
+div.breadcrumbs a {
+    color: var(--light-color);
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: var(--primary-color);
+    color: var(--light-color);
+    font-weight: 500;
+    font-size: 16px !important;
+    padding: 10px 15px;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: var(--primary-color);
+    color: var(--light-color);
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: var(--primary-font-size) !important;
+    font-weight: 500;
+}
+
+.button:active, input[type=submit]:active, input[type=button]:active,
+.button:focus, input[type=submit]:focus, input[type=button]:focus,
+.button:hover, input[type=submit]:hover, input[type=button]:hover {
+    background: var(--secondary-color);
+}
+
+.button.default, input[type=submit].default, .submit-row input.default {
+    background: var(--primary-color);
+    font-weight: 500;
+}
+
+.button.default:active, input[type=submit].default:active,
+.button.default:focus, input[type=submit].default:focus,
+.button.default:hover, input[type=submit].default:hover {
+    background: var(--secondary-color);
+}
+
+/* Override form fields */
+.form-row {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-row label {
+    font-size: var(--primary-font-size) !important;
+    font-weight: 500;
+}
+
+.form-row .help {
+    font-size: var(--small-font-size) !important;
+    color: #666;
+}
+
+/* Tables */
+#changelist table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#changelist table thead th {
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 12px 10px;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+#changelist table tbody tr td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#changelist table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Dashboard */
+.dashboard .module table th,
+.app-dashboard .module table th {
+    width: auto;
+}
+
+/* Fix monospace content to use Roboto */
+.paginator .this-page,
+pre, code, kbd, samp, tt {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--primary-font-size) !important;
+}
+
+/* Дополнительные стили для админки */
+
+/* Стили для кнопок действий */
+.button, input[type=submit], input[type=button], .submit-row input {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover {
+    background-color: #c0392b;
+}
+
+/* Стили для фильтров */
+.filter-button {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-right: 5px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    color: #495057;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.filter-button:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.filter-button.active {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+    color: #fff;
+}
+
+/* Стили для поиска */
+.search-box {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-box input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+}
+
+.search-box button {
+    padding: 8px 15px;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.search-box button:hover {
+    background-color: #c0392b;
+}
+
+/* Стили для пустого состояния */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.empty-state p {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+/* Исправление для иконок в админке */
+.sidebar .sidebar-menu a i {
+    display: inline-block;
+    width: 16px;
+    margin-right: 10px;
+} 

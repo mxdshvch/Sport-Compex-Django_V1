@@ -1,0 +1,178 @@
+{% extends 'users/admin_style_base.html' %}
+{% load static %}
+
+{% block title %}Заявка #{{ request.id }} | Личный кабинет{% endblock %}
+
+{% block breadcrumb_active %}Заявка #{{ request.id }}{% endblock %}
+
+{% block page_title %}{{ request.title }}{% endblock %}
+
+{% block admin_content %}
+<div class="dashboard-card">
+    <div class="dashboard-card-header">
+        <h5 class="dashboard-card-title">
+            <i class="fas fa-comments"></i> Чат
+        </h5>
+        <div class="request-status">
+            {% if request.status == 'new' %}
+                <span class="badge badge-info">Новая</span>
+            {% elif request.status == 'in_progress' %}
+                <span class="badge badge-warning">В обработке</span>
+            {% elif request.status == 'completed' %}
+                <span class="badge badge-success">Решена</span>
+            {% elif request.status == 'rejected' %}
+                <span class="badge badge-danger">Отклонена</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="join-message">
+                {{ request.created_at|date:"d.m.Y H:i" }} • Начало диалога
+            </div>
+            {% for message in request.messages.all %}
+                <div class="message message-{% if message.sender.is_staff %}admin{% else %}user{% endif %}" data-message-id="{{ message.id }}">
+                    <div class="message-content">{{ message.message }}</div>
+                    <div class="message-meta">
+                        {{ message.sender.name }} • {{ message.created_at|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if request.status != 'completed' %}
+            <div class="chat-input">
+                <div class="chat-input-container">
+                    <textarea id="messageInput" placeholder="Введите сообщение..." rows="1"></textarea>
+                    <button id="sendMessage">Отправить</button>
+                </div>
+            </div>
+        {% else %}
+            <div class="join-message" style="margin: 15px;">
+                Заявка завершена. Отправка сообщений недоступна.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendMessage');
+    let lastMessageTimestamp = null;
+    let displayedMessageIds = new Set();
+
+    // Сохраняем ID уже отображенных сообщений
+    document.querySelectorAll('.message').forEach(msg => {
+        const messageId = msg.getAttribute('data-message-id');
+        if (messageId) {
+            displayedMessageIds.add(messageId);
+        }
+    });
+
+    // Прокрутка чата вниз
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Начальная прокрутка
+    scrollToBottom();
+
+    // Отправка сообщения
+    async function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        try {
+            const response = await fetch('{% url "send_message" request.id %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: `message=${encodeURIComponent(message)}`
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                appendMessage(data);
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                scrollToBottom();
+            } else {
+                const error = await response.json();
+                alert(error.error || 'Ошибка при отправке сообщения');
+            }
+        } catch (error) {
+            alert('Ошибка при отправке сообщения');
+        }
+    }
+
+    // Добавление сообщения в чат
+    function appendMessage(message) {
+        // Проверяем, не было ли уже добавлено это сообщение
+        if (displayedMessageIds.has(message.id)) {
+            return;
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message message-${message.is_staff ? 'admin' : 'user'}`;
+        messageDiv.setAttribute('data-message-id', message.id);
+        messageDiv.innerHTML = `
+            <div class="message-content">${message.message}</div>
+            <div class="message-meta">
+                ${message.sender_name} • ${message.created_at}
+            </div>
+        `;
+        chatMessages.appendChild(messageDiv);
+        displayedMessageIds.add(message.id);
+    }
+
+    // Обработчики событий
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    }
+
+    if (messageInput) {
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Автоматическое изменение высоты текстового поля
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    }
+
+    // Периодическое обновление чата
+    setInterval(async function() {
+        try {
+            const response = await fetch(`{% url "get_new_messages" request.id %}?last_timestamp=${lastMessageTimestamp || ''}`);
+            if (response.ok) {
+                const data = await response.json();
+                let hasNewMessages = false;
+                data.messages.forEach(message => {
+                    if (!displayedMessageIds.has(message.id)) {
+                        appendMessage(message);
+                        hasNewMessages = true;
+                    }
+                });
+                if (hasNewMessages) {
+                    scrollToBottom();
+                }
+                if (data.messages.length > 0) {
+                    lastMessageTimestamp = data.messages[data.messages.length - 1].created_at;
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка при получении новых сообщений:', error);
+        }
+    }, 5000);
+});
+</script>
+{% endblock %} 

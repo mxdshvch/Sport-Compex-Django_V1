@@ -1,0 +1,258 @@
+{% extends 'users/auth_base.html' %}
+
+{% block title %}Регистрация - POWER GYM{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-wrapper">
+        <div class="register-card">
+            <div class="register-header">
+                <h2 class="register-title">Регистрация</h2>
+                <div class="logo-circle">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+            </div>
+            
+            <div class="register-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group mb-3">
+                        <div class="form-floating">
+                            {{ form.name }}
+                            <label for="{{ form.name.id_for_label }}">
+                                <i class="fas fa-user me-2"></i>Имя
+                            </label>
+                        </div>
+                        {% if form.name.errors %}
+                            <div class="text-danger mt-2">
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ form.name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <div class="form-floating">
+                            {{ form.email }}
+                            <label for="{{ form.email.id_for_label }}">
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </label>
+                        </div>
+                        {% if form.email.errors %}
+                            <div class="text-danger mt-2">
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ form.email.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="form-floating">
+                                    {{ form.password1 }}
+                                    <label for="{{ form.password1.id_for_label }}">
+                                        <i class="fas fa-lock me-2"></i>Пароль
+                                    </label>
+                                </div>
+                                <div class="form-text small mt-2">
+                                    <i class="fas fa-info-circle me-1 text-danger"></i>{{ form.password1.help_text }}
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="text-danger mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.password1.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="form-floating">
+                                    {{ form.password2 }}
+                                    <label for="{{ form.password2.id_for_label }}">
+                                        <i class="fas fa-lock me-2"></i>Подтверждение
+                                    </label>
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="text-danger mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.password2.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if form.non_field_errors %}
+                        <div class="register-error">
+                            <i class="fas fa-exclamation-triangle me-2"></i>{{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="register-actions">
+                        <button type="submit" class="btn btn-gradient w-100">
+                            Зарегистрироваться
+                        </button>
+                    </div>
+                    
+                    <div class="login-link-container">
+                        <p>Уже есть аккаунт? <a href="{% url 'login' %}" class="link-login">Войти</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<!-- Скрываем подвал на странице регистрации -->
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background-color: #f8f9fa;
+    }
+    
+    .register-wrapper {
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .register-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .register-header {
+        padding: 2rem 1rem 1rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .logo-circle {
+        width: 60px;
+        height: 60px;
+        background: #222;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .register-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+    
+    .register-body {
+        padding: 1.5rem 2rem 2.5rem;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+    
+    .form-floating > label {
+        padding-left: 1rem;
+        color: #888;
+    }
+    
+    .form-control {
+        height: 58px;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        font-size: 1rem;
+        padding: 1rem 1rem 1rem 1rem;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #ff3b4e;
+        background-color: #fff;
+    }
+    
+    .form-text {
+        color: #666;
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+    
+    .register-error {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        background: #fff0f0;
+        border-left: 4px solid #ff3b4e;
+        color: #e0323f;
+        border-radius: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .register-actions {
+        margin-top: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(90deg, #ff3b4e, #e0323f);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0.9rem 1.5rem;
+        border-radius: 30px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(224, 50, 63, 0.3);
+    }
+    
+    .btn-gradient:hover, .btn-gradient:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(224, 50, 63, 0.4);
+        background: linear-gradient(90deg, #ff4d5e, #e0323f);
+        color: white;
+    }
+    
+    .login-link-container {
+        text-align: center;
+    }
+    
+    .login-link-container p {
+        margin-bottom: 0;
+        color: #666;
+        font-size: 0.95rem;
+    }
+    
+    .link-login {
+        color: #ff3b4e;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .link-login:hover {
+        color: #e0323f;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 576px) {
+        .register-body {
+            padding: 1.5rem 1.5rem 2rem;
+        }
+    }
+</style>
+{% endblock %} 

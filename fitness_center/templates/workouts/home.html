@@ -1,0 +1,1221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная - Фитнес-центр{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="fullscreen-section hero-section" id="home">
+    <!-- Видео на фоне -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline id="hero-video" poster="{% static 'img/default-trainer.jpg' %}">
+            <source src="{% static 'video/gym-video.mp4' %}" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+    
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h1 class="display-4 mb-4 text-white">Добро пожаловать в фитнес-центр</h1>
+                <p class="lead mb-5 text-white">Начните свой путь к здоровому образу жизни вместе с нами. Профессиональные тренеры, современное оборудование и разнообразные программы тренировок.</p>
+                <div class="text-center">
+                    <a href="#memberships" class="btn btn-danger scroll-btn" style="min-width: 250px;">ВЫБРАТЬ АБОНЕМЕНТ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="fullscreen-section features-section py-4" id="features">
+    <div class="container">
+        <div class="row mb-3 text-center">
+            <div class="col-12">
+                <h2 class="section-title" style="color: #222222 !important;">Наши преимущества</h2>
+                <p class="section-subtitle">Почему стоит выбрать именно нас</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="feature-card text-center">
+                    <div class="feature-icon-circle bg-danger text-white mb-2">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3 class="h5">Современное оборудование</h3>
+                    <p class="text-muted">Наш центр оснащен новейшим оборудованием от ведущих мировых производителей.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="feature-card text-center">
+                    <div class="feature-icon-circle bg-danger text-white mb-2">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3 class="h5">Профессиональные тренеры</h3>
+                    <p class="text-muted">Опытные тренеры с профессиональными сертификатами помогут достичь ваших целей.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="feature-card text-center">
+                    <div class="feature-icon-circle bg-danger text-white mb-2">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3 class="h5">Разнообразные программы</h3>
+                    <p class="text-muted">Мы предлагаем широкий выбор программ для всех уровней подготовки и целей.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Directions Section -->
+<section class="fullscreen-section directions-section py-2 bg-light" id="directions">
+    <div class="container">
+        <div class="row mb-1 text-center">
+            <div class="col-12">
+                <h2 class="section-title">Популярные направления</h2>
+                <p class="section-subtitle">Выберите подходящий для вас формат тренировок</p>
+            </div>
+        </div>
+        
+        <!-- Фильтр по целям тренировок -->
+        <div class="training-goals-filter mb-3">
+            <div class="filter-container p-2 bg-white rounded shadow-sm">
+                <div class="filter-buttons d-flex flex-wrap justify-content-center gap-1">
+                    <button class="btn btn-outline-dark filter-btn" data-goal="all">ВСЕ НАПРАВЛЕНИЯ</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="weight-loss">СКОРРЕКТИРОВАТЬ ВЕС</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="muscle-gain">НАБРАТЬ МЫШЕЧНУЮ МАССУ</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="martial-arts">ОБУЧИТЬСЯ ЕДИНОБОРСТВАМ</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="fitness">ОСТАВАТЬСЯ В ТОНУСЕ</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="stress-relief">СНЯТЬ СТРЕСС</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="anti-aging">ОСТАВАТЬСЯ МОЛОДЫМ</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="rehabilitation">ВОССТАНОВИТЬСЯ ПОСЛЕ ТРАВМЫ</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="competition">ПОДГОТОВИТЬСЯ К СОРЕВНОВАНИЯМ</button>
+                    <button class="btn btn-outline-dark filter-btn" data-goal="family">ЗАНЯТИЯ ВМЕСТЕ С МАЛЫШОМ</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row directions-container">
+            {% for direction in directions %}
+            <div class="col-lg-4 col-md-6 mb-3 direction-item" data-goals="{% for goal in direction.goals.all %}{{ goal.name|lower }} {% endfor %}">
+                <div class="direction-card">
+                    {% if direction.image %}
+                    <img src="{{ direction.image.url }}" alt="{{ direction.name }}" class="card-img-top">
+                    {% else %}
+                    <img src="{% static 'img/default-trainer.jpg' %}" alt="{{ direction.name }}" class="card-img-top">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ direction.name }}</h5>
+                        <div class="card-text-container">
+                            <p class="card-text">{{ direction.description|truncatewords:15 }}</p>
+                        </div>
+                        <div class="card-button-wrapper">
+                            <a href="{% url 'direction_detail' direction.id %}" class="btn btn-danger direction-button">ПОДРОБНЕЕ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>Направления тренировок пока не добавлены</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Кнопка "Показать все" -->
+        <div class="text-center mt-4 show-all-container" style="display: none;">
+            <a href="/directions/" class="btn btn-outline-danger show-all-btn" id="showAllDirections">ПОКАЗАТЬ ВСЕ НАПРАВЛЕНИЯ</a>
+        </div>
+    </div>
+</section>
+
+<!-- Memberships Section -->
+<section class="fullscreen-section memberships-section py-4 bg-light" id="memberships">
+    <div class="container">
+        <div class="row mb-3 text-center">
+            <div class="col-12">
+                <h2 class="section-title">Выберите абонемент</h2>
+                <p class="section-subtitle">Мы предлагаем гибкие варианты абонементов для любых потребностей</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for membership in memberships %}
+            <div class="col-md-4 mb-3">
+                <div class="membership-card">
+                    {% if membership.image %}
+                    <img src="{{ membership.image.url }}" alt="{{ membership.name }}" class="membership-card-image">
+                    {% else %}
+                    <img src="{% static 'img/default-trainer.jpg' %}" alt="{{ membership.name }}" class="membership-card-image">
+                    {% endif %}
+                    <div class="card-body bg-white text-dark">
+                        <h4 class="card-title text-center mb-3">{{ membership.name }}</h4>
+                        
+                        <div class="membership-description">
+                            {% if membership.description %}
+                            <p>{{ membership.description|safe|truncatewords:20 }}</p>
+                            {% endif %}
+                            
+                            <ul class="membership-features list-unstyled">
+                                {% for feature in membership.features.all %}
+                                <li>{{ feature.name }}</li>
+                                {% empty %}
+                                <!-- Пустой блок, без "Базовые услуги" -->
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                        <div class="membership-price">
+                            <h3 class="text-center text-danger mb-3">{{ membership.price }} ₽</h3>
+                            <button class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#applicationModal" data-membership="{{ membership.name }}" data-price="{{ membership.price }}">ОФОРМИТЬ АБОНЕМЕНТ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>Абонементы пока не добавлены</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Full Screen Section Styles */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    body {
+        overflow-x: hidden;
+    }
+    
+    .fullscreen-section {
+        min-height: auto;
+        padding: 40px 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .fullscreen-section .container {
+        width: 100%;
+        max-width: 1140px;
+    }
+    
+    /* Стили для фильтра по целям тренировок */
+    .training-goals-filter {
+        margin-bottom: 20px;
+        margin-top: -5px;
+    }
+    
+    .filter-container {
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+    }
+    
+    .filter-title {
+        color: #222;
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 15px;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        margin: 3px;
+        white-space: nowrap;
+    }
+    
+    .filter-btn.active {
+        background-color: #ff3b4e;
+        border-color: #ff3b4e;
+        color: #fff;
+    }
+    
+    .filter-btn:not(.active):hover {
+        background-color: #f8f9fa;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Стили для кнопки "Показать все" */
+    .show-all-container {
+        margin-top: 20px;
+        padding: 20px 0;
+    }
+    
+    .show-all-btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+    }
+    
+    .show-all-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 59, 78, 0.2);
+    }
+    
+    /* Анимация для карточек */
+    .direction-item {
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    
+    .direction-item.hidden {
+        display: none;
+    }
+    
+    .direction-item.fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 120px;
+        padding-bottom: 80px;
+        text-align: center;
+        margin-top: -60px;
+        position: relative;
+        top: -1px;
+        overflow: hidden;
+    }
+    
+    /* Стили для видео-фона */
+    .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+    
+    .video-background video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        min-height: 100%;
+    }
+    
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7); /* Немного затемним видео для лучшей читаемости текста */
+    }
+    
+    .hero-section .display-4 {
+        font-size: 3.5rem;
+        margin-bottom: 2rem;
+        font-weight: 700;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1px;
+        line-height: 1.2;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .hero-section .lead {
+        font-size: 1.35rem;
+        margin-bottom: 2.5rem;
+        max-width: 75%;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+        letter-spacing: 0.5px;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        position: relative;
+        z-index: 1;
+    }
+    
+    .hero-section .container {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 40px 30px;
+        background-color: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+        border-radius: 0;
+    }
+    
+    .hero-section .btn {
+        padding: 12px 28px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+        border-radius: 6px;
+        letter-spacing: 0.8px;
+    }
+    
+    .hero-section .btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+    
+    .hero-section .btn-outline-light {
+        border-width: 2px;
+        border-color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .hero-section .btn-danger {
+        background-color: #ff3b4e !important;
+        border-color: #ff3b4e !important;
+    }
+    
+    .hero-section .btn-danger:hover {
+        background-color: #e0323f !important;
+        border-color: #e0323f !important;
+    }
+    
+    /* Feature section styles */
+    .features-section {
+        padding-top: 90px;
+        padding-bottom: 70px;
+        background-color: #f8f9fa;
+    }
+    
+    .feature-icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 28px;
+    }
+    
+    /* Уменьшение отступов заголовков секций */
+    .row.mb-4 {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 15px;
+        color: #222;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background-color: #ff3b4e;
+    }
+    
+    .section-subtitle {
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto 0.5rem;
+        text-align: center;
+    }
+    
+    /* Direction cards */
+    .direction-card {
+        transition: all 0.3s ease;
+        height: 550px; /* Фиксированная высокая карточка */
+        box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0 auto;
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        position: relative;
+    }
+    
+    .direction-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .direction-card .card-img-top {
+        height: 240px; /* Увеличиваем высоту изображения */
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+    }
+    
+    .direction-card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 25px;
+        position: relative;
+        text-align: center; /* Центрировать содержимое */
+    }
+    
+    .direction-card .card-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #222;
+    }
+    
+    .card-text-container {
+        height: 100px; /* Фиксированная высота контейнера текста */
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    
+    .direction-card .card-text {
+        font-size: 1.05rem;
+        line-height: 1.5;
+    }
+    
+    .card-button-wrapper {
+        position: absolute;
+        bottom: 25px;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+    
+    .direction-button {
+        display: inline-block;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        background-color: #ff3b4e !important;
+        border-color: #ff3b4e !important;
+        color: white !important;
+        box-shadow: 0 4px 10px rgba(255, 59, 78, 0.3);
+        transition: all 0.3s ease;
+        margin: 0 auto;
+        width: auto;
+    }
+    
+    .direction-button:hover {
+        transform: translateY(-3px);
+        background-color: #e0323f !important;
+        border-color: #e0323f !important;
+        box-shadow: 0 6px 15px rgba(255, 59, 78, 0.4);
+    }
+    
+    /* Membership cards */
+    .membership-card {
+        transition: all 0.3s ease;
+        height: 550px; /* Фиксированная высота */
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.12);
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #fff;
+        transform: scale(1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        margin: 0 auto 15px;
+        max-width: 320px;
+    }
+    
+    .membership-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 12px 25px rgba(0,0,0,0.2);
+    }
+    
+    .membership-card-image {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        object-position: center;
+    }
+    
+    .membership-card .card-body {
+        padding: 15px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        position: relative;
+    }
+    
+    .membership-card .card-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #222222;
+        position: relative;
+        padding-bottom: 10px;
+        text-align: center;
+    }
+    
+    .membership-card .card-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background-color: #ff3b4e;
+    }
+    
+    .membership-description {
+        color: #6c757d;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        height: 200px; /* Фиксированная высота для описания */
+        overflow: hidden;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .membership-description p {
+        margin-bottom: 0.75rem;
+        max-height: 80px;
+        overflow: hidden;
+    }
+    
+    .membership-features {
+        margin: 10px auto;
+        padding-left: 10px;
+        text-align: left;
+        max-width: 90%;
+        max-height: 120px;
+        overflow: hidden;
+    }
+    
+    .membership-features li {
+        font-size: 0.8rem;
+        margin-bottom: 6px;
+        padding-left: 5px;
+    }
+    
+    .membership-features li i {
+        color: #ff3b4e;
+        font-size: 0.8rem;
+    }
+    
+    .membership-price {
+        margin-top: auto;
+        padding-top: 10px;
+        border-top: 1px solid #f0f0f0;
+        text-align: center;
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+    }
+    
+    .membership-price h3 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+        color: #ff3b4e;
+        text-shadow: 0px 1px 1px rgba(0,0,0,0.1);
+    }
+    
+    .membership-price .btn {
+        padding: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .membership-price .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(255, 59, 78, 0.3);
+    }
+    
+    /* Центрирование карточек для всех разрешений */
+    .row {
+        justify-content: center;
+    }
+    
+    .col-md-4 {
+        display: flex;
+        justify-content: center;
+    }
+    
+    @media (max-width: 991px) {
+        .membership-card {
+            height: auto;
+            min-height: 600px;
+        }
+        
+        .membership-description {
+            height: auto;
+            min-height: 200px;
+        }
+        
+        .membership-price {
+            position: relative;
+            bottom: auto;
+            left: auto;
+            right: auto;
+            margin-top: 20px;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .membership-card {
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: 500px;
+        }
+        
+        .membership-description {
+            min-height: 180px;
+        }
+        
+        .card-text-container {
+            height: auto;
+            min-height: 80px;
+        }
+        
+        .direction-card {
+            height: auto;
+            min-height: 550px;
+        }
+        
+        .card-button-wrapper {
+            position: relative;
+            bottom: auto;
+            margin-top: 20px;
+        }
+    }
+    
+    /* Section titles for compact sections */
+    .section-title-small {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+        text-align: center;
+    }
+    
+    .section-subtitle-small {
+        color: #6c757d;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        text-align: center;
+    }
+    
+    /* Общие улучшения для всей страницы */
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 700;
+        color: #222;
+    }
+    
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 992px) {
+        .hero-section {
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+        
+        .hero-section .display-4 {
+            font-size: 2.8rem;
+        }
+        
+        .hero-section .lead {
+            font-size: 1.2rem;
+            max-width: 90%;
+        }
+        
+        .hero-section .container {
+            padding: 30px 20px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section {
+            padding-top: 90px;
+            min-height: 60vh;
+        }
+        
+        .hero-section .display-4 {
+            font-size: 2.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-section .lead {
+            font-size: 1.1rem;
+            max-width: 100%;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-section .btn {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+        }
+        
+        .d-flex.justify-content-center.gap-3 {
+            flex-direction: column;
+            gap: 10px !important;
+        }
+        
+        .hero-section .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        /* Видео можно скрыть на мобильных устройствах для экономии трафика */
+        .video-background video {
+            display: none;
+        }
+        
+        /* Вместо этого добавим статический фон */
+        .video-background {
+            background: url('{% static "img/hero-bg.jpg" %}') center/cover no-repeat;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .hero-section {
+            padding-top: 80px;
+        }
+        
+        .hero-section .display-4 {
+            font-size: 2rem;
+        }
+        
+        .hero-section .lead {
+            font-size: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.7rem;
+        }
+    }
+    
+    /* Улучшенные стили для секции направлений */
+    .directions-section {
+        padding: 80px 0;
+        background-color: #f8f9fa;
+    }
+    
+    .directions-section .col-md-4 {
+        margin-bottom: 30px;
+        padding: 0 15px;
+    }
+    
+    /* Изображения в карточках */
+    .direction-card .card-img-top {
+        transition: all 0.5s ease;
+    }
+    
+    .direction-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    
+    /* Стили для кнопок */
+    .direction-card .btn-danger {
+        background-color: #ff3b4e;
+        border-color: #ff3b4e;
+        color: white;
+        box-shadow: 0 4px 10px rgba(255, 59, 78, 0.2);
+    }
+    
+    .direction-card .btn-danger:hover {
+        background-color: #e0323f;
+        border-color: #e0323f;
+    }
+    
+    .direction-cards-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .direction-cards-row .col-md-4 {
+        display: flex;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Для работы с видео-фоном
+        const videoElement = document.getElementById('hero-video');
+        if (videoElement) {
+            // Оптимизация воспроизведения видео - пауза при прокрутке
+            const heroSection = document.querySelector('.hero-section');
+            let isInView = true;
+            
+            // Функция проверки видимости элемента
+            function isElementInViewport(el) {
+                const rect = el.getBoundingClientRect();
+                return (
+                    rect.top >= -rect.height &&
+                    rect.left >= -rect.width &&
+                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + rect.height &&
+                    rect.right <= (window.innerWidth || document.documentElement.clientWidth) + rect.width
+                );
+            }
+            
+            // Функция для управления видео в зависимости от видимости
+            function handleVideoVisibility() {
+                if (isElementInViewport(heroSection)) {
+                    if (!isInView) {
+                        videoElement.play();
+                        isInView = true;
+                    }
+                } else {
+                    if (isInView) {
+                        videoElement.pause();
+                        isInView = false;
+                    }
+                }
+            }
+            
+            // Запускаем видео при загрузке
+            videoElement.addEventListener('loadeddata', function() {
+                videoElement.play();
+            });
+            
+            // Слушаем событие прокрутки
+            window.addEventListener('scroll', handleVideoVisibility);
+            
+            // Инициализируем при загрузке
+            handleVideoVisibility();
+        }
+        
+        // Фильтрация направлений тренировок
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const directionItems = document.querySelectorAll('.direction-item');
+        const showAllContainer = document.querySelector('.show-all-container');
+        const showAllButton = document.getElementById('showAllDirections');
+        
+        // Инициализация фильтра
+        initializeFilter();
+        
+        // Функция инициализации фильтра
+        function initializeFilter() {
+            // Проверяем, есть ли фильтр в URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const goalFilter = urlParams.get('goal');
+            
+            // Сбрасываем все скрытые элементы перед инициализацией
+            directionItems.forEach(item => {
+                item.classList.remove('hidden');
+            });
+            
+            if (goalFilter && goalFilter !== 'all') {
+                // Если есть фильтр в URL, применяем его
+                const filterBtn = document.querySelector(`.filter-btn[data-goal="${goalFilter}"]`);
+                if (filterBtn) {
+                    resetActiveButtons();
+                    filterBtn.classList.add('active');
+                    filterDirections(goalFilter);
+                } else {
+                    // Если указанный фильтр не существует, показываем все направления (ограничено до 3)
+                    resetActiveButtons();
+                    const allBtn = document.querySelector('.filter-btn[data-goal="all"]');
+                    allBtn.classList.add('active');
+                    allBtn.classList.remove('btn-outline-dark');
+                    allBtn.classList.add('btn-danger');
+                    filterDirections('all');
+                }
+            } else {
+                // Показываем все направления (ограничено до 3)
+                resetActiveButtons();
+                const allBtn = document.querySelector('.filter-btn[data-goal="all"]');
+                allBtn.classList.add('active');
+                allBtn.classList.remove('btn-outline-dark');
+                allBtn.classList.add('btn-danger');
+                filterDirections('all');
+            }
+            
+            // Обновляем кнопку "Показать все"
+            updateShowAllButton();
+        }
+        
+        // Обработчики кликов на кнопки фильтров
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const goal = this.getAttribute('data-goal');
+                
+                // Сбрасываем активные кнопки
+                resetActiveButtons();
+                
+                // Делаем текущую кнопку активной
+                this.classList.add('active');
+                
+                // Применяем специальные стили для кнопки "все направления"
+                if (goal === 'all') {
+                    this.classList.remove('btn-outline-dark');
+                    this.classList.add('btn-danger');
+                }
+                
+                // Фильтруем направления
+                filterDirections(goal);
+                
+                // Обновляем URL без перезагрузки страницы
+                updateUrl(goal);
+                
+                // Обновляем кнопку "Показать все"
+                updateShowAllButton();
+            });
+        });
+        
+        // Функция сброса активных кнопок
+        function resetActiveButtons() {
+            // Убираем класс active со всех кнопок фильтра
+            filterButtons.forEach(btn => {
+                btn.classList.remove('active');
+                
+                // Также возвращаем кнопки к исходному стилю
+                if (btn.getAttribute('data-goal') === 'all') {
+                    btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-outline-dark');
+                }
+            });
+        }
+        
+        // Функция фильтрации направлений
+        function filterDirections(goal) {
+            let visibleCount = 0;
+            
+            directionItems.forEach(item => {
+                const itemGoals = item.getAttribute('data-goals') || '';
+                
+                // Сначала удаляем класс hidden со всех элементов, чтобы правильно обработать все элементы
+                item.classList.remove('hidden');
+                
+                // Если выбраны все направления или направление соответствует выбранной цели
+                if (goal === 'all') {
+                    // При выборе "Все направления" сначала показываем все
+                    item.classList.add('fade-in');
+                    visibleCount++;
+                } else {
+                    // Сопоставление значений data-goal из кнопок с целями тренировок
+                    let goalMatches = false;
+                    
+                    // Сопоставление с целями тренировок
+                    const goalMapping = {
+                        'weight-loss': 'скорректировать вес',
+                        'muscle-gain': 'набрать мышечную массу',
+                        'martial-arts': 'обучиться единоборствам',
+                        'fitness': 'оставаться в тонусе',
+                        'stress-relief': 'снять стресс',
+                        'anti-aging': 'оставаться молодым',
+                        'rehabilitation': 'восстановиться после травмы',
+                        'competition': 'подготовиться к соревнованиям',
+                        'family': 'занятия вместе с малышом'
+                    };
+                    
+                    const goalName = goalMapping[goal] || goal;
+                    
+                    if (itemGoals.toLowerCase().includes(goalName.toLowerCase())) {
+                        goalMatches = true;
+                    }
+                    
+                    if (goalMatches) {
+                        item.classList.add('fade-in');
+                        visibleCount++;
+                    } else {
+                        item.classList.add('hidden');
+                        item.classList.remove('fade-in');
+                    }
+                }
+            });
+            
+            // Если выбраны все направления, ограничиваем количество видимых до 3
+            if (goal === 'all') {
+                const visibleItems = document.querySelectorAll('.direction-item:not(.hidden)');
+                if (visibleItems.length > 3) {
+                    for (let i = 3; i < visibleItems.length; i++) {
+                        visibleItems[i].classList.add('hidden');
+                    }
+                    // Обновляем количество видимых элементов
+                    visibleCount = 3;
+                }
+            }
+            
+            // Показываем сообщение, если нет направлений
+            const noDirectionsMessage = document.querySelector('.no-directions-message');
+            if (visibleCount === 0) {
+                if (!noDirectionsMessage) {
+                    const message = document.createElement('div');
+                    message.className = 'col-12 text-center no-directions-message';
+                    message.innerHTML = '<p>Направлений с выбранной целью не найдено</p>';
+                    document.querySelector('.directions-container').appendChild(message);
+                }
+            } else if (noDirectionsMessage) {
+                noDirectionsMessage.remove();
+            }
+            
+            return visibleCount;
+        }
+        
+        // Функция обновления URL
+        function updateUrl(goal) {
+            const url = new URL(window.location.href);
+            
+            if (goal === 'all') {
+                url.searchParams.delete('goal');
+            } else {
+                url.searchParams.set('goal', goal);
+            }
+            
+            window.history.pushState({}, '', url);
+        }
+        
+        // Функция обновления кнопки "Показать все"
+        function updateShowAllButton() {
+            const activeGoal = document.querySelector('.filter-btn.active').getAttribute('data-goal');
+            const visibleCount = countVisibleDirections();
+            const totalDirections = directionItems.length;
+            
+            // Получаем общее количество направлений, соответствующих текущему фильтру
+            let totalMatchingDirections = 0;
+            
+            if (activeGoal === 'all') {
+                totalMatchingDirections = totalDirections;
+                // Для "Все направления" всегда показываем кнопку, если общее количество больше 3
+                if (totalDirections > 3) {
+                    showAllContainer.style.display = 'block';
+                    showAllButton.href = '/directions/';
+                } else {
+                    showAllContainer.style.display = 'none';
+                }
+                return; // Завершаем функцию, так как уже решили показывать кнопку
+            } else {
+                // Подсчитываем только направления, которые соответствуют фильтру
+                directionItems.forEach(item => {
+                    const itemGoals = item.getAttribute('data-goals') || '';
+                    const goalMapping = {
+                        'weight-loss': 'скорректировать вес',
+                        'muscle-gain': 'набрать мышечную массу',
+                        'martial-arts': 'обучиться единоборствам',
+                        'fitness': 'оставаться в тонусе',
+                        'stress-relief': 'снять стресс',
+                        'anti-aging': 'оставаться молодым',
+                        'rehabilitation': 'восстановиться после травмы',
+                        'competition': 'подготовиться к соревнованиям',
+                        'family': 'занятия вместе с малышом'
+                    };
+                    
+                    const goalName = goalMapping[activeGoal] || activeGoal;
+                    
+                    if (itemGoals.toLowerCase().includes(goalName.toLowerCase())) {
+                        totalMatchingDirections++;
+                    }
+                });
+            }
+            
+            // Показываем кнопку "Показать все", если есть больше направлений для показа
+            if (totalMatchingDirections > 3) {
+                showAllContainer.style.display = 'block';
+                showAllButton.href = `/directions/?goal=${activeGoal}`;
+            } else {
+                showAllContainer.style.display = 'none';
+            }
+        }
+        
+        // Функция подсчета видимых направлений
+        function countVisibleDirections() {
+            return document.querySelectorAll('.direction-item:not(.hidden)').length;
+        }
+        
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 30) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Set membership data in modal
+        const membershipButtons = document.querySelectorAll('[data-membership]');
+        membershipButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const membershipName = this.getAttribute('data-membership');
+                const price = this.getAttribute('data-price');
+                const modalTitle = document.querySelector('#applicationModalLabel');
+                
+                if (modalTitle) {
+                    modalTitle.textContent = `Оформить абонемент "${membershipName}" (${price} ₽)`;
+                }
+            });
+        });
+        
+        // Плавная прокрутка для навигационных ссылок
+        const scrollLinks = document.querySelectorAll('a.nav-link, a.scroll-btn');
+        scrollLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        const offsetTop = targetElement.offsetTop - 60;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %} 

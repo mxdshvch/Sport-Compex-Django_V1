@@ -1,0 +1,114 @@
+/* Admin Font Override - Replace all system fonts with Roboto */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+    --font-family-primary: 'Roboto', sans-serif !important;
+    --font-family-monospace: 'Roboto', monospace !important;
+    --primary-font-size: 14px;
+    --heading-font-size: 24px;
+    --small-font-size: 12px;
+    --button-font-size: 14px;
+}
+
+/* Переопределение глобальных стилей шрифта */
+html, body, button, input, select, textarea, .form-control, 
+table, th, td, div, p, span, a, 
+.btn, .nav, .navbar, .dropdown-menu,
+.field-name, .field-value, .field-label,
+.list-group-item, .card-text, .form-text,
+.sidebar-menu li, .sidebar-menu a, 
+.app-list li, .app-list a,
+.object-tools a, .paginator, .submit-row a {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", 
+                Helvetica, Arial, sans-serif !important;
+    font-size: var(--primary-font-size) !important;
+    letter-spacing: normal !important;
+    line-height: 1.4 !important;
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6, 
+.dashboard #content h1, .app-dashboard #content h1,
+#header #branding h1, #header h1,
+caption, legend, .section,
+.module h2, .module caption, .module th {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+}
+
+h1, #header #branding h1, #header h1 {
+    font-size: var(--heading-font-size) !important;
+}
+
+/* Кнопки и действия */
+.button, input[type=submit], input[type=button],
+.submit-row input, .submit-row a,
+.object-tools a, a.button, .btn {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--button-font-size) !important;
+    font-weight: 500 !important;
+}
+
+/* Вспомогательный и мелкий текст */
+.help, p.help, small, .small, .quiet,
+.paginator, .paginator a,
+.form-text, .form-help, 
+.description, .price, .form-row .help,
+.field-box .help, .field .help,
+td.help, .help-text, .helptext {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--small-font-size) !important;
+    color: #666 !important;
+    font-weight: normal !important;
+}
+
+/* Заголовки разделов */
+.module h2, .module caption, .inline-group h2 {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+}
+
+/* Панель навигации и хлебные крошки */
+.breadcrumbs a, .breadcrumbs,
+.sidebar-menu a, .sidebar-menu span,
+.sidebar-title, .nav-sidebar .nav-label {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--primary-font-size) !important;
+}
+
+/* Таблицы */
+table, .results, 
+#changelist table thead th,
+#changelist table tbody td,
+.form-row label, .aligned label {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--primary-font-size) !important;
+}
+
+/* Поле поиска */
+input[type=text], input[type=password],
+input[type=email], input[type=url],
+input[type=number], input[type=tel],
+textarea, select, .select2-container {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--primary-font-size) !important;
+}
+
+/* Заголовки таблицы */
+thead th, th.sortable, th.sorted {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--primary-font-size) !important;
+    font-weight: 500 !important;
+}
+
+/* Override Summernote fonts */
+.note-editor .note-editing-area .note-editable,
+.note-editor .note-statusbar,
+.note-editor .note-toolbar,
+.note-popover,
+.note-editor .note-editing-area .note-codable {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: var(--primary-font-size) !important;
+} 

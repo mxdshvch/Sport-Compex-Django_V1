@@ -1,0 +1,28 @@
+{% load static %}
+
+<section class="section" id="trainers">
+    <div class="container">
+        <h2 class="text-center mb-5">Наши тренеры</h2>
+        
+        <div class="row">
+            {% for trainer in trainers %}
+            <div class="col-md-4 mb-4">
+                <div class="trainer-box">
+                    {% if trainer.photo %}
+                    <img src="{{ trainer.photo.url }}" alt="{{ trainer.first_name }} {{ trainer.last_name }}" class="img-fluid">
+                    {% else %}
+                    <img src="{% static 'img/trainer-placeholder.jpg' %}" alt="{{ trainer.first_name }} {{ trainer.last_name }}" class="img-fluid">
+                    {% endif %}
+                    
+                    <h4 class="trainer-name text-center mt-3">{{ trainer.first_name }} {{ trainer.last_name }}</h4>
+                    <p class="trainer-spec text-center">{{ trainer.specialization }}</p>
+                    
+                    <div class="text-center">
+                        <a href="#" class="btn btn-primary btn-sm" data-trainer-name="{{ trainer.first_name }} {{ trainer.last_name }}" data-bs-toggle="modal" data-bs-target="#applicationModal">Записаться</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section> 

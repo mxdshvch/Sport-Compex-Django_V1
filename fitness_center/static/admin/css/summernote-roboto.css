@@ -1,0 +1,65 @@
+/* Summernote Font Override - Replace all Summernote fonts with Roboto */
+
+/* Import Google Fonts - Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+/* Editor content */
+.note-editor .note-editing-area .note-editable {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Editor UI */
+.note-editor .note-toolbar,
+.note-editor .note-toolbar .note-btn,
+.note-editor .note-toolbar .note-dropdown-menu,
+.note-editor .note-toolbar .note-dropdown-toggle,
+.note-editor .note-statusbar,
+.note-editor .note-statusbar .note-resizebar,
+.note-editor .note-handle .note-control-selection .note-control-handle {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Popover */
+.note-popover,
+.note-popover .popover-content,
+.note-popover .note-btn-group .note-btn,
+.note-popover .note-dropdown-menu {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Modals */
+.note-modal .note-modal-header,
+.note-modal .note-modal-body,
+.note-modal .note-modal-footer,
+.note-modal .note-modal-title,
+.note-modal .note-form-label,
+.note-modal .note-input,
+.note-modal .note-btn {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Dropdown menus */
+.note-dropdown-menu,
+.note-dropdown-item {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Code view */
+.note-editor .note-editing-area .note-codable {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Help dialog */
+.note-help-dialog {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Override monospace fonts */
+.note-editor pre,
+.note-editor code,
+.note-editor kbd,
+.note-editor samp,
+.note-editor var,
+.note-editor tt {
+    font-family: 'Roboto', sans-serif !important;
+} 

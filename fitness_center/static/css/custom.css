@@ -1,0 +1,1821 @@
+/* Основная цветовая схема: красно-черно-белая */
+:root {
+    --primary-color: #ff3b4e; /* Красный */
+    --primary-dark: #e0323f;
+    --primary-light: #ff5969;
+    --primary-rgb: 255, 59, 78;
+    --secondary-color: #222222; /* Темно-серый, почти черный */
+    --light-color: #ffffff; /* Белый */
+    --gray-color: #f1f1f1;
+    --text-dark: #2c2c2c;
+    --text-light: #ffffff;
+    --link-color: #222222; /* Черный цвет для ссылок вместо синего */
+    --primary: #ff3b4e;
+    --primary-hover: #e02f3c;
+    --dark: #222222;
+    --light: #f8f9fa;
+    --white: #ffffff;
+    --gray: #6c757d;
+    --gray-light: #e9ecef;
+    --gray-dark: #343a40;
+}
+
+/* Общие стили */
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    background-color: var(--gray-color);
+    margin: 0; /* Убираем отступы body по умолчанию */
+}
+
+main {
+    flex-grow: 1;
+}
+
+a {
+    color: var(--link-color); /* Черный цвет для ссылок */
+    transition: color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* Навигационная панель */
+.navbar {
+    background-color: var(--secondary-color) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--light-color) !important;
+    letter-spacing: 1px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    position: relative;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--light-color) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover::after,
+.navbar-dark .navbar-nav .nav-link.active::after {
+    width: 70%;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--light-color) !important;
+    font-weight: 600;
+}
+
+.dropdown-menu {
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    margin-top: 10px;
+}
+
+.dropdown-item {
+    color: var(--text-light);
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    transform: translateX(5px);
+}
+
+.dropdown-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 5px 0;
+}
+
+/* Кнопки */
+.btn {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+    padding: 8px 18px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    z-index: -1;
+}
+
+.btn:hover::before {
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    font-weight: 500;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--primary-color) !important;
+    color: var(--light-color) !important;
+    transform: translateY(-2px);
+}
+
+/* Сообщения */
+.alert {
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.alert-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+.alert-info {
+    background-color: #f0f0f0;
+    color: #222222;
+    border-left: 4px solid #222222;
+}
+
+.alert-warning {
+    background-color: #fff3e0;
+    color: #e65100;
+    border-left: 4px solid #e65100;
+}
+
+.alert-danger {
+    background-color: #ffebee;
+    color: #c62828;
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Карточки */
+.card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    background-color: var(--light-color);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background-color: var(--primary-color) !important;
+    color: var(--light-color) !important;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: none;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.card-text {
+    color: var(--text-dark);
+    font-size: 1rem;
+}
+
+/* Hero секция */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/static/img/hero-bg.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 120px 0;
+    color: var(--light-color);
+    margin-bottom: 30px;
+    position: relative;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInDown 1s ease;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+    max-width: 700px;
+    margin: 0 auto 30px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease;
+}
+
+/* Преимущества */
+.features-section {
+    padding: 80px 0;
+    background-color: var(--gray-color);
+}
+
+.section-title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 3px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: #ff3b4e;
+    margin-bottom: 1.5rem;
+}
+
+/* Абонементы */
+.price-tag {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.membership-features {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.membership-features li {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.membership-features li:before {
+    content: "\f00c";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+/* CTA секция */
+.cta-section {
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+    padding: 80px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary-dark) 0%, transparent 70%);
+    opacity: 0.3;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 2;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.cta-section p {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto 30px;
+}
+
+/* Направления тренировок */
+.direction-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    height: 280px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+.direction-image {
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.direction-card:hover .direction-image {
+    transform: scale(1.05);
+}
+
+.direction-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    padding: 15px;
+    color: var(--dark);
+    height: 40%;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+    border-top: 1px solid #eee;
+}
+
+.direction-card:hover .direction-overlay {
+    transform: translateY(-5px);
+}
+
+.direction-overlay h3 {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 1.2rem;
+}
+
+.direction-overlay p {
+    margin-bottom: 10px;
+    color: var(--gray-700);
+    font-size: 0.9rem;
+}
+
+/* Тренеры */
+.trainer-card {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    height: 100%;
+    max-height: 300px;
+}
+
+.trainer-image-container {
+    overflow: hidden;
+    height: 130px;
+}
+
+.trainer-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.trainer-card:hover .trainer-image {
+    transform: scale(1.05);
+}
+
+.trainer-info {
+    padding: 10px;
+    background-color: var(--light-color);
+    color: var(--text-dark);
+}
+
+.trainer-info h3 {
+    margin-bottom: 3px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-info p {
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+.trainer-specialization {
+    color: var(--primary-color) !important;
+    font-weight: 500;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-info .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.trainer-social {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.trainer-social a {
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.trainer-social a:hover {
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+/* Слайдер тренеров (уменьшенный) */
+.trainers-slider {
+    position: relative;
+    overflow: hidden;
+    padding: 0 35px;
+    margin: 10px 0;
+}
+
+.trainers-slider-container {
+    display: flex;
+    overflow: hidden;
+    margin: 0 -10px;
+}
+
+.trainer-slide {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    transition: transform 0.3s ease;
+}
+
+.trainer-slide .col-md-4 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+    padding: 0 10px;
+}
+
+.slider-button {
+    position: absolute;
+    top: 35%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 5;
+}
+
+.slider-button:hover {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.slider-button.prev {
+    left: 10px;
+}
+
+.slider-button.next {
+    right: 10px;
+}
+
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.slider-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #cccccc;
+    border-radius: 50%;
+    margin: 0 4px;
+    cursor: pointer;
+}
+
+.slider-dot.active {
+    background-color: var(--primary-color);
+}
+
+/* Карточки тренеров на экране тренеров */
+.trainer-list-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    transition: transform 0.3s ease;
+    max-height: 380px;
+}
+
+.trainer-list-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.trainer-list-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.trainer-list-info {
+    padding: 10px;
+}
+
+.trainer-list-info h3 {
+    margin-bottom: 2px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-list-info .specialization {
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-list-info p {
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    max-height: 38px;
+    overflow: hidden;
+    line-height: 1.2;
+}
+
+.trainer-list-info .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Responsive adjustments for trainers */
+@media (max-width: 1199px) {
+    .trainer-image-container {
+        height: 180px;
+    }
+    
+    .trainer-list-image {
+        height: 180px;
+    }
+    
+    .trainer-list-card {
+        max-height: 350px;
+    }
+    
+    .trainer-list-info p {
+        max-height: 32px;
+    }
+}
+
+@media (max-width: 991px) {
+    .trainer-image-container {
+        height: 160px;
+    }
+    
+    .trainer-info h3 {
+        font-size: 0.9rem;
+    }
+    
+    .trainer-list-image {
+        height: 160px;
+    }
+    
+    .trainer-list-info h3 {
+        font-size: 1rem;
+    }
+    
+    .trainer-list-info p {
+        margin-bottom: 8px;
+        max-height: 30px;
+    }
+    
+    .trainers-slider {
+        padding: 0 35px;
+    }
+    
+    .trainer-slide .col-md-4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 767px) {
+    .trainer-card {
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .trainer-image-container {
+        height: 180px;
+    }
+    
+    .trainer-list-card {
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .trainer-list-info .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
+    
+    .trainer-slide .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .trainers-slider {
+        padding: 0 25px;
+    }
+    
+    .slider-button {
+        width: 25px;
+        height: 25px;
+        font-size: 0.7rem;
+    }
+    
+    .trainer-image-container {
+        height: 160px;
+    }
+    
+    .trainer-info {
+        padding: 8px;
+    }
+    
+    .trainer-list-image {
+        height: 160px;
+    }
+    
+    .trainer-list-info {
+        padding: 8px;
+    }
+    
+    .trainer-list-info p {
+        max-height: 28px;
+        margin-bottom: 5px;
+    }
+    
+    .trainer-slide .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    .direction-card {
+        height: 250px;
+    }
+    
+    .direction-overlay h3 {
+        font-size: 1rem;
+        margin-bottom: 3px;
+    }
+    
+    .direction-overlay p {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+    
+    .direction-overlay .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Формы */
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--secondary-color); /* Черный вместо синего */
+    box-shadow: 0 0 0 0.2rem rgba(34, 34, 34, 0.15); /* Черная тень вместо синей */
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+/* Подвал */
+footer {
+    background-color: var(--secondary-color) !important;
+    color: var(--light-color) !important;
+    padding-top: 40px;
+}
+
+footer h5 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+footer h5::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 2px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 0;
+}
+
+footer a.text-white {
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+footer a.text-white:hover {
+    color: var(--primary-color) !important;
+    transform: translateY(-2px);
+}
+
+footer .list-unstyled li {
+    margin-bottom: 10px;
+}
+
+footer hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 20px 0;
+}
+
+/* Анимации */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Отзывчивый дизайн */
+@media (max-width: 992px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section p {
+        font-size: 1.1rem;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link::after {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .feature-card, 
+    .trainer-card, 
+    .direction-card {
+        margin-bottom: 20px;
+    }
+    
+    footer {
+        text-align: center;
+    }
+    
+    footer h5::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+    
+    .btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .card-body {
+        padding: 1.25rem;
+    }
+}
+
+/* Кнопка прокрутки вверх */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-align: center;
+    padding: 0;
+    line-height: 50px;
+    z-index: 9999;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.back-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Стили для иконок в разделе "Почему выбирают нас" */
+.feature-box {
+    text-align: center;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+}
+
+.feature-box:hover {
+    transform: translateY(-10px);
+}
+
+.feature-icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.feature-icon-circle:before {
+    display: none;
+}
+
+.feature-box:hover .feature-icon-circle {
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.feature-icon {
+    color: #9b0000;
+    font-size: 5rem;
+    z-index: 1;
+    transition: transform 0.3s ease;
+}
+
+.feature-box:hover .feature-icon {
+    transform: scale(1.15);
+}
+
+.feature-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.feature-description {
+    color: #6c757d;
+}
+
+/* Стили для плавной прокрутки и блочной верстки */
+html {
+    scroll-behavior: smooth;
+}
+
+section {
+    padding: 60px 0; /* Отступы сверху и снизу */
+    position: relative;
+}
+
+section:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.section-inner {
+    width: 100%;
+}
+
+.video-hero-section {
+    min-height: 80vh;
+    padding: 80px 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Анимация для элементов при прокрутке */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Ультра-компактные карточки тренеров */
+.trainer-compact-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    height: 100%;
+    max-height: 200px;
+}
+
+.trainer-compact-image {
+    width: 100%;
+    height: 110px;
+    overflow: hidden;
+}
+
+.trainer-compact-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trainer-compact-image .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    color: #888;
+    font-size: 2rem;
+}
+
+.trainer-compact-info {
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+}
+
+.trainer-compact-info h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0 0 2px;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-compact-info span {
+    font-size: 0.7rem;
+    color: var(--primary-color);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-compact-info .btn-detail {
+    display: inline-block;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.65rem;
+    text-decoration: none;
+    text-align: center;
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.trainer-compact-info .btn-detail:hover {
+    background: var(--primary-dark);
+    color: #fff;
+}
+
+@media (max-width: 767px) {
+    .trainer-compact-card {
+        max-width: 150px;
+        margin: 0 auto;
+    }
+}
+
+/* Микро-карточки тренеров (сверхкомпактные) */
+.trainer-micro-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    height: 100%;
+    max-height: 220px;
+}
+
+.trainer-micro-image {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    position: relative;
+}
+
+.trainer-micro-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.trainer-micro-image .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    color: #888;
+    font-size: 1.5rem;
+}
+
+.trainer-micro-info {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.trainer-micro-info h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0 0 2px;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-micro-info span {
+    font-size: 0.65rem;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Узкие карточки тренеров */
+.trainer-card-slim {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    height: 100%;
+    max-width: 160px;
+    margin: 0 auto;
+}
+
+.trainer-image-slim {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+}
+
+.trainer-image-slim img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
+.trainer-image-slim .no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    color: #888;
+    font-size: 1.5rem;
+}
+
+.trainer-info-slim {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.trainer-info-slim h3 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 0 0 2px;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trainer-info-slim .specialization {
+    font-size: 0.65rem;
+    color: var(--primary-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-micro {
+    display: inline-block;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.6rem;
+    text-decoration: none;
+    text-align: center;
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.btn-micro:hover {
+    background: var(--primary-dark);
+    color: #fff;
+}
+
+@media (max-width: 767px) {
+    .trainer-micro-card {
+        max-width: 150px;
+        margin: 0 auto;
+    }
+}
+
+/* Responsive adjustments for direction cards */
+@media (max-width: 1199px) {
+    .direction-card {
+        height: 260px;
+    }
+    
+    .direction-image {
+        height: 55%;
+    }
+    
+    .direction-overlay {
+        height: 45%;
+    }
+}
+
+@media (max-width: 991px) {
+    .direction-card {
+        height: 250px;
+    }
+    
+    .direction-overlay h3 {
+        font-size: 1.1rem;
+    }
+    
+    .direction-overlay p {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+}
+
+@media (max-width: 767px) {
+    .direction-card {
+        height: 280px;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 350px;
+    }
+    
+    .direction-image {
+        height: 60%;
+    }
+    
+    .direction-overlay {
+        height: 40%;
+    }
+}
+
+@media (max-width: 480px) {
+    .trainers-slider {
+        padding: 0 25px;
+    }
+    
+    .slider-button {
+        width: 25px;
+        height: 25px;
+        font-size: 0.7rem;
+    }
+    
+    .trainer-image-container {
+        height: 160px;
+    }
+    
+    .trainer-info {
+        padding: 8px;
+    }
+    
+    .trainer-list-image {
+        height: 160px;
+    }
+    
+    .trainer-list-info {
+        padding: 8px;
+    }
+    
+    .trainer-list-info p {
+        max-height: 28px;
+        margin-bottom: 5px;
+    }
+    
+    .trainer-slide .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    .direction-card {
+        height: 250px;
+    }
+    
+    .direction-overlay h3 {
+        font-size: 1rem;
+        margin-bottom: 3px;
+    }
+    
+    .direction-overlay p {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+    
+    .direction-overlay .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Таблицы */
+.table {
+    background-color: var(--light-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.table thead {
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 59, 78, 0.05);
+}
+
+/* Пагинация */
+.pagination .page-item .page-link {
+    color: var(--secondary-color);
+    border: none;
+    margin: 0 3px;
+    border-radius: 4px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: var(--light-color);
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: rgba(34, 34, 34, 0.1);
+    color: var(--secondary-color);
+}
+
+/* Уведомления и значки */
+.badge {
+    padding: 0.4em 0.6em;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+.badge-primary {
+    background-color: var(--primary-color);
+}
+
+.badge-secondary {
+    background-color: #ff3b4e;
+    color: white;
+}
+
+/* Формы и чекбоксы */
+.form-check-input:checked {
+    background-color: var(--secondary-color); /* Черный вместо синего фона */
+    border-color: var(--secondary-color); /* Черная граница вместо синей */
+}
+
+.form-select:focus {
+    border-color: var(--secondary-color); /* Черная граница вместо синей */
+    box-shadow: 0 0 0 0.25rem rgba(34, 34, 34, 0.25); /* Черная тень вместо синей */
+}
+
+/* Контентные блоки */
+.content-block {
+    background-color: var(--light-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.content-block-title {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    font-weight: 600;
+}
+
+/* Улучшения для текста */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary {
+    color: var(--secondary-color) !important;
+}
+
+/* Разделители */
+hr {
+    opacity: 0.1;
+    border-color: var(--secondary-color);
+}
+
+hr.divider-primary {
+    border-color: var(--primary-color);
+    opacity: 0.2;
+    margin: 1.5rem 0;
+}
+
+/* Цитаты */
+blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1rem;
+    margin-left: 0;
+    font-style: italic;
+    color: var(--secondary-color);
+}
+
+/* Список с иконками */
+.list-icon {
+    list-style: none;
+    padding-left: 0;
+}
+
+.list-icon li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.list-icon li:before {
+    content: '\f00c';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 0.2rem;
+    color: var(--primary-color);
+}
+
+/* Улучшения для прогресс-баров */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+}
+
+/* Анимации для карточек */
+.card {
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Улучшения для аккордеонов */
+.accordion-button:not(.collapsed) {
+    background-color: rgba(34, 34, 34, 0.05); /* Светло-черный фон вместо синего */
+    color: var(--secondary-color); /* Черный цвет текста вместо синего */
+}
+
+.accordion-button:focus {
+    border-color: rgba(34, 34, 34, 0.5); /* Черная граница вместо синей */
+    box-shadow: 0 0 0 0.25rem rgba(34, 34, 34, 0.25); /* Черная тень вместо синей */
+}
+
+/* Кнопки информационного типа и синие элементы */
+.btn-info,
+.btn-primary {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #000000 !important;
+    border-color: #000000 !important;
+}
+
+.btn-outline-info,
+.btn-outline-primary {
+    color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+.btn-outline-info:hover,
+.btn-outline-info:focus,
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--secondary-color) !important;
+    color: var(--light-color) !important;
+}
+
+.bg-info {
+    background-color: var(--secondary-color) !important;
+}
+
+.text-info {
+    color: var(--secondary-color) !important;
+}
+
+/* Цвет ссылок в footer и других местах */
+.footer a.text-white:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Прогресс-бары */
+.progress-bar-info {
+    background-color: var(--secondary-color);
+}
+
+/* Заголовки секций */
+.section-title,
+h2.section-title,
+.section-title h2 {
+    color: #222222 !important;
+}
+
+/* Исключение для белых заголовков */
+h1.text-white, h2.text-white, h3.text-white, h4.text-white, h5.text-white, h6.text-white,
+.text-white {
+    color: #ffffff !important;
+}
+
+/* Линия под заголовком */
+.section-title::after,
+h2.section-title::after,
+.section-title h2::after {
+    background-color: #ff3b4e !important;
+}
+
+/* Custom CSS */
+:root {
+    --text-color: #222222;
+    --text-light: #ffffff;
+    --link-color: #222222; /* Черный цвет для ссылок вместо синего */
+}
+
+/* Общие стили */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.no-blue-links a:not(.btn):not(.nav-link) {
+    color: var(--link-color) !important;
+    text-decoration: none;
+}
+
+.no-blue-links a:not(.btn):not(.nav-link):hover {
+    color: #ff3b4e !important;
+    text-decoration: none;
+}
+
+/* Кнопки */
+.btn {
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary,
+.btn-danger {
+    background-color: #ff3b4e !important;
+    border-color: #ff3b4e !important;
+}
+
+.btn-primary:hover,
+.btn-danger:hover {
+    background-color: #e0323f !important;
+    border-color: #e0323f !important;
+}
+
+.btn-outline-primary {
+    color: #ff3b4e !important;
+    border-color: #ff3b4e !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #ff3b4e !important;
+    color: white !important;
+}
+
+/* Цвета */
+.bg-primary,
+.bg-danger {
+    background-color: #ff3b4e !important;
+}
+
+.text-primary {
+    color: #ff3b4e !important;
+}
+
+/* Карточки */
+.card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Особенности (Features) */
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: #ff3b4e;
+    margin-bottom: 1.5rem;
+}
+
+/* Адаптивные изображения */
+.img-responsive {
+    width: 100%;
+    height: auto;
+}
+
+/* Анимации */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Хлебные крошки */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0.75rem 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+}
+
+/* Центрирование содержимого */
+.centered-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Утилиты для отступов */
+.mb-lg {
+    margin-bottom: 3rem;
+}
+
+.mt-lg {
+    margin-top: 3rem;
+}
+
+.my-lg {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.pt-lg {
+    padding-top: 3rem;
+} 

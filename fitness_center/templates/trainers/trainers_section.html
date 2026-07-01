@@ -1,0 +1,82 @@
+{% load static %}
+
+<section class="trainers-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Наши тренеры</h2>
+        
+        <div class="row justify-content-center">
+            {% for trainer in trainers|slice:":3" %}
+            <div class="col-md-4 mb-4">
+                <div class="trainer-card text-center">
+                    <div class="trainer-photo-wrapper mb-3">
+                        {% if trainer.photo %}
+                        <img src="{{ trainer.photo.url }}" alt="{{ trainer.name }}" class="rounded-circle trainer-photo">
+                        {% else %}
+                        <img src="{% static 'img/default-trainer.jpg' %}" alt="{{ trainer.name }}" class="rounded-circle trainer-photo">
+                        {% endif %}
+                    </div>
+                    <h3 class="trainer-name mb-2">{{ trainer.name }}</h3>
+                    <p class="trainer-title mb-3">Персональный тренер<br>по фитнесу</p>
+                    <p class="trainer-description mb-4">{{ trainer.description|truncatewords:15 }}</p>
+                    <a href="{% url 'trainer_detail' trainer.id %}" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+.trainer-card {
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.trainer-card:hover {
+    transform: translateY(-5px);
+}
+
+.trainer-photo-wrapper {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.trainer-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trainer-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.trainer-title {
+    color: #666;
+    font-size: 1rem;
+}
+
+.trainer-description {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    padding: 8px 24px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+}
+</style> 

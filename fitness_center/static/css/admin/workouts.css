@@ -1,0 +1,132 @@
+/* Стили для выбора целей тренировок */
+.goals-checkbox-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.goals-checkbox-list label {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.goals-checkbox-list label:hover {
+    background-color: #e9f0ff;
+    border-color: #0d6efd;
+}
+
+.goals-checkbox-list input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.goals-checkbox-list input[type="checkbox"]:checked + label {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+/* Стили для описания в админке */
+.field-goals .help-block {
+    margin-top: 8px;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+/* Улучшение отображения формы */
+.form-row {
+    margin-bottom: 20px;
+}
+
+.field-name input,
+.field-image input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.field-name input:focus,
+.field-image input:focus {
+    border-color: #0d6efd;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Стили для заголовков полей */
+.form-row .field-box label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Стили для выбора зала */
+.hall-radio-select {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.hall-radio-select li {
+    list-style: none;
+    display: inline-block;
+}
+
+.hall-radio-select label {
+    display: block;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    min-width: 120px;
+}
+
+.hall-radio-select label:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.hall-radio-select input[type="radio"] {
+    display: none;
+}
+
+.hall-radio-select input[type="radio"]:checked + label {
+    background-color: #ff3b4e;
+    border-color: #ff3b4e;
+    color: white;
+}
+
+/* Стили для малого и большого зала */
+.hall-radio-select li:first-child label {
+    background-color: #e8f5e9;
+    border-color: #c8e6c9;
+}
+
+.hall-radio-select li:first-child input[type="radio"]:checked + label {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.hall-radio-select li:last-child label {
+    background-color: #e3f2fd;
+    border-color: #bbdefb;
+}
+
+.hall-radio-select li:last-child input[type="radio"]:checked + label {
+    background-color: #007bff;
+    border-color: #007bff;
+} 

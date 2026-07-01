@@ -1,0 +1,520 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ direction.name }} - Фитнес-центр{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Фикс для удаления лишнего белого пространства */
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Фикс для контента, чтобы не выходил за границы экрана */
+    .container {
+        width: 100%;
+        padding-left: 15px;
+        padding-right: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        max-width: 1140px;
+    }
+    
+    /* Убираем возможные пробелы в футере */
+    footer {
+        width: 100%;
+        margin-top: 0;
+        position: relative;
+        z-index: 10;
+        clear: both;
+    }
+    
+    /* Фикс для основного контейнера контента */
+    .content-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 50px; /* отступ перед футером */
+        position: relative;
+        z-index: 5;
+    }
+    
+    /* Фикс для колонок */
+    .direction-column {
+        margin-bottom: 30px;
+    }
+    
+    /* Правая колонка */
+    .direction-column-right {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Фикс для блока "Другие направления" */
+    .other-directions-widget {
+        margin-top: auto; /* Прижимает блок к нижней части колонки */
+        margin-bottom: 30px;
+    }
+    
+    /* Фикс для блоков с преимуществами */
+    .direction-benefits {
+        margin-bottom: 20px;
+        max-height: none; /* Убираем жесткое ограничение высоты */
+    }
+    
+    /* Карточки с преимуществами делаем компактнее */
+    .benefit-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px; /* Уменьшаем отступ */
+        padding: 12px; /* Уменьшаем внутренний отступ */
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    /* Делаем иконки преимуществ чуть меньше */
+    .benefit-icon {
+        background-color: var(--primary-color);
+        width: 40px; /* Уменьшаем размер */
+        height: 40px; /* Уменьшаем размер */
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+    
+    /* Текст преимуществ делаем компактнее */
+    .benefit-text h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 3px;
+        color: var(--text-dark);
+    }
+    
+    .benefit-text p {
+        margin-bottom: 0;
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+    
+    /* Блок CTA делаем компактнее */
+    .cta-banner {
+        background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+        padding: 25px; /* Уменьшаем отступы */
+        border-radius: 8px;
+        color: #fff;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-banner h3 {
+        font-weight: 700;
+        margin-bottom: 10px;
+        font-size: 1.4rem; /* Уменьшаем размер */
+    }
+    
+    .cta-banner p {
+        opacity: 0.9;
+        margin-bottom: 15px;
+        max-width: 90%;
+        font-size: 0.95rem;
+    }
+    
+    /* Делаем фиксированную высоту для виджетов */
+    .widget-card {
+        margin-bottom: 15px;
+        height: auto;
+    }
+    
+    /* Другие направления в нижней части страницы */
+    .bottom-directions {
+        width: 100%;
+        clear: both;
+        margin-top: 20px;
+        margin-bottom: 40px;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    }
+    
+    .bottom-directions h3 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+    }
+    
+    .bottom-directions .btn {
+        max-width: 300px;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    /* Остальные стили остаются без изменений */
+    .direction-hero {
+        position: relative;
+        height: 450px;
+        overflow: hidden;
+        margin-bottom: 40px;
+        width: 100%;
+    }
+    
+    .direction-hero-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.6);
+        transition: transform 6s ease;
+    }
+    
+    .direction-hero:hover .direction-hero-image {
+        transform: scale(1.05);
+    }
+    
+    .direction-hero-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 30px;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+        color: #fff;
+    }
+    
+    .direction-hero-content h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .direction-hero-breadcrumb {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        color: #fff;
+    }
+    
+    .direction-hero-breadcrumb a {
+        color: #fff;
+        opacity: 0.8;
+        transition: opacity 0.3s;
+    }
+    
+    .direction-hero-breadcrumb a:hover {
+        opacity: 1;
+        color: #fff;
+    }
+    
+    .direction-description {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        margin-bottom: 40px;
+    }
+    
+    .direction-description h2 {
+        color: var(--primary-color);
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        font-size: 1.8rem;
+    }
+    
+    .direction-description h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary-color);
+    }
+    
+    .direction-schedule {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 40px;
+    }
+    
+    .direction-schedule h2 {
+        color: var(--primary-color);
+        position: relative;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+        font-weight: 600;
+        font-size: 1.8rem;
+    }
+    
+    .direction-schedule h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary-color);
+    }
+    
+    .schedule-table {
+        margin-bottom: 20px;
+    }
+    
+    .schedule-table th {
+        background-color: var(--primary-color);
+        color: #fff;
+        font-weight: 500;
+    }
+    
+    .workout-card {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        transition: background-color 0.3s;
+    }
+    
+    .workout-card:hover {
+        background-color: #f1f1f1;
+    }
+    
+    .workout-time {
+        flex-shrink: 0;
+        width: 100px;
+        padding-right: 15px;
+    }
+    
+    .workout-time .date {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .workout-time .time {
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .workout-info {
+        flex-grow: 1;
+    }
+    
+    .workout-info .trainer-name {
+        font-weight: 500;
+    }
+    
+    .workout-actions {
+        flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .direction-hero {
+            height: 350px;
+        }
+        
+        .direction-hero-content h1 {
+            font-size: 2.2rem;
+        }
+        
+        .benefit-item {
+            flex-direction: column;
+        }
+        
+        .benefit-icon {
+            margin-bottom: 15px;
+            margin-right: 0;
+        }
+        
+        .cta-banner p {
+            max-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Герой-секция с изображением и названием -->
+<div class="direction-hero">
+    <div class="direction-hero-breadcrumb">
+        <a href="{% url 'home' %}">Главная</a> / 
+        <a href="{% url 'directions_list' %}">Направления</a> / 
+        <span>{{ direction.name }}</span>
+    </div>
+    
+    {% if direction.image %}
+        <img src="{{ direction.image.url }}" alt="{{ direction.name }}" class="direction-hero-image">
+    {% else %}
+        <div class="direction-hero-image bg-secondary d-flex align-items-center justify-content-center">
+            <i class="fas fa-dumbbell fa-5x text-white-50"></i>
+        </div>
+    {% endif %}
+    
+    <div class="direction-hero-content">
+        <div class="container">
+            <h1>{{ direction.name }}</h1>
+            <p class="lead mb-0">Откройте для себя новые возможности вашего тела</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row content-container">
+        <div class="col-lg-8 direction-column">
+            <!-- Описание направления -->
+            <div class="direction-description">
+                <h2>О направлении</h2>
+                <div class="description-content">
+                    {{ direction.description|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Ближайшие тренировки -->
+            {% if direction.workouts.all %}
+            <div class="direction-schedule">
+                <h2>Ближайшие тренировки</h2>
+                
+                <div class="workouts-list">
+                    {% for workout in direction.workouts.all|dictsort:"date"|slice:":5" %}
+                    <div class="workout-card">
+                        <div class="workout-time">
+                            <div class="date">{{ workout.date|date:"d.m.Y" }}</div>
+                            <div class="time">{{ workout.start_time|time:"H:i" }} - {{ workout.end_time|time:"H:i" }}</div>
+                        </div>
+                        <div class="workout-info">
+                            <div class="trainer-name">Тренер: {{ workout.trainer.name }}</div>
+                        </div>
+                        <div class="workout-actions">
+                            <a href="{% url 'schedule' %}?date={{ workout.date|date:'Y-m-d' }}&direction={{ direction.id }}" class="btn btn-sm btn-primary">Записаться</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{% url 'schedule' %}?direction={{ direction.id }}" class="btn btn-outline-primary">Посмотреть все тренировки</a>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- CTA баннер -->
+            <div class="cta-banner">
+                <h3>Готовы начать свой путь к здоровому образу жизни?</h3>
+                <p>Забронируйте тренировку прямо сейчас и получите персональную консультацию от наших специалистов</p>
+                <a href="{% url 'schedule' %}?direction={{ direction.id }}" class="btn btn-light">Забронировать тренировку</a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 direction-column direction-column-right">
+            <!-- Преимущества направления -->
+            <div class="direction-benefits">
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h4>Улучшение здоровья</h4>
+                        <p>Тренировки укрепляют сердечно-сосудистую систему и повышают иммунитет</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h4>Повышение энергии</h4>
+                        <p>Занятия помогут вам чувствовать себя более бодрым и энергичным</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h4>Психологическая разгрузка</h4>
+                        <p>Физическая активность помогает справиться со стрессом</p>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <h4>Социализация</h4>
+                        <p>Групповые занятия - отличный способ найти новых друзей</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Виджет с кнопкой просмотра расписания -->
+            <div class="card widget-card mb-3">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Хотите присоединиться?</h5>
+                    <p class="card-text">Проверьте наше расписание и запишитесь на тренировку</p>
+                    <a href="{% url 'schedule' %}?direction={{ direction.id }}" class="btn btn-primary w-100">Посмотреть расписание</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Перемещаем "Другие направления" вниз страницы, чтобы они не конфликтовали с подвалом -->
+    <div class="bottom-directions">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h3>Другие направления</h3>
+                <p>Исследуйте другие направления тренировок в нашем фитнес-центре</p>
+                <a href="{% url 'directions_list' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i> К списку направлений
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Для анимации элементов при прокрутке
+    document.addEventListener('DOMContentLoaded', function() {
+        const benefitItems = document.querySelectorAll('.benefit-item');
+        const workoutCards = document.querySelectorAll('.workout-card');
+        
+        function animateOnScroll(elements, delay = 100) {
+            elements.forEach((element, index) => {
+                // Добавляем начальную невидимость для последующей анимации
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                // Анимируем с задержкой
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, delay * index);
+            });
+        }
+        
+        // Запускаем анимацию
+        animateOnScroll(benefitItems);
+        animateOnScroll(workoutCards, 150);
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,130 @@
+/* FORCE FONTS - Extreme override for Django Admin */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+* {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 16px !important;
+}
+
+h1, h2, h3, h4, h5, h6, 
+#header #branding h1, 
+#header h1, 
+.dashboard #content h1, 
+.app-dashboard #content h1,
+#content > h1, 
+.content > h1,
+.model-membershipapplication > div > h1,
+.app-list > div > h1,
+caption, 
+legend, 
+.section {
+    font-size: 28px !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.2 !important;
+}
+
+.module h2, 
+.module caption, 
+.inline-group h2 {
+    font-size: 20px !important;
+    font-weight: 500 !important;
+}
+
+/* Навигация и меню */
+.breadcrumbs a, .breadcrumbs,
+.object-tools a,
+.sidebar-menu a, .sidebar-menu span,
+.sidebar-title, .nav-sidebar .nav-label,
+.app-list li a, .app-list label,
+#sidebar a, #sidebar span, 
+.nav-sidebar a, .nav-sidebar span {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 18px !important;
+}
+
+/* Помощь и вспомогательный текст */
+.help, p.help, small, .small, .quiet,
+.paginator, .paginator a,
+.form-text, .form-help, 
+.description, .price, .form-row .help,
+.field-box .help, .field .help,
+td.help, .help-text, .helptext {
+    font-size: 14px !important;
+    color: #666 !important;
+}
+
+/* Override Django admin forms */
+input, textarea, select, 
+.button, input[type=submit], input[type=button], 
+.submit-row input, a.button, 
+.selector, .selector-available, .selector-chosen,
+.form-row label, .aligned label {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 16px !important;
+}
+
+/* Override tables */
+table, tr, th, td,
+#changelist table thead th,
+#changelist table tbody td,
+#changelist-filter h2,
+#changelist-filter h3,
+#changelist-filter li {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 16px !important;
+}
+
+/* Apply to absolutely all elements in admin */
+#container, #header, #content, #footer,
+.content, .dashboard, .login, 
+.module, .app-list, .object-tools,
+.change-list, .change-form, .delete-confirmation,
+.selector, .selector-available, .selector-chosen,
+.submit-row, .breadcrumbs, .messagelist,
+.paginator, .filter, .actions,
+.inline-group, .inline-related, .inline-form,
+.errors, .errorlist, .warning, .info,
+#changelist, #changelist-filter, #changelist-form {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+#changelist * {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 16px !important;
+}
+
+#changelist th * {
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+}
+
+/* Карточки статистики на главной странице */
+.card-title, .card-text, .card-body p, 
+.card-body a, .card-header, 
+.stat-label {
+    font-size: 18px !important;
+}
+
+.stat-value, h3.card-title {
+    font-size: 36px !important;
+    font-weight: 500 !important;
+}
+
+/* Большие числа в карточках */
+.card h1, .card h2, .card h3, 
+.card .display-1, .card .display-2, 
+.card .display-3, .card .display-4 {
+    font-size: 36px !important;
+    font-weight: 500 !important;
+    margin-bottom: 10px !important;
+}
+
+/* Страница заявок на абонементы */
+.app-name, .membership-name, .phone-number, 
+.date-cell, .status-dropdown, 
+.app-table th, .app-table td {
+    font-size: 16px !important;
+} 

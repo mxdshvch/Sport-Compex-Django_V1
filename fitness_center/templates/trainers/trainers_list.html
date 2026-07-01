@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Тренеры - Фитнес-центр{% endblock %}
+
+{% block content %}
+<section class="py-4" id="trainers">
+    <div class="container">
+        <h1 class="text-center mb-3">Наши тренеры</h1>
+        <p class="text-center mb-4">Познакомьтесь с нашей командой профессионалов</p>
+        
+        <div class="row g-4">
+            {% for trainer in trainers %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="trainer-card">
+                    <div class="trainer-image-container">
+                        {% if trainer.photo %}
+                            <img src="{{ trainer.photo.url }}" class="trainer-image" alt="{{ trainer.name }}">
+                        {% else %}
+                            <div class="no-photo">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="trainer-info">
+                        <h3>{{ trainer.name }}</h3>
+                        <span class="specialization">
+                            <i class="fas fa-dumbbell me-1"></i>{{ trainer.specialization }}
+                        </span>
+                        <p>{{ trainer.description|truncatewords:15 }}</p>
+                        <div class="trainer-actions">
+                            <a href="{% url 'trainer_detail' trainer.id %}" class="btn btn-danger">
+                                <i class="fas fa-info-circle me-1"></i>ПОДРОБНЕЕ
+                            </a>
+                            <button class="btn btn-outline-danger" data-trainer-name="{{ trainer.name }}" data-bs-toggle="modal" data-bs-target="#applicationModal">
+                                <i class="fas fa-clipboard-list me-1"></i>ЗАЯВКА
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> В данный момент нет тренеров в системе.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    #trainers h1 {
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: #222222;
+    }
+    
+    #trainers p {
+        font-size: 1rem;
+        color: #555;
+    }
+    
+    .trainer-card {
+        display: flex;
+        flex-direction: column;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .trainer-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+    
+    .trainer-image-container {
+        position: relative;
+        overflow: hidden;
+        height: 220px;
+    }
+    
+    .trainer-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .trainer-card:hover .trainer-image {
+        transform: scale(1.05);
+    }
+    
+    .no-photo {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #333333, #222222);
+    }
+    
+    .no-photo i {
+        font-size: 5rem;
+        color: #666;
+    }
+    
+    .trainer-info {
+        padding: 1.2rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .trainer-info h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        color: #222222;
+    }
+    
+    .trainer-info .specialization {
+        font-size: 0.9rem;
+        color: #ff3b4e;
+        margin-bottom: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .trainer-info p {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+        line-height: 1.5;
+    }
+    
+    .trainer-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: auto;
+    }
+    
+    .trainer-actions .btn {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.5rem;
+        border-radius: 5px;
+        text-transform: uppercase;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    
+    @media (max-width: 767px) {
+        .trainer-card {
+            max-width: 100%;
+        }
+        
+        .trainer-image-container {
+            height: 200px;
+        }
+        
+        .trainer-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

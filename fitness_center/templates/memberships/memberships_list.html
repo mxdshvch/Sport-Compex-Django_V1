@@ -1,0 +1,441 @@
+{% extends 'base.html' %}
+
+{% block title %}Абонементы - POWER GYM{% endblock %}
+
+{% block content %}
+<!-- Hero секция абонементов -->
+<section class="hero-section" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/static/img/memberships-bg.jpg') no-repeat center center; background-size: cover;">
+    <div class="container">
+        <div class="text-center">
+            <h1>Абонементы POWER GYM</h1>
+            <p class="lead">Выберите оптимальный вариант для своих целей и образа жизни</p>
+        </div>
+    </div>
+</section>
+
+<!-- Абонементы -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+    {% for membership in memberships %}
+                <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm">
+                        <div class="card-header text-center py-3" style="background-color: #ff3b4e;">
+                    <h5 class="card-title mb-0">{{ membership.name }}</h5>
+                </div>
+                        {% if membership.image %}
+                            <img src="{{ membership.image.url }}" alt="{{ membership.name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                    <div class="text-center my-3">
+                                <span class="price-tag" style="color: #ff3b4e;">{{ membership.price }} ₽</span>
+                        <div class="text-muted mb-3">Срок действия: {{ membership.duration }} дней</div>
+                    </div>
+                    
+                            <div class="card-text flex-grow-1 mb-4">{{ membership.description|safe }}</div>
+                            
+                            <div class="mt-auto">
+                                <button class="btn btn-danger w-100 membership-apply-button pulse-button" 
+                                  data-membership-id="{{ membership.id }}" 
+                                  data-membership-name="{{ membership.name }}" 
+                                  data-service="Приобретение абонемента">
+                                    <i class="fas fa-clipboard-list me-2"></i>Оставить заявку
+                                </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i> В данный момент нет доступных абонементов.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+    </div>
+</section>
+
+<!-- Преимущества -->
+<section class="py-5" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Почему выбирают POWER GYM</h2>
+            <p class="lead">Преимущества для наших клиентов</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background-color: #ff3b4e;">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Удобное расположение</h3>
+                    <p>Наш фитнес-центр расположен в центре города с удобной транспортной развязкой и парковкой.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background-color: #ff3b4e;">
+                        <i class="fas fa-shower"></i>
+                    </div>
+                    <h3>Комфортные условия</h3>
+                    <p>Просторные залы, современные раздевалки, душевые, сауна и комфортная зона отдыха.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background-color: #ff3b4e;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Удобный график</h3>
+                    <p>Мы работаем с 6:00 до 00:00 без выходных, чтобы вы могли тренироваться в удобное время.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA секция -->
+<section class="cta-section" style="background-color: #222222; color: white;">
+    <div class="container">
+        <h2>Остались вопросы?</h2>
+        <p>Наши менеджеры с радостью проконсультируют вас и помогут выбрать оптимальный абонемент</p>
+        <div class="mt-4">
+            <a href="tel:+71234567890" class="btn btn-light btn-lg me-2">
+                <i class="fas fa-phone me-2"></i> +7 (123) 456-78-90
+            </a>
+            <a href="#" class="btn btn-danger btn-lg">
+                <i class="fas fa-envelope me-2"></i> Написать нам
+            </a>
+    </div>
+</div>
+</section>
+
+<!-- Модальное окно для заявки на абонемент -->
+<div class="modal fade application-modal" id="membershipApplicationModal" tabindex="-1" aria-labelledby="membershipApplicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #222222; color: white;">
+                <h5 class="modal-title" id="membershipApplicationModalLabel">Заявка на абонемент</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="membershipApplicationForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-group mb-3" id="membershipField">
+                        <label for="membershipName" class="form-label">Выбранный абонемент</label>
+                        <input type="text" class="form-control" id="membershipName" name="membership_name" readonly>
+                        <input type="hidden" id="membershipId" name="membership_id">
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="membershipApplicantName" class="form-label">Ваше имя *</label>
+                        <input type="text" class="form-control" id="membershipApplicantName" name="name" required>
+                        <div class="error-feedback" id="membershipApplicantName-error"></div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="membershipApplicantPhone" class="form-label">Телефон *</label>
+                        <input type="tel" class="form-control" id="membershipApplicantPhone" name="phone" placeholder="+7 (___) ___-__-__" required>
+                        <div class="error-feedback" id="membershipApplicantPhone-error"></div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="membershipApplicantEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="membershipApplicantEmail" name="email">
+                        <div class="error-feedback" id="membershipApplicantEmail-error"></div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label for="membershipApplicantMessage" class="form-label">Комментарий</label>
+                        <textarea class="form-control" id="membershipApplicantMessage" name="message" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="membershipConsent" name="consent" required>
+                            <label class="form-check-label" for="membershipConsent">
+                                Я согласен на обработку персональных данных *
+                            </label>
+                            <div class="error-feedback" id="membershipConsent-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Отправить заявку</button>
+                    </div>
+                </form>
+                
+                <div class="success-message" id="membershipSuccessMessage" style="display: none;">
+                    <div class="icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h4>Заявка успешно отправлена!</h4>
+                    <p>Наш менеджер свяжется с вами в ближайшее время.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Проверяем, загружен ли Bootstrap
+if (typeof bootstrap === 'undefined') {
+    console.error('Bootstrap не загружен!');
+    // Если Bootstrap не загружен, пробуем загрузить его
+    var bootstrapScript = document.createElement('script');
+    bootstrapScript.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js';
+    document.head.appendChild(bootstrapScript);
+    
+    bootstrapScript.onload = function() {
+        console.log('Bootstrap успешно загружен');
+        initializeModal();
+    };
+} else {
+    console.log('Bootstrap уже загружен');
+    initializeModal();
+}
+
+function initializeModal() {
+    // Получаем элементы модального окна
+    const modal = document.getElementById('membershipApplicationModal');
+    
+    // Проверяем, что элемент найден
+    if (!modal) {
+        console.error('Модальное окно не найдено на странице!');
+        return;
+    }
+    
+    // Создаем экземпляр модального окна Bootstrap
+    const modalInstance = new bootstrap.Modal(modal);
+    const form = document.getElementById('membershipApplicationForm');
+    const successMessage = document.getElementById('membershipSuccessMessage');
+    
+    // Находим все кнопки для открытия модального окна
+    const applyButtons = document.querySelectorAll('.membership-apply-button');
+    console.log('Найдено кнопок:', applyButtons.length);
+    
+    // Добавляем обработчики для кнопок открытия модального окна
+    applyButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Кнопка нажата');
+            
+            // Заполняем информацию об абонементе
+            const membershipName = this.getAttribute('data-membership-name');
+            const membershipId = this.getAttribute('data-membership-id');
+            console.log('Данные абонемента:', membershipName, membershipId);
+            
+            document.getElementById('membershipName').value = membershipName;
+            document.getElementById('membershipId').value = membershipId;
+            
+            // Показываем модальное окно
+            modalInstance.show();
+        });
+    });
+    
+    // Обработка отправки формы
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Отправка формы');
+        
+        // Получаем данные формы
+        const formData = new FormData(form);
+        
+        // Отправляем данные на сервер (AJAX запрос)
+        fetch('{% url "submit_membership_application" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Ответ сервера:', data);
+            if (data.success) {
+                // Если успешно, показываем сообщение об успехе
+                form.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Через 3 секунды закрываем модальное окно и сбрасываем форму
+                setTimeout(() => {
+                    form.reset();
+                    form.style.display = 'block';
+                    successMessage.style.display = 'none';
+                    modalInstance.hide();
+                }, 3000);
+            } else {
+                // Если есть ошибки, показываем их
+                if (data.errors) {
+                    // Сначала очищаем все ошибки
+                    document.querySelectorAll('.error-feedback').forEach(el => {
+                        el.textContent = '';
+                        el.style.display = 'none';
+                    });
+                    document.querySelectorAll('.is-invalid').forEach(el => {
+                        el.classList.remove('is-invalid');
+                    });
+                    
+                    // Показываем новые ошибки
+                    Object.keys(data.errors).forEach(key => {
+                        const input = document.getElementById('membershipApplicant' + key.charAt(0).toUpperCase() + key.slice(1));
+                        const errorElement = document.getElementById('membershipApplicant' + key.charAt(0).toUpperCase() + key.slice(1) + '-error');
+                        
+                        if (errorElement) {
+                            errorElement.textContent = data.errors[key];
+                            errorElement.style.display = 'block';
+                        }
+                        if (input) {
+                            input.classList.add('is-invalid');
+                        }
+                    });
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при отправке формы:', error);
+        });
+    });
+    
+    // При закрытии модального окна - сбрасываем форму
+    modal.addEventListener('hidden.bs.modal', function() {
+        form.reset();
+        form.style.display = 'block';
+        successMessage.style.display = 'none';
+        
+        // Убираем сообщения об ошибках
+        document.querySelectorAll('.error-feedback').forEach(el => {
+            el.textContent = '';
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.is-invalid').forEach(el => {
+            el.classList.remove('is-invalid');
+        });
+    });
+}
+
+// Функция для получения CSRF токена
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<style>
+/* Стили для модального окна */
+.application-modal .modal-content {
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.application-modal .modal-header {
+    background-color: var(--primary-color, #9b0000);
+    color: white;
+    padding: 15px 20px;
+}
+
+.application-modal .modal-body {
+    padding: 20px;
+}
+
+.application-modal .btn-close-white {
+    color: white;
+}
+
+.application-modal .error-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.application-modal .form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+/* Стили для сообщения об успехе */
+.success-message {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.success-message .icon {
+    margin: 0 auto 20px;
+    width: 70px;
+    height: 70px;
+    background-color: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+}
+
+/* Анимации */
+.modal.fade .modal-dialog {
+    transform: scale(0.8);
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* Пульсирующая кнопка */
+.pulse-button {
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.pulse-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    transform: scale(0);
+    animation: pulse 2s infinite;
+}
+
+.pulse-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+</style>
+{% endblock %} 

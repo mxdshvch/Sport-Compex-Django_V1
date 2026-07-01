@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Фитнес-центр{% endblock %}</title>
+    <!-- Google Fonts - Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/no-blue.css' %}">
+    <style>
+        /* Удаляем все возможные отступы */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        main {
+            margin: 0;
+            padding: 0;
+            display: block;
+            min-height: 100vh;
+        }
+        
+        /* Фиксированная шапка с отступом для контента */
+        body {
+            padding-top: 0;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+
+        /* Применяем красный цвет вместо primary */
+        .btn-danger {
+            background-color: #ff3b4e !important;
+            border-color: #ff3b4e !important;
+        }
+        
+        .btn-danger:hover, .btn-danger:focus {
+            background-color: #e0323f !important;
+            border-color: #e0323f !important;
+        }
+        
+        /* Стили для уведомлений */
+        .notifications-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 300px;
+        }
+        
+        .notification-toast {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            color: white;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateX(50px);
+        }
+        
+        .notification-toast.fade-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .notification-toast.fade-out {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        
+        .alert-success {
+            background-color: #4CAF50;
+        }
+        
+        .alert-error, .alert-danger {
+            background-color: #ff3b4e;
+        }
+        
+        .alert-warning {
+            background-color: #ff9800;
+        }
+        
+        .alert-info {
+            background-color: #2196F3;
+        }
+        
+        /* Кнопка возврата */
+        .back-to-site {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            color: #222;
+            text-decoration: none !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .back-to-site:hover {
+            background-color: #ff3b4e;
+            color: #ffffff !important;
+            box-shadow: 0 5px 15px rgba(255, 59, 78, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .back-to-site:hover i {
+            color: #ffffff !important;
+        }
+        
+        .back-to-site i {
+            margin-right: 6px;
+            color: #222;
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 576px) {
+            .back-to-site {
+                top: 15px;
+                left: 15px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Кнопка возврата на сайт -->
+    <a href="{% url 'home' %}" class="back-to-site">
+        <i class="fas fa-arrow-left"></i> Вернуться на сайт
+    </a>
+
+    <!-- Сообщения -->
+    {% if messages %}
+        <div class="notifications-container">
+            {% for message in messages %}
+                <div class="notification-toast alert-{{ message.tags }} fade-in">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Основное содержимое -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Автоматическое скрытие уведомлений через 3 секунды
+            const notifications = document.querySelectorAll('.notification-toast');
+            
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.classList.add('fade-out');
+                    
+                    // Удаляем элемент после завершения анимации
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                }, 3000);
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

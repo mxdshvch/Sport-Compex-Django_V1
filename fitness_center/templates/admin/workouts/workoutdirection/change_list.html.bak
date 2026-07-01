@@ -1,0 +1,481 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_list %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    
+    /* Таблица */
+    .app-table {
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      border-collapse: collapse;
+    }
+    
+    .app-table th {
+      text-align: left;
+      padding: 15px;
+      border-bottom: 1px solid #e9ecef;
+      color: #ff3b4e;
+      font-weight: 500;
+    }
+    
+    .app-table td {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .app-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Имя в красный цвет */
+    .direction-name {
+      color: #ff3b4e;
+      font-weight: 500;
+    }
+    
+    /* Контейнер */
+    .app-container {
+      max-width: 100%;
+      padding: 20px;
+    }
+    
+    .app-title {
+      margin-bottom: 20px;
+    }
+    
+    /* Иконка поиска */
+    .search-icon th {
+      width: 40px;
+      text-align: center;
+    }
+    
+    /* Чекбоксы */
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      margin: 0 auto;
+      display: block;
+    }
+    
+    /* Превью изображения */
+    .direction-image {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    
+    /* Бейджи целей */
+    .goals-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    
+    .goal-badge {
+      background-color: #0d6efd;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      display: inline-block;
+    }
+    
+    /* Строка поиска */
+    .search-bar {
+      display: flex;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px 0 0 4px;
+      font-size: 14px;
+    }
+    
+    .search-button {
+      background: #ff3b4e;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    
+    .search-button:hover {
+      background: #e6303f;
+    }
+    
+    /* Кнопка добавления */
+    .add-button {
+      background: #ff3b4e;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    
+    .add-button:hover {
+      background: #e6303f;
+    }
+    
+    /* Скрыть заголовок изменения */
+    .breadcrumbs {
+      display: none !important;
+    }
+    
+    #content h1:first-child {
+      display: none !important;
+    }
+    
+    .content-title {
+      display: none !important;
+    }
+    
+    /* Действия */
+    .actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .action-btn {
+      padding: 5px 10px;
+      border-radius: 4px;
+      background: #f1f1f1;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .action-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    .action-edit {
+      background: #28a745;
+      color: white;
+    }
+    
+    .action-edit:hover {
+      background: #218838;
+    }
+    
+    .action-delete {
+      background: #dc3545;
+      color: white;
+    }
+    
+    .action-delete:hover {
+      background: #c82333;
+    }
+    
+    /* Статус изображения */
+    .image-status {
+      font-size: 18px;
+    }
+    
+    .image-status-ok {
+      color: #28a745;
+    }
+    
+    .image-status-missing {
+      color: #dc3545;
+    }
+    
+    /* Карточки направлений */
+    .directions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .direction-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .direction-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .direction-card-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .direction-card-image-placeholder {
+      width: 100%;
+      height: 160px;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+    }
+    
+    .direction-card-content {
+      padding: 15px;
+    }
+    
+    .direction-card-title {
+      color: #ff3b4e;
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    
+    .direction-card-goals {
+      margin-bottom: 15px;
+    }
+    
+    .direction-card-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    /* Переключатель вида */
+    .view-switch {
+      display: flex;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    
+    .view-switch-button {
+      padding: 8px 15px;
+      background: #f1f1f1;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .view-switch-button.active {
+      background: #ff3b4e;
+      color: white;
+      border-color: #ff3b4e;
+    }
+    
+    .view-switch-button:hover:not(.active) {
+      background: #e0e0e0;
+    }
+  </style>
+{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}Направления тренировок | Фитнес-центр{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<div class="app-container">
+  <h1 class="app-title">Направления тренировок</h1>
+  
+  <!-- Строка поиска -->
+  <div class="search-bar">
+    <input type="text" class="search-input" placeholder="Поиск по направлениям...">
+    <button class="search-button"><i class="fas fa-search"></i> Найти</button>
+  </div>
+  
+  <!-- Переключатель вида (таблица / сетка) -->
+  <div class="view-switch">
+    <button class="view-switch-button" data-view="table">
+      <i class="fas fa-list"></i> Таблица
+    </button>
+    <button class="view-switch-button active" data-view="grid">
+      <i class="fas fa-th-large"></i> Карточки
+    </button>
+  </div>
+  
+  <!-- Кнопка добавления -->
+  <a href="add/" class="add-button">
+    <i class="fas fa-plus"></i> Добавить направление
+  </a>
+  
+  <!-- Вид карточками -->
+  <div class="directions-grid" id="gridView">
+    {% for direction in cl.result_list %}
+    <div class="direction-card">
+      {% if direction.image %}
+        <img src="{{ direction.image.url }}" alt="{{ direction.name }}" class="direction-card-image">
+      {% else %}
+        <div class="direction-card-image-placeholder">
+          <i class="fas fa-image fa-3x"></i>
+        </div>
+      {% endif %}
+      <div class="direction-card-content">
+        <h3 class="direction-card-title">{{ direction.name }}</h3>
+        
+        <div class="direction-card-goals">
+          <div class="goals-container">
+            {% for goal in direction.goals.all %}
+              <span class="goal-badge">{{ goal.name }}</span>
+            {% empty %}
+              <span class="text-muted">Нет целей</span>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="direction-card-actions">
+          <a href="{{ direction.id }}/change/" class="action-btn action-edit">
+            <i class="fas fa-edit"></i> Изменить
+          </a>
+          <a href="{{ direction.id }}/delete/" class="action-btn action-delete">
+            <i class="fas fa-trash"></i> Удалить
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Вид таблицей -->
+  <table class="app-table" id="tableView" style="display: none;">
+    <thead>
+      <tr>
+        <th class="search-icon"><i class="fas fa-search"></i></th>
+        <th>Изображение</th>
+        <th>Название</th>
+        <th>Цели тренировки</th>
+        <th>Изображение</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for direction in cl.result_list %}
+      <tr>
+        <td><input type="checkbox" class="checkbox" /></td>
+        <td>
+          {% if direction.image %}
+            <img src="{{ direction.image.url }}" alt="{{ direction.name }}" class="direction-image">
+          {% else %}
+            <div class="direction-image-placeholder"></div>
+          {% endif %}
+        </td>
+        <td class="direction-name">{{ direction.name }}</td>
+        <td>
+          <div class="goals-container">
+            {% for goal in direction.goals.all %}
+              <span class="goal-badge">{{ goal.name }}</span>
+            {% empty %}
+              <span class="text-muted">—</span>
+            {% endfor %}
+          </div>
+        </td>
+        <td>
+          {% if direction.image %}
+            <span class="image-status image-status-ok">✓</span>
+          {% else %}
+            <span class="image-status image-status-missing">✕</span>
+          {% endif %}
+        </td>
+        <td>
+          <div class="actions">
+            <a href="{{ direction.id }}/change/" class="action-btn action-edit">
+              <i class="fas fa-edit"></i> Изменить
+            </a>
+            <a href="{{ direction.id }}/delete/" class="action-btn action-delete">
+              <i class="fas fa-trash"></i> Удалить
+            </a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <p>{{ cl.result_count }} направлений тренировок</p>
+</div>
+
+<!-- Подключение скриптов -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Скрыть ненужные заголовки
+    $('h1:contains("Выберите")').remove();
+    
+    // Переключение между видами (таблица / сетка)
+    $('.view-switch-button').click(function() {
+      const viewType = $(this).data('view');
+      
+      $('.view-switch-button').removeClass('active');
+      $(this).addClass('active');
+      
+      if (viewType === 'table') {
+        $('#gridView').hide();
+        $('#tableView').show();
+      } else {
+        $('#gridView').show();
+        $('#tableView').hide();
+      }
+    });
+    
+    // Обработка поиска
+    $('.search-button').click(function() {
+      performSearch();
+    });
+
+    $('.search-input').keypress(function(e) {
+      if(e.which == 13) {
+        performSearch();
+      }
+    });
+
+    function performSearch() {
+      var query = $('.search-input').val().toLowerCase();
+      
+      // Если поисковый запрос пустой, показываем все элементы
+      if(query === '') {
+        $('.app-table tbody tr').show();
+        $('.direction-card').show();
+        return;
+      }
+      
+      // Поиск в таблице
+      $('.app-table tbody tr').each(function() {
+        var rowText = $(this).text().toLowerCase();
+        if(rowText.indexOf(query) > -1) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+      
+      // Поиск в карточках
+      $('.direction-card').each(function() {
+        var cardText = $(this).text().toLowerCase();
+        if(cardText.indexOf(query) > -1) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+  });
+</script>
+{% endblock %} 

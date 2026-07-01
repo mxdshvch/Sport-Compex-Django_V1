@@ -1,0 +1,376 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_list %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    
+    /* Таблица */
+    .app-table {
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      border-collapse: collapse;
+    }
+    
+    .app-table th {
+      text-align: left;
+      padding: 15px;
+      border-bottom: 1px solid #e9ecef;
+      color: #ff3b4e;
+      font-weight: 500;
+    }
+    
+    .app-table td {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .app-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Имя в красный цвет */
+    .goal-name {
+      color: #ff3b4e;
+      font-weight: 500;
+    }
+    
+    /* Контейнер */
+    .app-container {
+      max-width: 100%;
+      padding: 20px;
+    }
+    
+    .app-title {
+      margin-bottom: 20px;
+    }
+    
+    /* Иконка поиска */
+    .search-icon th {
+      width: 40px;
+      text-align: center;
+    }
+    
+    /* Чекбоксы */
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      margin: 0 auto;
+      display: block;
+    }
+    
+    /* Кнопка добавления */
+    .add-button {
+      background: #ff3b4e;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    
+    .add-button:hover {
+      background: #e6303f;
+    }
+    
+    /* Скрыть заголовок изменения */
+    .breadcrumbs {
+      display: none !important;
+    }
+    
+    #content h1:first-child {
+      display: none !important;
+    }
+    
+    .content-title {
+      display: none !important;
+    }
+    
+    /* Действия */
+    .actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .action-btn {
+      padding: 5px 10px;
+      border-radius: 4px;
+      background: #f1f1f1;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .action-btn:hover {
+      background: #e0e0e0;
+    }
+    
+    .action-edit {
+      background: #28a745;
+      color: white;
+    }
+    
+    .action-edit:hover {
+      background: #218838;
+    }
+    
+    .action-delete {
+      background: #dc3545;
+      color: white;
+    }
+    
+    .action-delete:hover {
+      background: #c82333;
+    }
+    
+    /* Карточки целей */
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .goal-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-top: 4px solid #ff3b4e;
+    }
+    
+    .goal-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .goal-card-title {
+      color: #ff3b4e;
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    
+    .goal-card-directions {
+      color: #6c757d;
+      font-size: 14px;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+    
+    .goal-card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+    
+    /* Переключатель вида */
+    .view-switch {
+      display: flex;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    
+    .view-switch-button {
+      padding: 8px 15px;
+      background: #f1f1f1;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .view-switch-button.active {
+      background: #ff3b4e;
+      color: white;
+      border-color: #ff3b4e;
+    }
+    
+    .view-switch-button:hover:not(.active) {
+      background: #e0e0e0;
+    }
+    
+    /* Направления связанные с целью */
+    .directions-badge {
+      display: inline-block;
+      background: #0d6efd;
+      color: white;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+    
+    .directions-count {
+      display: inline-block;
+      background: #6c757d;
+      color: white;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+  </style>
+{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}Цели тренировок | Фитнес-центр{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<div class="app-container">
+  <h1 class="app-title">Цели тренировок</h1>
+  
+  <!-- Переключатель вида -->
+  <div class="view-switch">
+    <button class="view-switch-button" data-view="table">
+      <i class="fas fa-list"></i> Таблица
+    </button>
+    <button class="view-switch-button active" data-view="grid">
+      <i class="fas fa-th-large"></i> Карточки
+    </button>
+  </div>
+  
+  <!-- Кнопка добавления -->
+  <a href="add/" class="add-button">
+    <i class="fas fa-plus"></i> Добавить цель
+  </a>
+  
+  <!-- Вид карточками -->
+  <div class="goals-grid" id="gridView">
+    {% for goal in cl.result_list %}
+    <div class="goal-card">
+      <h3 class="goal-card-title">{{ goal.name }}</h3>
+      <div class="goal-card-directions">
+        {% with directions_count=goal.directions.count %}
+        {% if directions_count > 0 %}
+          <p>Связанные направления:</p>
+          {% for direction in goal.directions.all|slice:":3" %}
+            <span class="directions-badge">{{ direction.name }}</span>
+          {% endfor %}
+          {% if directions_count > 3 %}
+            <span class="directions-count">+{{ directions_count|add:"-3" }}</span>
+          {% endif %}
+        {% else %}
+          <p>Нет связанных направлений</p>
+        {% endif %}
+        {% endwith %}
+      </div>
+      <div class="goal-card-actions">
+        <a href="{{ goal.id }}/change/" class="action-btn action-edit">
+          <i class="fas fa-edit"></i> Изменить
+        </a>
+        <a href="{{ goal.id }}/delete/" class="action-btn action-delete">
+          <i class="fas fa-trash"></i> Удалить
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Вид таблицей -->
+  <table class="app-table" id="tableView" style="display: none;">
+    <thead>
+      <tr>
+        <th class="search-icon"><i class="fas fa-search"></i></th>
+        <th>Название</th>
+        <th>Связанные направления</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for goal in cl.result_list %}
+      <tr>
+        <td><input type="checkbox" class="checkbox" /></td>
+        <td class="goal-name">{{ goal.name }}</td>
+        <td>
+          {% with directions_count=goal.directions.count %}
+          {% if directions_count > 0 %}
+            {% for direction in goal.directions.all|slice:":3" %}
+              <span class="directions-badge">{{ direction.name }}</span>
+            {% endfor %}
+            {% if directions_count > 3 %}
+              <span class="directions-count">+{{ directions_count|add:"-3" }}</span>
+            {% endif %}
+          {% else %}
+            <span class="text-muted">—</span>
+          {% endif %}
+          {% endwith %}
+        </td>
+        <td>
+          <div class="actions">
+            <a href="{{ goal.id }}/change/" class="action-btn action-edit">
+              <i class="fas fa-edit"></i> Изменить
+            </a>
+            <a href="{{ goal.id }}/delete/" class="action-btn action-delete">
+              <i class="fas fa-trash"></i> Удалить
+            </a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <p class="results-count">{{ cl.result_count }} целей тренировок</p>
+</div>
+
+<!-- Подключение скриптов -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Скрыть ненужные заголовки
+    $('h1:contains("Выберите")').remove();
+    
+    // Переключение между видами (таблица / сетка)
+    $('.view-switch-button').click(function() {
+      const viewType = $(this).data('view');
+      
+      $('.view-switch-button').removeClass('active');
+      $(this).addClass('active');
+      
+      if (viewType === 'table') {
+        $('#gridView').hide();
+        $('#tableView').show();
+      } else {
+        $('#gridView').show();
+        $('#tableView').hide();
+      }
+    });
+    
+    // Форматирование числа результатов
+    const count = {{ cl.result_count }};
+    let text = count + ' ';
+    
+    if (count % 10 === 1 && count % 100 !== 11) {
+      text += 'цель тренировки';
+    } else if ((count % 10 === 2 || count % 10 === 3 || count % 10 === 4) && 
+              !(count % 100 === 12 || count % 100 === 13 || count % 100 === 14)) {
+      text += 'цели тренировок';
+    } else {
+      text += 'целей тренировок';
+    }
+    
+    $('.results-count').text(text);
+  });
+</script>
+{% endblock %} 

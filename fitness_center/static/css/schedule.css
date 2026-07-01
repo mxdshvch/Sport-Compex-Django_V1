@@ -1,0 +1,242 @@
+/* Стили для расписания залов */
+.schedule-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px 15px;
+    font-weight: 600;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.schedule-table th,
+.schedule-table td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.schedule-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.schedule-table thead th:first-child {
+    width: 80px;
+}
+
+.schedule-table td.time-cell {
+    width: 80px;
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.workout-card {
+    padding: 8px;
+    border-radius: 4px;
+    margin: 2px 0;
+    color: white !important;
+    font-size: 0.85rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: calc(var(--animation-order, 0) * 0.05s);
+    opacity: 0;
+}
+
+.workout-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.workout-card.yoga {
+    background-color: #0d47a1 !important;
+}
+
+.workout-card.cardio {
+    background-color: #b71c1c !important;
+}
+
+.workout-card.strength {
+    background-color: #002171 !important;
+}
+
+.workout-card.functional {
+    background-color: #ac1900 !important;
+}
+
+.workout-card.interval {
+    background-color: #4527a0 !important;
+}
+
+.workout-card.abs {
+    background-color: #006064 !important;
+}
+
+.workout-card.body-revolution {
+    background-color: #880e4f !important;
+}
+
+.workout-card.tabata {
+    background-color: #33691e !important;
+}
+
+.workout-card .workout-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.workout-card .workout-trainer {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.workout-card .workout-time {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.7rem;
+    background-color: rgba(0,0,0,0.2);
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: white !important;
+}
+
+/* Стили для переключателя залов */
+.hall-toggle {
+    margin-bottom: 20px;
+}
+
+.hall-toggle .btn-group {
+    width: 100%;
+}
+
+.hall-toggle .btn {
+    width: 50%;
+    padding: 10px 15px;
+    font-weight: 600;
+}
+
+.hall-toggle .btn-small-hall {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.hall-toggle .btn-large-hall {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.hall-toggle .btn-small-hall:not(.active) {
+    background-color: #e8f5e9;
+    border-color: #c8e6c9;
+    color: #28a745;
+}
+
+.hall-toggle .btn-large-hall:not(.active) {
+    background-color: #e3f2fd;
+    border-color: #bbdefb;
+    color: #007bff;
+}
+
+/* Стили для временной шкалы */
+.schedule-time-column {
+    width: 80px;
+    background-color: #f8f9fa;
+}
+
+.schedule-day-column {
+    width: calc((100% - 80px) / 7);
+}
+
+.empty-cell {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    height: 60px;
+    background-color: rgba(0,0,0,0.02);
+    border-radius: 4px;
+}
+
+/* Стили для модальных окон */
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 15px 20px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.workout-info .row {
+    margin-bottom: 15px;
+}
+
+.workout-info i {
+    width: 20px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+.workout-action .alert {
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.workout-action .btn {
+    padding: 10px 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.workout-action .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.btn-close-white {
+    filter: brightness(0) invert(1);
+}
+
+/* Анимация для карточек */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Стили для пустых ячеек */
+.empty-cell {
+    height: 60px;
+    background-color: rgba(0,0,0,0.02);
+    border-radius: 4px;
+} 

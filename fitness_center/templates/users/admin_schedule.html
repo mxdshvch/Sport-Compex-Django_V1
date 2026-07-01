@@ -1,0 +1,493 @@
+{% extends 'users/admin_style_base.html' %}
+{% load static %}
+
+{% block title %}Расписание | Личный кабинет{% endblock %}
+
+{% block breadcrumb_active %}Расписание{% endblock %}
+
+{% block page_title %}Расписание тренировок{% endblock %}
+
+{% block page_actions %}
+<div class="d-flex">
+    <div class="me-2">
+        <select id="dayFilter" class="form-control form-select-sm">
+            <option value="all">Все дни</option>
+            <option value="today">Сегодня</option>
+            <option value="tomorrow">Завтра</option>
+            <option value="week">Текущая неделя</option>
+        </select>
+    </div>
+    <div>
+        <select id="typeFilter" class="form-control form-select-sm">
+            <option value="all">Все типы</option>
+            <option value="yoga">Йога</option>
+            <option value="cardio">Кардио</option>
+            <option value="strength">Силовые</option>
+            <option value="crossfit">Кроссфит</option>
+        </select>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_content %}
+<!-- Карточка с активными записями -->
+<div class="dashboard-card mb-4">
+    <div class="dashboard-card-header">
+        <h5 class="dashboard-card-title">
+            <i class="fas fa-bookmark"></i>Ваши текущие записи
+        </h5>
+        <span class="badge badge-primary">{{ user_registrations.count }} записей</span>
+    </div>
+    <div class="dashboard-card-body p-0">
+        {% if user_registrations %}
+            <div class="table-responsive">
+                <table class="dashboard-table mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Дата</th>
+                            <th style="width: 100px;">Время</th>
+                            <th>Тренировка</th>
+                            <th>Тренер</th>
+                            <th>Зал</th>
+                            <th style="width: 150px;">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registration in user_registrations %}
+                        <tr>
+                            <td>
+                                <strong>{{ registration.workout.date|date:"d.m.Y" }}</strong>
+                                {% if registration.workout.date == today %}
+                                    <span class="badge badge-warning ms-1">Сегодня</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ registration.workout.time|time:"H:i" }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-2">
+                                        {% if 'йога' in registration.workout.title|lower %}
+                                            <i class="fas fa-spa text-success"></i>
+                                        {% elif 'кардио' in registration.workout.title|lower %}
+                                            <i class="fas fa-heartbeat text-danger"></i>
+                                        {% elif 'силов' in registration.workout.title|lower %}
+                                            <i class="fas fa-dumbbell text-primary"></i>
+                                        {% else %}
+                                            <i class="fas fa-running text-info"></i>
+                                        {% endif %}
+                                    </div>
+                                    {{ registration.workout.title }}
+                                </div>
+                            </td>
+                            <td>{{ registration.workout.trainer.name }}</td>
+                            <td>
+                                {% if registration.workout.hall == 'small' %}
+                                    <span class="badge badge-success">Малый зал</span>
+                                {% else %}
+                                    <span class="badge badge-primary">Большой зал</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'account_cancel_workout_registration' registration.id %}" class="btn-dashboard btn-dashboard-danger btn-dashboard-sm" onclick="return confirm('Вы уверены, что хотите отменить запись?')">
+                                    <i class="fas fa-times"></i> Отменить
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h5 class="empty-state-title">У вас пока нет записей на тренировки</h5>
+                <p class="empty-state-text">Выберите интересующую тренировку из расписания ниже и запишитесь.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Заголовок и переключатель залов -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Расписание по залам</h4>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn-dashboard btn-dashboard-success active" id="smallHallBtn">Малый зал</button>
+        <button type="button" class="btn-dashboard btn-dashboard-primary" id="largeHallBtn">Большой зал</button>
+    </div>
+</div>
+
+<!-- Таблица расписания для малого зала -->
+<div class="dashboard-card hall-schedule" id="smallHallSchedule">
+    <div class="dashboard-card-header">
+        <h5 class="dashboard-card-title">
+            <i class="fas fa-calendar-alt"></i>Малый зал
+        </h5>
+    </div>
+    <div class="dashboard-card-body p-0">
+        <div class="table-responsive">
+            <table class="dashboard-table mb-0" id="smallHallTable">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">Дата</th>
+                        <th style="width: 100px;">Время</th>
+                        <th>Тренировка</th>
+                        <th>Тренер</th>
+                        <th style="width: 100px;">Места</th>
+                        <th style="width: 150px;">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for workout in small_hall_workouts %}
+                    <tr class="{% if workout in registered_workouts %}table-light{% endif %}" 
+                        data-date="{{ workout.date|date:'Y-m-d' }}"
+                        data-type="{% if 'йога' in workout.title|lower %}yoga{% elif 'кардио' in workout.title|lower %}cardio{% elif 'силов' in workout.title|lower %}strength{% elif 'кроссфит' in workout.title|lower %}crossfit{% else %}other{% endif %}">
+                        <td>
+                            <strong>{{ workout.date|date:"d.m.Y" }}</strong>
+                            {% if workout.date == today %}
+                                <span class="badge badge-warning ms-1">Сегодня</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ workout.time|time:"H:i" }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">
+                                    {% if 'йога' in workout.title|lower %}
+                                        <i class="fas fa-spa text-success"></i>
+                                    {% elif 'кардио' in workout.title|lower %}
+                                        <i class="fas fa-heartbeat text-danger"></i>
+                                    {% elif 'силов' in workout.title|lower %}
+                                        <i class="fas fa-dumbbell text-primary"></i>
+                                    {% else %}
+                                        <i class="fas fa-running text-info"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div>{{ workout.title }}</div>
+                                    <small class="text-muted">{{ workout.duration }} мин.</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ workout.trainer.name }}</td>
+                        <td>
+                            {% with registered=workout.registrations.count %}
+                            <div class="d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                    {% with percentage=registered|floatformat:0|slugify|add:0 %}
+                                    {% with percent_value=registered|floatformat:0 %}
+                                    <div class="progress-bar {% if percent_value > 75 %}progress-bar-danger{% elif percent_value > 50 %}progress-bar-warning{% else %}progress-bar-success{% endif %}" 
+                                         role="progressbar" style="width: {{ percent_value }}%"
+                                         aria-valuenow="{{ registered }}" aria-valuemin="0" aria-valuemax="{{ workout.max_participants }}">
+                                    </div>
+                                    {% endwith %}
+                                    {% endwith %}
+                                </div>
+                                <small>{{ registered }}/{{ workout.max_participants }}</small>
+                            </div>
+                            {% endwith %}
+                        </td>
+                        <td>
+                            {% if workout in registered_workouts %}
+                                {% with reg=workout.get_user_registration %}
+                                <a href="{% url 'account_cancel_workout_registration' reg.id %}" class="btn-dashboard btn-dashboard-danger btn-dashboard-sm" onclick="return confirm('Вы уверены, что хотите отменить запись?')">
+                                    <i class="fas fa-times"></i> Отменить 
+                                </a>
+                                {% endwith %}
+                            {% elif workout.is_full %}
+                                <button class="btn-dashboard btn-dashboard-secondary btn-dashboard-sm" disabled>
+                                    <i class="fas fa-ban"></i> Нет мест
+                                </button>
+                            {% else %}
+                                <a href="{% url 'account_register_for_workout' workout.id %}" class="btn-dashboard btn-dashboard-primary btn-dashboard-sm">
+                                    <i class="fas fa-check"></i> Записаться
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="no-workouts-row">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <h5 class="empty-state-title">Нет доступных тренировок</h5>
+                                <p class="empty-state-text">В ближайшее время тренировки не запланированы.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Таблица расписания для большого зала -->
+<div class="dashboard-card hall-schedule" id="largeHallSchedule" style="display: none;">
+    <div class="dashboard-card-header">
+        <h5 class="dashboard-card-title">
+            <i class="fas fa-calendar-alt"></i>Большой зал
+        </h5>
+    </div>
+    <div class="dashboard-card-body p-0">
+        <div class="table-responsive">
+            <table class="dashboard-table mb-0" id="largeHallTable">
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">Дата</th>
+                        <th style="width: 100px;">Время</th>
+                        <th>Тренировка</th>
+                        <th>Тренер</th>
+                        <th style="width: 100px;">Места</th>
+                        <th style="width: 150px;">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for workout in large_hall_workouts %}
+                    <tr class="{% if workout in registered_workouts %}table-light{% endif %}" 
+                        data-date="{{ workout.date|date:'Y-m-d' }}"
+                        data-type="{% if 'йога' in workout.title|lower %}yoga{% elif 'кардио' in workout.title|lower %}cardio{% elif 'силов' in workout.title|lower %}strength{% elif 'кроссфит' in workout.title|lower %}crossfit{% else %}other{% endif %}">
+                        <td>
+                            <strong>{{ workout.date|date:"d.m.Y" }}</strong>
+                            {% if workout.date == today %}
+                                <span class="badge badge-warning ms-1">Сегодня</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ workout.time|time:"H:i" }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="me-2">
+                                    {% if 'йога' in workout.title|lower %}
+                                        <i class="fas fa-spa text-success"></i>
+                                    {% elif 'кардио' in workout.title|lower %}
+                                        <i class="fas fa-heartbeat text-danger"></i>
+                                    {% elif 'силов' in workout.title|lower %}
+                                        <i class="fas fa-dumbbell text-primary"></i>
+                                    {% else %}
+                                        <i class="fas fa-running text-info"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <div>{{ workout.title }}</div>
+                                    <small class="text-muted">{{ workout.duration }} мин.</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ workout.trainer.name }}</td>
+                        <td>
+                            {% with registered=workout.registrations.count %}
+                            <div class="d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                    {% with percentage=registered|floatformat:0|slugify|add:0 %}
+                                    {% with percent_value=registered|floatformat:0 %}
+                                    <div class="progress-bar {% if percent_value > 75 %}progress-bar-danger{% elif percent_value > 50 %}progress-bar-warning{% else %}progress-bar-success{% endif %}" 
+                                         role="progressbar" style="width: {{ percent_value }}%"
+                                         aria-valuenow="{{ registered }}" aria-valuemin="0" aria-valuemax="{{ workout.max_participants }}">
+                                    </div>
+                                    {% endwith %}
+                                    {% endwith %}
+                                </div>
+                                <small>{{ registered }}/{{ workout.max_participants }}</small>
+                            </div>
+                            {% endwith %}
+                        </td>
+                        <td>
+                            {% if workout in registered_workouts %}
+                                {% with reg=workout.get_user_registration %}
+                                <a href="{% url 'account_cancel_workout_registration' reg.id %}" class="btn-dashboard btn-dashboard-danger btn-dashboard-sm" onclick="return confirm('Вы уверены, что хотите отменить запись?')">
+                                    <i class="fas fa-times"></i> Отменить 
+                                </a>
+                                {% endwith %}
+                            {% elif workout.is_full %}
+                                <button class="btn-dashboard btn-dashboard-secondary btn-dashboard-sm" disabled>
+                                    <i class="fas fa-ban"></i> Нет мест
+                                </button>
+                            {% else %}
+                                <a href="{% url 'account_register_for_workout' workout.id %}" class="btn-dashboard btn-dashboard-primary btn-dashboard-sm">
+                                    <i class="fas fa-check"></i> Записаться
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="no-workouts-row">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <h5 class="empty-state-title">Нет доступных тренировок</h5>
+                                <p class="empty-state-text">В ближайшее время тренировки не запланированы.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="noResults" class="dashboard-card mt-4" style="display: none;">
+    <div class="dashboard-card-body">
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h5 class="empty-state-title">Тренировки не найдены</h5>
+            <p class="empty-state-text">По выбранным фильтрам тренировки не найдены.</p>
+            <button id="resetFilters" class="btn-dashboard btn-dashboard-primary mt-2">
+                <i class="fas fa-undo"></i> Сбросить фильтры
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block tab_specific_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Переключение между залами
+        const smallHallBtn = document.getElementById('smallHallBtn');
+        const largeHallBtn = document.getElementById('largeHallBtn');
+        const smallHallSchedule = document.getElementById('smallHallSchedule');
+        const largeHallSchedule = document.getElementById('largeHallSchedule');
+        
+        smallHallBtn.addEventListener('click', function() {
+            smallHallSchedule.style.display = 'block';
+            largeHallSchedule.style.display = 'none';
+            smallHallBtn.classList.add('active');
+            largeHallBtn.classList.remove('active');
+        });
+        
+        largeHallBtn.addEventListener('click', function() {
+            smallHallSchedule.style.display = 'none';
+            largeHallSchedule.style.display = 'block';
+            largeHallBtn.classList.add('active');
+            smallHallBtn.classList.remove('active');
+        });
+        
+        // Фильтрация по дате и типу тренировки
+        const dayFilter = document.getElementById('dayFilter');
+        const typeFilter = document.getElementById('typeFilter');
+        const smallHallTable = document.getElementById('smallHallTable');
+        const largeHallTable = document.getElementById('largeHallTable');
+        const smallHallRows = smallHallTable.querySelectorAll('tbody tr[data-date]');
+        const largeHallRows = largeHallTable.querySelectorAll('tbody tr[data-date]');
+        const noResultsCard = document.getElementById('noResults');
+        
+        function applyFilters() {
+            const dayValue = dayFilter.value;
+            const typeValue = typeFilter.value;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const endOfWeek = new Date(today);
+            endOfWeek.setDate(endOfWeek.getDate() + (7 - endOfWeek.getDay()));
+            
+            let smallHallVisibleCount = 0;
+            let largeHallVisibleCount = 0;
+            
+            // Фильтрация для малого зала
+            smallHallRows.forEach(row => {
+                const dateStr = row.getAttribute('data-date');
+                const rowDate = new Date(dateStr + 'T00:00:00');
+                const rowType = row.getAttribute('data-type');
+                
+                // Проверка соответствия дате
+                let matchesDay = true;
+                if (dayValue === 'today') {
+                    matchesDay = rowDate.getTime() === today.getTime();
+                } else if (dayValue === 'tomorrow') {
+                    matchesDay = rowDate.getTime() === tomorrow.getTime();
+                } else if (dayValue === 'week') {
+                    matchesDay = (rowDate >= today && rowDate <= endOfWeek);
+                }
+                
+                // Проверка соответствия типу тренировки
+                let matchesType = true;
+                if (typeValue !== 'all') {
+                    matchesType = rowType === typeValue;
+                }
+                
+                // Показываем или скрываем строку
+                if (matchesDay && matchesType) {
+                    row.style.display = '';
+                    smallHallVisibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Фильтрация для большого зала
+            largeHallRows.forEach(row => {
+                const dateStr = row.getAttribute('data-date');
+                const rowDate = new Date(dateStr + 'T00:00:00');
+                const rowType = row.getAttribute('data-type');
+                
+                // Проверка соответствия дате
+                let matchesDay = true;
+                if (dayValue === 'today') {
+                    matchesDay = rowDate.getTime() === today.getTime();
+                } else if (dayValue === 'tomorrow') {
+                    matchesDay = rowDate.getTime() === tomorrow.getTime();
+                } else if (dayValue === 'week') {
+                    matchesDay = (rowDate >= today && rowDate <= endOfWeek);
+                }
+                
+                // Проверка соответствия типу тренировки
+                let matchesType = true;
+                if (typeValue !== 'all') {
+                    matchesType = rowType === typeValue;
+                }
+                
+                // Показываем или скрываем строку
+                if (matchesDay && matchesType) {
+                    row.style.display = '';
+                    largeHallVisibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Показываем соответствующее сообщение если нет результатов в активном зале
+            const currentHall = smallHallSchedule.style.display !== 'none' ? 'small' : 'large';
+            const visibleCount = currentHall === 'small' ? smallHallVisibleCount : largeHallVisibleCount;
+            
+            // Показываем или скрываем сообщение о пустой таблице
+            const smallNoWorkoutsRow = smallHallTable.querySelector('.no-workouts-row');
+            const largeNoWorkoutsRow = largeHallTable.querySelector('.no-workouts-row');
+            
+            if (smallNoWorkoutsRow) {
+                smallNoWorkoutsRow.style.display = (smallHallRows.length === 0 || smallHallVisibleCount > 0) ? 'none' : '';
+            }
+            
+            if (largeNoWorkoutsRow) {
+                largeNoWorkoutsRow.style.display = (largeHallRows.length === 0 || largeHallVisibleCount > 0) ? 'none' : '';
+            }
+            
+            if ((currentHall === 'small' && smallHallVisibleCount === 0 && smallHallRows.length > 0) ||
+                (currentHall === 'large' && largeHallVisibleCount === 0 && largeHallRows.length > 0)) {
+                noResultsCard.style.display = 'block';
+            } else {
+                noResultsCard.style.display = 'none';
+            }
+        }
+        
+        // Обработчики событий
+        dayFilter.addEventListener('change', applyFilters);
+        typeFilter.addEventListener('change', applyFilters);
+        
+        // Кнопка сброса фильтров
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            dayFilter.value = 'all';
+            typeFilter.value = 'all';
+            applyFilters();
+        });
+    });
+</script>
+{% endblock %} 

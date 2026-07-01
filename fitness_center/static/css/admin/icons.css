@@ -1,0 +1,119 @@
+/* Font Awesome иконки для админ-панели */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* Базовые стили для иконок */
+.icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Фиксированный размер иконок в меню */
+.sidebar-menu i {
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+    margin-right: 8px;
+}
+
+/* Стили для статусных индикаторов */
+.status-pending {
+    color: #ffc107;
+}
+.status-approved {
+    color: #28a745;
+}
+.status-rejected {
+    color: #dc3545;
+}
+
+/* Исправление отображения иконок в таблицах */
+table .fa, table .fas, table .far, table .fab {
+    font-size: 14px;
+    width: 16px;
+    text-align: center;
+}
+
+/* Иконки для действий */
+.action-icon {
+    font-size: 16px;
+    color: #555;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.action-icon:hover {
+    color: #007bff;
+}
+.action-icon.edit:hover {
+    color: #28a745;
+}
+.action-icon.delete:hover {
+    color: #dc3545;
+}
+
+/* Исправление отображения для страницы заявок */
+.application-list-container {
+    margin-top: 20px;
+}
+
+.application-card {
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.application-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.application-body {
+    padding: 15px;
+}
+
+.application-row {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.application-label {
+    flex: 0 0 150px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.application-value {
+    flex: 1;
+}
+
+.application-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.application-actions {
+    margin-top: 15px;
+    text-align: right;
+}
+
+/* Фиксы для мобильных устройств */
+@media (max-width: 768px) {
+    .application-row {
+        flex-direction: column;
+    }
+    .application-label {
+        margin-bottom: 3px;
+    }
+} 

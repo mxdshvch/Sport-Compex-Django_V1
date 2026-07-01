@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администрирования</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background-color: #ff3b4e;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-right {
+            font-size: 14px;
+        }
+        
+        .header-right a {
+            color: white;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        
+        .container-fluid {
+            display: flex;
+            height: calc(100vh - 50px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #000;
+            color: white;
+            padding-top: 20px;
+        }
+        
+        .sidebar-header {
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            padding: 10px 15px;
+        }
+        
+        .sidebar-menu li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-menu li a i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-menu li.active {
+            background-color: #333;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .search-box button {
+            padding: 8px 15px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .filter-buttons a {
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .filter-buttons a.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .filter-buttons a:not(.active) {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .status-select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        
+        .badge-pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .badge-approved {
+            background-color: #198754;
+            color: white;
+        }
+        
+        .badge-rejected {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <h1 style="margin: 0; font-size: 20px;">Панель администрирования</h1>
+        </div>
+        <div class="header-right">
+            ДОБРО ПОЖАЛОВАТЬ, {{ request.user.email }} | <a href="{% url 'admin:index' %}">ОТКРЫТЬ САЙТ</a> | <a href="{% url 'admin:password_change' %}">ИЗМЕНИТЬ ПАРОЛЬ</a> | <a href="{% url 'admin:logout' %}">ВЫЙТИ</a>
+        </div>
+    </div>
+    
+    <div class="container-fluid">
+        <div class="sidebar">
+            <div class="sidebar-header">ОСНОВНОЕ</div>
+            <ul class="sidebar-menu">
+                <li><a href="{% url 'admin:index' %}"><i class="fas fa-ticket-alt"></i> Абонементы</a></li>
+                <li class="active"><a href="{% url 'admin_applications_list' %}"><i class="fas fa-file-alt"></i> Заявки на абонементы</a></li>
+                <li><a href="{% url 'admin:trainers_trainer_changelist' %}"><i class="fas fa-user"></i> Тренеры</a></li>
+                <li><a href="{% url 'admin:users_customuser_changelist' %}"><i class="fas fa-users"></i> Пользователи</a></li>
+            </ul>
+            
+            <div class="sidebar-header">ТРЕНИРОВКИ</div>
+            <ul class="sidebar-menu">
+                <li><a href="{% url 'admin:workouts_workoutdirection_changelist' %}"><i class="fas fa-compass"></i> Направления тренировок</a></li>
+                <li><a href="{% url 'admin:workouts_workout_changelist' %}"><i class="fas fa-dumbbell"></i> Тренировки</a></li>
+                <li><a href="{% url 'admin:workouts_traininggoal_changelist' %}"><i class="fas fa-bullseye"></i> Цели тренировок</a></li>
+                <li><a href="{% url 'admin:workouts_workoutgroup_changelist' %}"><i class="fas fa-layer-group"></i> Группы</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <h2 class="page-title">Заявки</h2>
+            <div class="card">
+                <div class="card-header">
+                    Здесь вы можете управлять заявками
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{% url 'admin_applications_list' %}">
+                        <div class="search-box">
+                            <input type="text" name="search" placeholder="Поиск..." value="{{ search_query }}">
+                            <button type="submit">Найти</button>
+                        </div>
+                    </form>
+                    
+                    <div class="filter-buttons">
+                        <a href="{% url 'admin_applications_list' %}" class="{% if not status_filter %}active{% endif %} filter-button">Все</a>
+                        <a href="{% url 'admin_applications_list' %}?status=pending" class="{% if status_filter == 'pending' %}active{% endif %} filter-button">В обработке</a>
+                        <a href="{% url 'admin_applications_list' %}?status=approved" class="{% if status_filter == 'approved' %}active{% endif %} filter-button">Одобрено</a>
+                        <a href="{% url 'admin_applications_list' %}?status=rejected" class="{% if status_filter == 'rejected' %}active{% endif %} filter-button">Отклонено</a>
+                    </div>
+                    
+                    {% if applications %}
+                    <table id="result_list">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectall"></th>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Телефон</th>
+                                <th>Абонемент</th>
+                                <th>Статус</th>
+                                <th>Дата создания</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in applications %}
+                            <tr id="application-{{ application.id }}">
+                                <td><input type="checkbox" name="selected[]" value="{{ application.id }}"></td>
+                                <td>{{ application.name }}</td>
+                                <td>{{ application.email|default:"-" }}</td>
+                                <td>{{ application.phone }}</td>
+                                <td>
+                                    {% if application.membership %}
+                                    Абонемент "{{ application.membership.name }}"<br>
+                                    {{ application.membership.price|floatformat:2 }} руб.
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td class="field-status_display">
+                                    <span class="status-{{ application.status }}">
+                                        {% if application.status == 'pending' %}
+                                            В обработке
+                                        {% elif application.status == 'approved' %}
+                                            Одобрено
+                                        {% elif application.status == 'rejected' %}
+                                            Отклонено
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td>{{ application.created_at|date:"d M Y г. H:i" }}</td>
+                                <td class="field-actions">
+                                    <a href="{% url 'admin_application_update' application.id %}" title="Изменить">Изменить</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <p>Нет доступных заявок на абонементы.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="/static/js/admin/membership_application.js"></script>
+</body>
+</html> 

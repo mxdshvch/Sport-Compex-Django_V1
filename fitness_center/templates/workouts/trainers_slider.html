@@ -1,0 +1,448 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Наши тренеры - Фитнес-центр{% endblock %}
+
+{% block content %}
+<!-- Раздел с направлениями тренировок -->
+<section class="py-5 bg-light" id="directions">
+    <div class="container">
+        <h2 class="text-center mb-3">Популярные направления</h2>
+        <p class="text-center mb-5">Выберите подходящий для вас формат тренировок</p>
+        
+        <div class="row g-4">
+            {% for direction in directions %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow direction-card">
+                    {% if direction.image %}
+                        <img src="{{ direction.image.url }}" class="card-img-top" alt="{{ direction.name }}" style="height: 250px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light text-center py-5">
+                            <i class="fas fa-dumbbell fa-4x text-secondary"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title h4">{{ direction.name }}</h3>
+                        <p class="card-text">{{ direction.description|truncatewords:25 }}</p>
+                        
+                        {% if direction.goals.all %}
+                        <div class="mt-3">
+                            <p class="fw-bold mb-2">Цели:</p>
+                            <div class="d-flex flex-wrap">
+                                {% for goal in direction.goals.all %}
+                                <span class="badge bg-primary me-2 mb-2">{{ goal.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-white">
+                        <div class="d-grid">
+                            <a href="{% url 'direction_detail' direction.id %}" class="btn btn-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> В данный момент нет доступных направлений тренировок.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Раздел с тренерами -->
+<section class="py-5" id="trainers">
+    <div class="container">
+        <h2 class="text-center mb-4">Наши тренеры</h2>
+        <p class="text-center mb-4">Познакомьтесь с нашей командой профессионалов</p>
+        
+        <div class="trainers-slider">
+            <div class="trainer-slides-container">
+                <div class="trainer-slides">
+                    {% for trainer in trainers %}
+                    <div class="trainer-slide">
+                        <div class="trainer-card">
+                            <div class="trainer-image">
+                                {% if trainer.photo %}
+                                    <img src="{{ trainer.photo.url }}" alt="{{ trainer.name }}">
+                                {% else %}
+                                    <div class="no-image">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-body bg-white text-dark">
+                                <h5 class="card-title">{{ trainer.name }}</h5>
+                                <p class="card-text small text-danger">{{ trainer.specialization }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> В данный момент нет тренеров в системе.
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Кнопки навигации -->
+            <button class="slider-nav slider-prev" type="button">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slider-nav slider-next" type="button">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <!-- Индикаторы -->
+            <div class="slider-dots"></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .direction-card:hover {
+        transform: translateY(-10px);
+        transition: transform 0.3s ease;
+    }
+    
+    .badge {
+        font-size: 0.8rem;
+        padding: 0.5em 0.8em;
+    }
+    
+    #trainers h2 {
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 700;
+    }
+    
+    #trainers p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: #666;
+    }
+    
+    /* Слайдер тренеров */
+    .trainers-slider {
+        position: relative;
+        padding: 0 50px;
+        margin: 0 auto;
+        max-width: 1200px;
+    }
+    
+    .trainer-slides-container {
+        overflow: hidden;
+        border-radius: 0;
+    }
+    
+    .trainer-slides {
+        display: flex;
+        transition: transform 0.4s ease;
+    }
+    
+    .trainer-slide {
+        flex: 0 0 33.333%;
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+    
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border: none;
+        border-radius: 50%;
+        color: #9b0000;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .slider-nav:hover {
+        background: #9b0000;
+        color: #fff;
+    }
+    
+    .slider-prev {
+        left: -5px;
+    }
+    
+    .slider-next {
+        right: -5px;
+    }
+    
+    .slider-dots {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .slider-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ddd;
+        margin: 0 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .slider-dot.active {
+        background-color: #9b0000;
+        transform: scale(1.2);
+    }
+    
+    /* Карточки тренеров */
+    .trainer-card {
+        transition: all 0.3s ease;
+        height: 100%;
+        box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+        border-radius: 0;
+        overflow: hidden;
+        background: #fff;
+    }
+    
+    .trainer-image {
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .trainer-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+    }
+    
+    .trainer-image .no-image {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0f0f0;
+        color: #888;
+        font-size: 3rem;
+    }
+    
+    .card-body {
+        padding: 1.25rem;
+    }
+    
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #222;
+    }
+    
+    .card-text {
+        margin-bottom: 0;
+        color: #9b0000;
+        font-weight: 500;
+    }
+    
+    /* Респонсивность */
+    @media (max-width: 992px) {
+        .trainer-slide {
+            flex: 0 0 50%;
+        }
+        
+        .trainer-image {
+            height: 220px;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .trainer-slide {
+            flex: 0 0 50%;
+        }
+        
+        #trainers h2 {
+            font-size: 1.8rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .trainer-slide {
+            flex: 0 0 100%;
+        }
+        
+        .trainers-slider {
+            padding: 0 40px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Инициализация слайдера тренеров
+        initTrainersSlider();
+    });
+    
+    function initTrainersSlider() {
+        const slidesContainer = document.querySelector('.trainer-slides');
+        const slides = document.querySelectorAll('.trainer-slide');
+        const prevButton = document.querySelector('.slider-prev');
+        const nextButton = document.querySelector('.slider-next');
+        const dotsContainer = document.querySelector('.slider-dots');
+        
+        if (!slidesContainer || !slides.length) return;
+        
+        // Определяем, сколько слайдов показывать одновременно
+        let slidesToShow = 3;
+        if (window.innerWidth <= 992) {
+            slidesToShow = 2;
+        }
+        if (window.innerWidth <= 576) {
+            slidesToShow = 1;
+        }
+        
+        // Клонируем слайды для бесконечной прокрутки
+        const cloneSlides = () => {
+            // Удаляем существующие клоны
+            document.querySelectorAll('.trainer-slide.clone').forEach(clone => clone.remove());
+            
+            // Клонируем первые slidesToShow слайдов в конец
+            for (let i = 0; i < slidesToShow; i++) {
+                const clone = slides[i].cloneNode(true);
+                clone.classList.add('clone');
+                slidesContainer.appendChild(clone);
+            }
+            
+            // Клонируем последние slidesToShow слайдов в начало
+            for (let i = slides.length - 1; i >= Math.max(0, slides.length - slidesToShow); i--) {
+                const clone = slides[i].cloneNode(true);
+                clone.classList.add('clone');
+                slidesContainer.insertBefore(clone, slidesContainer.firstChild);
+            }
+            
+            // Сдвигаем на нужное количество слайдов
+            currentIndex = slidesToShow;
+            updateSliderPosition(false);
+        };
+        
+        // Текущий индекс слайда
+        let currentIndex = 0;
+        
+        // Максимальный индекс для последнего слайда
+        const maxIndex = slides.length;
+        
+        // Создаем точки навигации
+        for (let i = 0; i < maxIndex; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('slider-dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+        
+        // Обработчики для кнопок
+        prevButton.addEventListener('click', prevSlide);
+        nextButton.addEventListener('click', nextSlide);
+        
+        // Клонируем слайды
+        cloneSlides();
+        
+        // При изменении размера окна
+        window.addEventListener('resize', () => {
+            // Пересчитываем количество видимых слайдов
+            let newSlidesToShow = 3;
+            if (window.innerWidth <= 992) {
+                newSlidesToShow = 2;
+            }
+            if (window.innerWidth <= 576) {
+                newSlidesToShow = 1;
+            }
+            
+            // Если изменилось количество отображаемых слайдов
+            if (newSlidesToShow !== slidesToShow) {
+                slidesToShow = newSlidesToShow;
+                cloneSlides();
+            }
+        });
+        
+        // Функции для работы слайдера
+        function prevSlide() {
+            currentIndex--;
+            updateSliderPosition();
+            
+            if (currentIndex < slidesToShow) {
+                setTimeout(() => {
+                    currentIndex = slides.length + (currentIndex - slidesToShow);
+                    updateSliderPosition(false);
+                }, 300);
+            }
+            
+            updateDots();
+        }
+        
+        function nextSlide() {
+            currentIndex++;
+            updateSliderPosition();
+            
+            if (currentIndex >= slides.length + slidesToShow) {
+                setTimeout(() => {
+                    currentIndex = currentIndex - slides.length;
+                    updateSliderPosition(false);
+                }, 300);
+            }
+            
+            updateDots();
+        }
+        
+        function goToSlide(index) {
+            currentIndex = index + slidesToShow;
+            updateSliderPosition();
+            updateDots();
+        }
+        
+        function updateSliderPosition(animated = true) {
+            const slideWidth = 100 / slidesToShow;
+            if (!animated) {
+                slidesContainer.style.transition = 'none';
+            }
+            
+            slidesContainer.style.transform = `translateX(-${currentIndex * slideWidth / (slides.length + slidesToShow * 2) * 100}%)`;
+            
+            if (!animated) {
+                // Форсируем перерисовку
+                slidesContainer.offsetHeight;
+                slidesContainer.style.transition = 'transform 0.4s ease';
+            }
+        }
+        
+        function updateDots() {
+            const activeDotIndex = (currentIndex - slidesToShow) % slides.length;
+            const dots = document.querySelectorAll('.slider-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeDotIndex);
+            });
+        }
+        
+        // Автопрокрутка слайдера
+        setInterval(nextSlide, 5000);
+    }
+</script>
+{% endblock %} 

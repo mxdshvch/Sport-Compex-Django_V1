@@ -1,0 +1,43 @@
+{% load static %}
+
+<!-- Trainers Row Section -->
+<section class="py-5 bg-dark" id="trainers">
+    <div class="container">
+        <div class="row mb-4 text-center">
+            <div class="col-12">
+                <h2 class="section-title">Наши тренеры</h2>
+            </div>
+        </div>
+        
+        <div class="trainers-row-container">
+            <div class="trainers-row">
+                {% for trainer in trainers %}
+                <div class="trainer-simple-card">
+                    {% if trainer.photo %}
+                    <img src="{{ trainer.photo.url }}" alt="{{ trainer.first_name }} {{ trainer.last_name }}" class="trainer-simple-image">
+                    {% else %}
+                    <img src="{% static 'img/trainer-placeholder.jpg' %}" alt="{{ trainer.first_name }} {{ trainer.last_name }}" class="trainer-simple-image">
+                    {% endif %}
+                    <div class="trainer-simple-content">
+                        <h3 class="trainer-simple-name">{{ trainer.first_name }} {{ trainer.last_name }}</h3>
+                        <p class="trainer-simple-specialization">{{ trainer.specialization }}</p>
+                        <button class="trainer-simple-button" data-trainer-name="{{ trainer.first_name }} {{ trainer.last_name }}" data-bs-toggle="modal" data-bs-target="#applicationModal">Записаться</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Если нужны стрелки навигации -->
+            <button class="trainers-row-nav trainers-row-prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="trainers-row-nav trainers-row-next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'trainers' %}" class="btn btn-primary">Все тренеры</a>
+        </div>
+    </div>
+</section> 
